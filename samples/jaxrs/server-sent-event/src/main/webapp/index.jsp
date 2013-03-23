@@ -45,19 +45,16 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
-        <script type="text/javascript" src="sse.js"></script>
+        <title>Jersey SSE Item Store Example</title>
+        <link rel="stylesheet" href="css/main.css"/>
+        <script src="js/sse.js" type="text/javascript"></script>
     </head>
     <body>
-        <h1>Server-Sent Events using Jersey</h1>
-
-        Fruit: <input type="text" id="fruit" size="20"/>
-        <input type="submit" value="Add" onclick="addFruit();"></input>
-        <!--<input type="submit" value="Remove" onclick="removeFruit(); return false;"></input>-->
-        <div id="fruits"></div>
-        <div id="messages"></div>
-
-        
+        <div>
+            Enter item: <input id="name" type="text"/><input value="Add" type="button" onclick="addItem()"/>
+        </div>
+        <div id="items" class="items"></div>
+        <div id="messages" class="messages"></div>
     </body>
 </html>
+

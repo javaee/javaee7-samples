@@ -56,24 +56,22 @@ import org.glassfish.jersey.media.sse.SseFeature;
 /**
  * @author Arun Gupta
  */
-@Path("fruits")
+@Path("items")
 public class MyResource {
 
-    private static final Queue<String> FRUITS = new ConcurrentLinkedQueue<>();
-    private final SseBroadcaster BROADCASTER = new SseBroadcaster();
-    
-//    static EventOutput output = new EventOutput();
-    
+    private static final Queue<String> ITEMS = new ConcurrentLinkedQueue<>();
+    private static final SseBroadcaster BROADCASTER = new SseBroadcaster();
+
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String listFruits() {
-        return FRUITS.toString();
+    public String listItems() {
+        return ITEMS.toString();
     }
-    
+
     @GET
     @Path("events")
     @Produces(SseFeature.SERVER_SENT_EVENTS)
-    public EventOutput fruitEvents() {
+    public EventOutput itemEvents() {
         final EventOutput eventOutput = new EventOutput();
         BROADCASTER.add(eventOutput);
         return eventOutput;
@@ -81,12 +79,11 @@ public class MyResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public void addFruit(@FormParam("fruit")String fruit) {
-        System.out.println("Adding " + fruit);
-        FRUITS.add(fruit);
+    public void addItem(@FormParam("name") String name) {
+        ITEMS.add(name);
         // Broadcasting an un-named event with the name of the newly added item in data
-        BROADCASTER.broadcast(new OutboundEvent.Builder().data(String.class, fruit).build());
+        BROADCASTER.broadcast(new OutboundEvent.Builder().data(String.class, name).build());
         // Broadcasting a named "add" event with the current size of the items collection in data
-        BROADCASTER.broadcast(new OutboundEvent.Builder().name("size").data(Integer.class, FRUITS.size()).build());
+        BROADCASTER.broadcast(new OutboundEvent.Builder().name("size").data(Integer.class, ITEMS.size()).build());
     }
 }

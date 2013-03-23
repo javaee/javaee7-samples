@@ -37,35 +37,35 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-"use strict"
+"use strict";
 
-function addFruit() {
-    var fruitInput = document.getElementById("name");
-    
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "webresources/fruits", true);
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 204) {
+function addItem() {
+    var itemInput = document.getElementById("name");
+
+    var req = new XMLHttpRequest();
+    req.open("POST", "webresources/items", true);
+    req.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    req.onreadystatechange = function () {
+        if (req.readyState == 4 && req.status == 204) {
             //Call a function when the state changes.
-            fruitInput.value = "";
-            getFruits();
+            itemInput.value = "";
+            getItems();
         }
     };
-    xhr.send("fruit=" + fruitInput.value);
+    req.send("name=" + itemInput.value);
 }
 
-function getFruits() {
-    var xhr = new XMLHttpRequest();    
-    xhr.open("GET", "webresources/fruits", true);
-    xhr.setRequestHeader("Accept", "text/plain");
-    xhr.onreadystatechange = function () {
+function getItems() {
+    var req = new XMLHttpRequest();
+    req.open("GET", "webresources/items", true);
+    req.setRequestHeader("Accept", "text/plain");
+    req.onreadystatechange = function () {
         //Call a function when the state changes.
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            document.getElementById("fruits").innerHTML = xhr.responseText;
+        if (req.readyState == 4 && req.status == 200) {
+            document.getElementById("items").innerHTML = req.responseText;
         }
     };
-    xhr.send();
+    req.send();
 }
 
 function display(data, rgb) {
@@ -83,13 +83,13 @@ function display(data, rgb) {
 function receiveMessages() {
     if (typeof(EventSource) !== "undefined") {
         // Yes! Server-sent events support!
-        var source = new EventSource("webresources/fruits/events");
+        var source = new EventSource("webresources/items/events");
         source.onmessage = function (event) {
             console.log('Received unnamed event: ' + event.data);
             display("Added new item: " + event.data, "#444444");
         };
 
-        source.addEventListener("size", function(event) {
+        source.addEventListener("size", function(e) {
             console.log('Received event ' + event.name + ': ' + event.data);
             display("New items size: " + event.data, "#0000FF");
         }, false);
@@ -106,7 +106,6 @@ function receiveMessages() {
         // Sorry! No server-sent events support..
         display('SSE not supported by browser.', "#FF0000");
     }
-
 }
 
 window.onload = receiveMessages;
