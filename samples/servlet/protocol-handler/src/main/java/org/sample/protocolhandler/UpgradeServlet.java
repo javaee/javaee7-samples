@@ -66,9 +66,7 @@ public class UpgradeServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        try {
-            /* TODO output your page here. You may use following sample code. */
+        try (PrintWriter out = response.getWriter()) {
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Servlet UpgradeServlet</title>");            
@@ -84,8 +82,6 @@ public class UpgradeServlet extends HttpServlet {
             }
             out.println("</body>");
             out.println("</html>");
-        } finally {            
-            out.close();
         }
     }
 
