@@ -39,6 +39,11 @@
  */
 package org.sample.validation;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -47,5 +52,22 @@ import javax.validation.constraints.Size;
 public class MyBean {
     public String sayHello(@Size(max = 3)String name) {
         return "Hello " + name;
+    }
+    
+    @Future
+    public Date getDate(boolean correct) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, correct ? 5 : -5);
+        return cal.getTime();
+    }
+    
+    public String showList(@NotNull @Size(min=1, max=3) List<String> list, @NotNull String prefix) {
+        StringBuilder builder = new StringBuilder();
+        
+        for (String s : list) {
+            builder.append(prefix).append(s).append(" ");
+        }
+        
+        return builder.toString();
     }
 }

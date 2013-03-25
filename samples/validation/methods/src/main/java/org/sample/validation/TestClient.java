@@ -39,14 +39,10 @@
  */
 package org.sample.validation;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -82,7 +78,28 @@ public class TestClient extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet TestClient at " + request.getContextPath() + "</h1>");
+            out.println("Method parameter (with incorrect parameter, length=4)<br>");
             out.println(bean.sayHello("Duke"));
+            out.println("Method parameter (with correct parameter, length=3)<br>");
+            out.println(bean.sayHello("Duk"));
+            out.println("<p><p>");
+            
+            out.println("Return value (with incorrect value, past date)<br>");
+            out.println(bean.getDate(false) + "<br>");
+            out.println("Return value (with correct value, future date)<br>");
+            out.println(bean.getDate(true)+ "<br>");
+            out.println("<p><p>");
+            
+            out.println("Multiple parameter constraint (with incorrect value, empty list)<br>");
+            out.println(bean.showList(new ArrayList<String>(), "foo") + "<br>");
+            out.println("Multiple parameter constraint (with incorrect value, null second parameter)<br>");
+            List<String> list = new ArrayList<>();
+            list.add("bar");
+            out.println(bean.showList(list, null) + "<br>");
+            out.println("Multiple parameter constraint (with correct value)<br>");
+            out.println(bean.showList(list, "foo") + "<br>");
+            out.println("<p><p>");
+            
             out.println("</body>");
             out.println("</html>");
         }
