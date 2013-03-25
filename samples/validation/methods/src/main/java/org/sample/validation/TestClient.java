@@ -79,23 +79,50 @@ public class TestClient extends HttpServlet {
             out.println("<body>");
             out.println("<h1>Servlet TestClient at " + request.getContextPath() + "</h1>");
             out.println("Method parameter (with incorrect parameter, length=4)<br>");
-            out.println(bean.sayHello("Duke"));
+            try {
+                out.println(bean.sayHello("Duke"));
+            } catch (ConstraintViolationException ex) {
+                out.println("ConstraintViolationException caught<br>");
+            } finally {
+                out.println("Was ConstraintViolationException caught ?<br>");
+            }
             out.println("Method parameter (with correct parameter, length=3)<br>");
             out.println(bean.sayHello("Duk"));
             out.println("<p><p>");
             
             out.println("Return value (with incorrect value, past date)<br>");
-            out.println(bean.getDate(false) + "<br>");
+            try {
+                out.println(bean.showDate(false) + "<br>");
+            } catch (ConstraintViolationException ex) {
+                out.println("ConstraintViolationException caught<br>");
+            } finally {
+                out.println("Was ConstraintViolationException caught ?<br>");
+            }
+                
             out.println("Return value (with correct value, future date)<br>");
-            out.println(bean.getDate(true)+ "<br>");
+            out.println(bean.showDate(true)+ "<br>");
             out.println("<p><p>");
             
             out.println("Multiple parameter constraint (with incorrect value, empty list)<br>");
-            out.println(bean.showList(new ArrayList<String>(), "foo") + "<br>");
-            out.println("Multiple parameter constraint (with incorrect value, null second parameter)<br>");
+            try {
+                out.println(bean.showList(new ArrayList<String>(), "foo") + "<br>");
+            } catch (ConstraintViolationException ex) {
+                out.println("ConstraintViolationException caught<br>");
+            } finally {
+                out.println("Was ConstraintViolationException caught ?<br>");
+            }
+                
             List<String> list = new ArrayList<>();
-            list.add("bar");
-            out.println(bean.showList(list, null) + "<br>");
+            out.println("Multiple parameter constraint (with incorrect value, null second parameter)<br>");
+            try {
+                list.add("bar");
+                out.println(bean.showList(list, null) + "<br>");
+            } catch (ConstraintViolationException ex) {
+                out.println("ConstraintViolationException caught<br>");
+            } finally {
+                out.println("Was ConstraintViolationException caught ?<br>");
+            }
+                
             out.println("Multiple parameter constraint (with correct value)<br>");
             out.println(bean.showList(list, "foo") + "<br>");
             out.println("<p><p>");
