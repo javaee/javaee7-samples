@@ -39,7 +39,7 @@
  */
 package org.glassfish.chunk.checkpoint;
 
-import javax.batch.api.ItemProcessor;
+import javax.batch.api.chunk.ItemProcessor;
 import javax.inject.Named;
 
 /**

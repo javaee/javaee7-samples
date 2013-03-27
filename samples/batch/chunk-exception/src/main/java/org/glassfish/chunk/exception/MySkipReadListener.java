@@ -40,7 +40,7 @@
 
 package org.glassfish.chunk.exception;
 
-import javax.batch.api.SkipReadListener;
+import javax.batch.api.chunk.listener.SkipReadListener;
 
 /**
  * @author Arun Gupta

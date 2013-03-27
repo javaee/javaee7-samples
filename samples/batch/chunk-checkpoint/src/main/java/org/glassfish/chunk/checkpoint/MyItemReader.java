@@ -40,7 +40,7 @@
 package org.glassfish.chunk.checkpoint;
 
 import java.util.StringTokenizer;
-import javax.batch.api.AbstractItemReader;
+import javax.batch.api.chunk.AbstractItemReader;
 import javax.inject.Named;
 
 /**

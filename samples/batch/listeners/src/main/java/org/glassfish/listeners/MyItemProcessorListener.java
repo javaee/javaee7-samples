@@ -40,7 +40,7 @@
 
 package org.glassfish.listeners;
 
-import javax.batch.api.AbstractItemProcessListener;
+import javax.batch.api.chunk.listener.AbstractItemProcessListener;
 
 /**
  * @author Arun Gupta

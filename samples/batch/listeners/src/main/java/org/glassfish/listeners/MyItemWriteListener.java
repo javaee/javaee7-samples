@@ -41,7 +41,7 @@
 package org.glassfish.listeners;
 
 import java.util.List;
-import javax.batch.api.AbstractItemWriteListener;
+import javax.batch.api.chunk.listener.AbstractItemWriteListener;
 
 /**
  * @author Arun Gupta

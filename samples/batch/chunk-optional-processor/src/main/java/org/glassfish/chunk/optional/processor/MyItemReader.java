@@ -42,7 +42,7 @@ package org.glassfish.chunk.optional.processor;
 //import javax.batch.annotation.CheckpointInfo;
 
 import java.util.StringTokenizer;
-import javax.batch.api.AbstractItemReader;
+import javax.batch.api.chunk.AbstractItemReader;
 import javax.inject.Named;
 
 /**

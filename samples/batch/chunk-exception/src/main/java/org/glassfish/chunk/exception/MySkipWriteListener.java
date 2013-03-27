@@ -41,7 +41,7 @@
 package org.glassfish.chunk.exception;
 
 import java.util.List;
-import javax.batch.api.SkipWriteListener;
+import javax.batch.api.chunk.listener.SkipWriteListener;
 
 /**
  * @author Arun Gupta

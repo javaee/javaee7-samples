@@ -40,7 +40,7 @@
 package org.glassfish.listeners;
 
 import java.util.List;
-import javax.batch.api.AbstractItemWriter;
+import javax.batch.api.chunk.AbstractItemWriter;
 import javax.inject.Named;
 
 /**

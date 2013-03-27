@@ -40,7 +40,7 @@
 
 package org.glassfish.listeners;
 
-import javax.batch.api.AbstractStepListener;
+import javax.batch.api.listener.AbstractStepListener;
 
 /**
  * @author Arun Gupta

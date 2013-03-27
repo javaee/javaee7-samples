@@ -40,7 +40,7 @@
 
 package org.glassfish.chunk.checkpoint;
 
-import javax.batch.api.AbstractCheckpointAlgorithm;
+import javax.batch.api.chunk.AbstractCheckpointAlgorithm;
 
 /**
  * @author Arun Gupta

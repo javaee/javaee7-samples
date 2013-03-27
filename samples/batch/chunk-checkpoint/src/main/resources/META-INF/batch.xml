@@ -41,7 +41,7 @@
 */
 -->
 
-<batch-artifacts xmlns="http://jcp.org.batch/jsl">
+<batch-artifacts xmlns="http://xmlns.jcp.org/xml/ns/javaee">
     <ref id="myItemReader" class="org.glassfish.chunk.checkpoint.MyItemReader"/>
     <ref id="myItemProcessor" class="org.glassfish.chunk.checkpoint.MyItemProcessor"/>
     <ref id="myItemWriter" class="org.glassfish.chunk.checkpoint.MyItemWriter"/>

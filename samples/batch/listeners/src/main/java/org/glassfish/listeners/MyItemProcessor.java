@@ -39,7 +39,7 @@
  */
 package org.glassfish.listeners;
 
-import javax.batch.api.ItemProcessor;
+import javax.batch.api.chunk.ItemProcessor;
 import javax.inject.Named;
 
 /**

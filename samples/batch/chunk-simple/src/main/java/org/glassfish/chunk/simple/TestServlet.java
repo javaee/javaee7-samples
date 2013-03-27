@@ -10,7 +10,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.batch.operations.JobOperator;
-import javax.batch.operations.exception.JobStartException;
+import javax.batch.operations.JobSecurityException;
+import javax.batch.operations.JobStartException;
 import javax.batch.runtime.BatchRuntime;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,7 +49,11 @@ public class TestServlet extends HttpServlet {
             out.println("About to start the job<br>");
             JobOperator jo = BatchRuntime.getJobOperator();
             out.println("Got the job operator: " + jo + "<br>");
-            jo.start("myJob", new Properties());
+            try {
+                jo.start("myJob", new Properties());
+            } catch (JobSecurityException ex) {
+                Logger.getLogger(TestServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
             out.println("Job submitted<br>");
             out.println("</body>");
             out.println("</html>");
