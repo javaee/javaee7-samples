@@ -81,7 +81,7 @@ public class TestTriggerServlet extends HttpServlet {
             out.println("<body>");
             out.println("<h1>Servlet TestServlet at " + request.getContextPath() + "</h1>");
             for (int i=0; i<5; i++) {
-                executor.schedule(new MyRunnableTask(i), new MyTrigger(), null);
+                executor.schedule(new MyRunnableTask(i), new MyTrigger());
             }
             
             out.println("</body>");
