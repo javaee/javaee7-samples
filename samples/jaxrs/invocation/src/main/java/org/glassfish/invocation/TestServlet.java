@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -82,7 +82,7 @@ public class TestServlet extends HttpServlet {
         out.println("<body>");
         out.println("<h1>JAX-RS 2 Client API at " + request.getContextPath() + "</h1>");
         out.println("Initializing client...<br>");
-        Client client = ClientFactory.newClient();
+        Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://"
                 + request.getServerName()
                 + ":"

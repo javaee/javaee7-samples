@@ -52,6 +52,7 @@
         <module>ejb</module>
         <module>el</module>
         <module>javamail</module>
+        <module>jaxrs</module>
         <module>websocket</module>
     </modules>
 

@@ -47,10 +47,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientFactory;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import org.glassfish.jersey.filter.LoggingFilter;
+//import org.glassfish.jersey.filter.LoggingFilter;
 
 /**
  * @author Arun Gupta
@@ -78,8 +78,8 @@ public class TestServlet extends HttpServlet {
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servlet TestServlet at " + request.getContextPath() + "</h1>");
-        Client client = ClientFactory.newClient();
-        client.configuration().register(LoggingFilter.class);
+        Client client = ClientBuilder.newClient();
+//        client.register(LoggingFilter.class);
         WebTarget target = client.target("http://"
                 + request.getServerName()
                 + ":"

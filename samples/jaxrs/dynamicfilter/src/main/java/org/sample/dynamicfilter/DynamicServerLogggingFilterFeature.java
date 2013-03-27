@@ -42,7 +42,7 @@ package org.sample.dynamicfilter;
 import javax.ws.rs.GET;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Configurable;
+import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.Provider;
 
 /**
@@ -52,10 +52,10 @@ import javax.ws.rs.ext.Provider;
 public class DynamicServerLogggingFilterFeature implements DynamicFeature {
 
     @Override
-    public void configure(ResourceInfo ri, Configurable c) {
+    public void configure(ResourceInfo ri, FeatureContext fc) {
         if (MyResource.class.isAssignableFrom(ri.getResourceClass())
                 && ri.getResourceMethod().isAnnotationPresent(GET.class)) {
-            c.register(new ServerLoggingFilter());
+            fc.register(new ServerLoggingFilter());
         }
     }
 }
