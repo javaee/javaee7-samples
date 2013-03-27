@@ -53,6 +53,7 @@
         <module>el</module>
         <module>javamail</module>
         <module>jaxrs</module>
+        <module>jms</module>
         <module>websocket</module>
     </modules>
 
