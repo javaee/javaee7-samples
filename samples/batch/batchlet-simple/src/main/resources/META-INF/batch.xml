@@ -41,6 +41,6 @@
 */
 -->
 
-<batch-artifacts xmlns="http://jcp.org.batch/jsl">
+<batch-artifacts xmlns="http://xmlns.jcp.org/xml/ns/javaee">
     <ref id="myBatchlet" class="org.glassfish.batchlet.simple.MyBatchlet"/>
 </batch-artifacts>
