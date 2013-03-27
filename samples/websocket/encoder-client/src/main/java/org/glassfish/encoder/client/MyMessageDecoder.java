@@ -41,14 +41,13 @@ package org.glassfish.encoder.client;
 
 import java.io.StringReader;
 import javax.json.Json;
-import javax.json.JsonReader;
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 
 /**
  * @author Arun Gupta
  */
-public class MyMessageDecoder implements Decoder.Text<MyMessage> {
+public class MyMessageDecoder extends Decoder.Adapter implements Decoder.Text<MyMessage> {
 
     @Override
     public MyMessage decode(String string) throws DecodeException {

@@ -45,7 +45,7 @@ import javax.websocket.Encoder;
 /**
  * @author Arun Gupta
  */
-public class MyMessageEncoder implements Encoder.Text<MyMessage> {
+public class MyMessageEncoder extends Encoder.Adapter implements Encoder.Text<MyMessage> {
     @Override
     public String encode(MyMessage myMessage) throws EncodeException {
 //        return this.getClass().getName();

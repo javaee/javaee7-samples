@@ -47,7 +47,7 @@ import javax.websocket.Decoder;
 /**
  * @author Arun Gupta
  */
-public class MyMessageDecoder implements Decoder.Text<MyMessage> {
+public class MyMessageDecoder extends Decoder.Adapter implements Decoder.Text<MyMessage> {
 
     @Override
     public MyMessage decode(String string) throws DecodeException {
