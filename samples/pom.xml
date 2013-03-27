@@ -51,6 +51,7 @@
         <module>concurrency</module>
         <module>ejb</module>
         <module>el</module>
+        <module>javamail</module>
         <module>websocket</module>
     </modules>
 
