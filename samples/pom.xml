@@ -50,6 +50,7 @@
         <module>batch</module>
         <module>concurrency</module>
         <module>ejb</module>
+        <module>el</module>
         <module>websocket</module>
     </modules>
 
