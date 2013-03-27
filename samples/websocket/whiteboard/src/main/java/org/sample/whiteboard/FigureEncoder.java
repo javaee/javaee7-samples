@@ -45,7 +45,7 @@ import javax.websocket.Encoder;
 /**
  * @author Arun Gupta
  */
-public class FigureEncoder implements Encoder.Text<Figure> {
+public class FigureEncoder extends Encoder.Adapter implements Encoder.Text<Figure> {
     @Override
     public String encode(Figure figure) throws EncodeException {
         return figure.getJson().toString();
