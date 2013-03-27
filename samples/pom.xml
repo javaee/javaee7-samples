@@ -48,6 +48,7 @@
 
     <modules>
         <module>batch</module>
+        <module>websocket</module>
     </modules>
 
 </project>
