@@ -49,6 +49,7 @@
     <modules>
         <module>batch</module>
         <module>concurrency</module>
+        <module>ejb</module>
         <module>websocket</module>
     </modules>
 
