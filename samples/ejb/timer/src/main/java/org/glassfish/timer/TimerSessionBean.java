@@ -61,7 +61,10 @@ public class TimerSessionBean {
     @Schedule(hour="*", minute="*", second="*")
     public void printDate() {
         System.out.println(new Date());
-        Collection<Timer> = ctx.getAllTimers();
+        Collection<Timer> timers = ctx.getTimerService().getAllTimers();
+        for (Timer t : timers) {
+            System.out.println("All timers: " + t.getInfo());
+        }
     }
 
 }
