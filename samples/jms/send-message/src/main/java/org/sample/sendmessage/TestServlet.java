@@ -55,12 +55,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 @JMSDestinationDefinitions({@JMSDestinationDefinition(name = "java:global/jms/mySyncQueue",
         resourceAdapter = "jmsra",
-        className = "javax.jms.Queue",
+        interfaceName = "javax.jms.Queue",
         destinationName="syncQueue",
         description="My Sync Queue"),
     @JMSDestinationDefinition(name = "java:global/jms/myAsyncQueue",
         resourceAdapter = "jmsra",
-        className = "javax.jms.Queue",
+        interfaceName = "javax.jms.Queue",
         destinationName="asyncQueue",
         description="My Async Queue")
 })
