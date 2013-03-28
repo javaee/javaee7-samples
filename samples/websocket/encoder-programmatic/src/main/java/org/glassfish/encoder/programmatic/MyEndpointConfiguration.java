@@ -41,55 +41,44 @@ package org.glassfish.encoder.programmatic;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.websocket.Decoder;
 import javax.websocket.Encoder;
-import javax.websocket.Extension;
-import javax.websocket.server.ServerEndpointConfiguration;
+import javax.websocket.Endpoint;
+import javax.websocket.server.ServerApplicationConfig;
+import javax.websocket.server.ServerEndpointConfig;
 
 /**
  * @author Arun Gupta
  */
-// "implements ServerEndpointConfiguration" needs to be here,
-// most likely Servlet issue; see http://java.net/jira/browse/GLASSFISH-19551
-// (should be reopened, it is currently discussed internally)
+public class MyEndpointConfiguration implements ServerApplicationConfig {
 
-// Also providing an implementation of three methods until
-// http://java.net/jira/browse/WEBSOCKET_SPEC-128 is fixed.
-public class MyServerConfiguration extends DefaultServerConfiguration implements ServerEndpointConfiguration {
+    List<Class<? extends Encoder>> encoders = new ArrayList<>();
+    List<Class<? extends Decoder>> decoders = new ArrayList<>();
 
-    List<Encoder> encoders = new ArrayList<>();
-    List<Decoder> decoders = new ArrayList<>();
+    public MyEndpointConfiguration() {
+        encoders.add(MyMessageEncoder.class);
+        decoders.add(MyMessageDecoder.class);
+    }
+
+    @Override
+    public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> set) {
+        return new HashSet<ServerEndpointConfig>() {
+            {
+                add(ServerEndpointConfig.Builder.create(MyEndpoint.class, "/websocket")
+                        .encoders(encoders)
+                        .decoders(decoders)
+                        .build());
+            }
+        };
+    }
+
+    @Override
+    public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> set) {
+        return Collections.emptySet();
+    }
     
-    public MyServerConfiguration() {
-        super(MyEndpoint.class, "websocket");
-        
-        encoders.add(new MyMessageEncoder());
-        decoders.add(new MyMessageDecoder());
-    }
-
-    @Override
-    public String getNegotiatedSubprotocol(List<String> requestedSubprotocols) {
-        return null;
-    }
-
-    @Override
-    public List<Extension> getNegotiatedExtensions(List<Extension> requestedExtensions) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean checkOrigin(String originHeaderValue) {
-        return true;
-    }
-
-    @Override
-    public List<Encoder> getEncoders() {
-        return encoders;
-    }
-
-    @Override
-    public List<Decoder> getDecoders() {
-        return decoders;
-    }
+    
 }
