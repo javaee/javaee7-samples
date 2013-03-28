@@ -54,6 +54,7 @@
         <module>javamail</module>
         <module>jaxrs</module>
         <module>jms</module>
+        <module>jpa</module>
         <module>websocket</module>
     </modules>
 
