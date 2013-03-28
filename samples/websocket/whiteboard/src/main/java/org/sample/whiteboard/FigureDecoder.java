@@ -45,7 +45,6 @@ import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
-import javax.websocket.EndpointConfig;
 
 /**
  * @author Arun Gupta
