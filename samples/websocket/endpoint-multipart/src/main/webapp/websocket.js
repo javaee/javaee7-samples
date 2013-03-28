@@ -41,6 +41,7 @@
 var wsUri = "ws://" + document.location.host + document.location.pathname + "websocket";
 console.log("Connecting to " + wsUri);
 var websocket = new WebSocket(wsUri);
+websocket.binaryType="arraybuffer";
 websocket.onopen = function(evt) { onOpen(evt) };
 websocket.onmessage = function(evt) { onMessage(evt) };
 websocket.onerror = function(evt) { onError(evt) };
@@ -48,19 +49,21 @@ websocket.onerror = function(evt) { onError(evt) };
 var output = document.getElementById("output");
 
 function echoText() {
-    console.log("echoText: " + myField.value);
-    websocket.send(myField.value);
-    writeToScreen("SENT (text): " + myField.value);
+    console.log("sayHello: " + myField.value);
+    var payload = "";
+    for (var i=0; i<myField.value; i++) {
+        payload += "x";
+    }
+    websocket.send(payload);
+    writeToScreen("SENT (text) " + payload.length + " text bytes");
 }
 
 function echoBinary() {
-//                alert("Sending " + myField2.value.length + " bytes")
-    var buffer = new ArrayBuffer(myField2.value.length);
+    var buffer = new ArrayBuffer(myField2.value);
     var bytes = new Uint8Array(buffer);
     for (var i=0; i<bytes.length; i++) {
         bytes[i] = i;
     }
-//                alert(buffer);
     websocket.send(buffer);
     writeToScreen("SENT (binary): " + buffer.byteLength + " bytes");
 }
@@ -72,9 +75,9 @@ function onOpen() {
 
 function onMessage(evt) {
     if (typeof evt.data == "string") {
-        writeToScreen("RECEIVED (text): " + evt.data);
+        writeToScreen("RECEIVED (text): " + evt.data.length + " bytes");
     } else {
-        writeToScreen("RECEIVED (binary): " + evt.data);
+        writeToScreen("RECEIVED (binary): " + evt.data.length + " bytes");
     }
 }
 

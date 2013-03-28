@@ -54,13 +54,13 @@
         <div style="text-align: center;">
             <form action=""> 
                 <h2>Text Data</h2>
-                <input onclick="echoText();" value="Echo Text" type="button"> 
-                <input id="myField" value="WebSocket" type="text"><br>
+                <input onclick="echoText();" value="Echo" type="button"> 
+                Size (in bytes): <input id="myField" value="1024" type="text"><br>
             </form>
             <form action=""> 
                 <h2>Binary Data</h2>
-                <input onclick="echoBinary();" value="Echo Binary" type="button"> 
-                <input id="myField2" value="12345678" type="text"><br>
+                <input onclick="echoBinary();" value="Echo" type="button"> 
+                Size (in bytes): <input id="myField2" value="1024" type="text"><br>
             </form>
         </div>
         <div id="output"></div>
