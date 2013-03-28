@@ -52,18 +52,12 @@ import javax.websocket.server.ServerEndpoint;
 public class MyEndpoint {
     
     @OnMessage(maxMessageSize=6)
-    public String echoText(String name) {
-        return name;
+    public String echoText(String data) {
+        return data;
     }
 
     @OnMessage(maxMessageSize=6)
-    public void echoBinary(byte[] data, Session session) throws IOException {
-        System.out.println("echoBinary: " + data);
-        StringBuilder builder = new StringBuilder();
-        for (byte b : data) {
-            builder.append(b);
-        }
-        System.out.println(builder);
-        session.getBasicRemote().sendBinary(ByteBuffer.wrap(data));
+    public void echoBinary(ByteBuffer data, Session session) throws IOException {
+        session.getBasicRemote().sendBinary(data);
     }
 }
