@@ -42,7 +42,6 @@ package org.sample.validation;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import javax.enterprise.context.RequestScoped;
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -73,6 +72,7 @@ public class MyBean {
         return builder.toString();
     }
     
+//    @NotNull(validationAppliesTo=ConstraintType.PARAMETERS)
     @NotNull
     public void concat(String str1, String str2) {
         str1.concat(str2);

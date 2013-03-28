@@ -8,6 +8,10 @@
     <packaging>pom</packaging>
     <name>javaee7-samples</name>
 
+    <properties>
+        <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
+    </properties>
+
     <repositories>
         <repository>
             <id>java.net-promoted</id>
@@ -19,7 +23,7 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0-b81</version>
+            <version>7.0-b82</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -58,7 +62,7 @@
         <module>jsf</module>
         <module>json</module>
         <module>servlet</module>
-        <module>validation</module>
+        <!--<module>validation</module>-->
         <module>websocket</module>
     </modules>
 
