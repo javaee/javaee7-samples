@@ -45,11 +45,12 @@ import javax.json.JsonException;
 import javax.json.JsonObject;
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
+import javax.websocket.EndpointConfig;
 
 /**
  * @author Arun Gupta
  */
-public class FigureDecoder extends Decoder.Adapter implements Decoder.Text<Figure> {
+public class FigureDecoder implements Decoder.Text<Figure> {
     @Override
     public Figure decode(String string) throws DecodeException {
         System.out.println("decoding: " + string);
@@ -66,5 +67,15 @@ public class FigureDecoder extends Decoder.Adapter implements Decoder.Text<Figur
             ex.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public void init(EndpointConfig ec) {
+        System.out.println("init");
+    }
+
+    @Override
+    public void destroy() {
+        System.out.println("desroy");
     }
 }
