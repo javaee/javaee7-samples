@@ -42,10 +42,10 @@ public class MyBeanTest {
     @org.junit.Test
     public void testSayHello() throws Exception {
         System.out.println("sayHello");
-        String name = "";
+        String name = "Duke";
         try (EJBContainer container = javax.ejb.embeddable.EJBContainer.createEJBContainer()) {
             MyBean instance = (MyBean)container.getContext().lookup("java:global/classes/MyBean");
-            String expResult = "";
+            String expResult = "Hello " + name;
             String result = instance.sayHello(name);
             assertEquals(expResult, result);
         }
