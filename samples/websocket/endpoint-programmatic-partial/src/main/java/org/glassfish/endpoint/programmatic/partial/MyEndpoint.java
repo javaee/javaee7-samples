@@ -59,10 +59,11 @@ public class MyEndpoint extends Endpoint {
         session.addMessageHandler(new MessageHandler.Partial<String>() {
 
             @Override
-            public void onMessage(String name, boolean b) {
+            public void onMessage(String text, boolean b) {
                 System.out.println("boolean(text) " + b);
+                System.out.println("text length " + text.length());
                 try {
-                    session.getBasicRemote().sendText("Hello " + name);
+                    session.getBasicRemote().sendText(text);
                 } catch (IOException ex) {
                     Logger.getLogger(MyEndpoint.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -74,6 +75,7 @@ public class MyEndpoint extends Endpoint {
             @Override
             public void onMessage(ByteBuffer t, boolean b) {
                 System.out.println("boolean(binary) " + b);
+                System.out.println("binary length " + t.array().length);
                 try {
                     session.getBasicRemote().sendBinary(t);
                 } catch (IOException ex) {
