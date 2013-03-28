@@ -57,6 +57,7 @@
         <module>jpa</module>
         <module>jsf</module>
         <module>json</module>
+        <module>servlet</module>
         <module>websocket</module>
     </modules>
 

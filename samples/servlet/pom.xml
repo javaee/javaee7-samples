@@ -2,18 +2,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.sample</groupId>
-        <artifactId>servlet</artifactId>
+        <artifactId>javaee7-samples</artifactId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-        
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.sample</groupId>
-    <artifactId>nonblocking</artifactId>
+    <artifactId>servlet</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>pom</packaging>
+    <name>servlet</name>
 
-    <name>nonblocking</name>
+    <modules>
+        <module>nonblocking</module>
+        <module>protocol-handler</module>
+    </modules>
 
 </project>
