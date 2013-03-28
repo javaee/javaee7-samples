@@ -41,6 +41,7 @@ package org.glassfish.object.builder;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
@@ -80,36 +81,36 @@ public class DOMGeneratorServlet extends HttpServlet {
             out.println("<h1>Servlet DOMTestServlet at " + request.getContextPath() + "</h1>");
             
             out.println("Creating an empty object (using DOM generator)...<br>");
-            JsonObject jsonObject = new JsonObjectBuilder().build();
-            new JsonWriter(out).write(jsonObject);
+            JsonObject jsonObject = Json.createObjectBuilder().build();
+            Json.createWriter(out).write(jsonObject);
             out.println("<br>...done<br>");
 
             out.println("<br>Creating a simple object (using DOM generator)...<br>");
-            jsonObject = new JsonObjectBuilder()
+            jsonObject = Json.createObjectBuilder()
                     .add("apple", "red")
                     .add("banana", "yellow")
                     .build();
-            new JsonWriter(out).write(jsonObject);
+            Json.createWriter(out).write(jsonObject);
             out.println("<br>...done<br>");
             
             out.println("<br>Creating a simple array (using streaming generator)...<br>");
-            JsonArray jsonArray = new JsonArrayBuilder()
-                    .add(new JsonObjectBuilder().add("apple","red"))
-                    .add(new JsonObjectBuilder().add("banana","yellow"))
+            JsonArray jsonArray = Json.createArrayBuilder()
+                    .add(Json.createObjectBuilder().add("apple","red"))
+                    .add(Json.createObjectBuilder().add("banana","yellow"))
                     .build();
-            new JsonWriter(out).write(jsonArray);
+            Json.createWriter(out).write(jsonArray);
             out.println("<br>...done<br>");
             
             out.println("Creating a nested structure (using builder)...<br>");
-            jsonObject = new JsonObjectBuilder()
+            jsonObject = Json.createObjectBuilder()
                         .add("title", "The Matrix")
                         .add("year", 1999)
-                        .add("cast", new JsonArrayBuilder()
+                        .add("cast", Json.createArrayBuilder()
                             .add("Keanu Reaves")
                             .add("Laurence Fishburne")
                             .add("Carrie-Anne Moss"))
                 .build();
-            new JsonWriter(out).write(jsonObject);
+            Json.createWriter(out).write(jsonObject);
             out.println("</body>");
             out.println("</html>");
         }

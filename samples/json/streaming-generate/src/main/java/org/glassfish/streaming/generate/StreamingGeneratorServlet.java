@@ -42,7 +42,6 @@ package org.glassfish.streaming.generate;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.json.Json;
-import javax.json.JsonConfiguration;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import javax.servlet.ServletException;
@@ -78,7 +77,8 @@ public class StreamingGeneratorServlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet TestServlet at " + request.getContextPath() + "</h1>");
-            JsonGeneratorFactory factory = Json.createGeneratorFactory(new JsonConfiguration().withPrettyPrinting());
+//            JsonGeneratorFactory factory = Json.createGeneratorFactory(new JsonConfiguration().withPrettyPrinting());
+            JsonGeneratorFactory factory = Json.createGeneratorFactory(null);
 //            JsonGenerator gen = factory.createGenerator(System.out);
             
             out.println("Creating an empty object ...<br>");

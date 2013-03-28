@@ -42,11 +42,6 @@ package org.glassfish.streaming.parser;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.json.Json;
-import javax.json.JsonArray;
-import static javax.json.JsonNumber.NumberType.DECIMAL;
-import static javax.json.JsonNumber.NumberType.INTEGER;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.json.stream.JsonParser;
 import static javax.json.stream.JsonParser.Event.END_ARRAY;
 import static javax.json.stream.JsonParser.Event.END_OBJECT;
@@ -138,15 +133,15 @@ public class JsonParserFromStream extends HttpServlet {
                     break;
                     
                 case VALUE_NUMBER:
-                    switch (parser.getNumberType()) {
-                        case INTEGER:
-                            out.format("Found value: <b>%1$d</b><br>", parser.getIntValue());
+//                    switch (parser.getInt()) {
+//                        case INTEGER:
+                            out.format("Found value: <b>%1$d</b><br>", parser.getInt());
 //                            out.format("Found value: <b>%1$d</b><br>", parser.getLongValue());
-                            break;
-                        case DECIMAL:
-                            out.format("Found value: <b>%1$f</b><br>", parser.getBigDecimalValue());
-                            break;
-                    }
+//                            break;
+//                        case DECIMAL:
+//                            out.format("Found value: <b>%1$f</b><br>", parser.getBigDecimal());
+//                            break;
+//                    }
                     break;
                 case VALUE_TRUE:
                 case VALUE_FALSE:

@@ -41,6 +41,7 @@ package org.glassfish.object.reader;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -81,22 +82,22 @@ public class JsonReaderFromStream extends HttpServlet {
             
             ServletContext servletContext = request.getServletContext();
             out.println("Reading an empty object<br>");
-            JsonReader jsonReader = new JsonReader(servletContext.getResourceAsStream("/1.json"));
+            JsonReader jsonReader = Json.createReader(servletContext.getResourceAsStream("/1.json"));
             JsonObject json = jsonReader.readObject();
             out.println(json);
 
             out.println("<br><br>Reading an object with two elements<br>");
-            jsonReader = new JsonReader(servletContext.getResourceAsStream("/2.json"));
+            jsonReader = Json.createReader(servletContext.getResourceAsStream("/2.json"));
             json = jsonReader.readObject();
             out.println(json);
 
             out.println("<br><br>Reading an array with two objects<br>");
-            jsonReader = new JsonReader(servletContext.getResourceAsStream("/3.json"));
+            jsonReader = Json.createReader(servletContext.getResourceAsStream("/3.json"));
             JsonArray jsonArr = jsonReader.readArray();
             out.println(jsonArr);
 
             out.println("<br><br>Reading a nested structure<br>");
-            jsonReader = new JsonReader(servletContext.getResourceAsStream("/4.json"));
+            jsonReader = Json.createReader(servletContext.getResourceAsStream("/4.json"));
             json = jsonReader.readObject();
             out.println(json);
             

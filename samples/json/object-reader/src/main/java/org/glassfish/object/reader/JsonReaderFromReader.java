@@ -42,6 +42,7 @@ package org.glassfish.object.reader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -80,22 +81,22 @@ public class JsonReaderFromReader extends HttpServlet {
             out.println("<h1>Servlet TestJsonParser at " + request.getContextPath() + "</h1>");
 
             out.println("Reading an empty object<br>");
-            JsonReader jsonReader = new JsonReader(new StringReader("{}"));
+            JsonReader jsonReader = Json.createReader(new StringReader("{}"));
             JsonObject json = jsonReader.readObject();
             out.println(json);
 
             out.println("<br><br>Reading an object with two elements<br>");
-            jsonReader = new JsonReader(new StringReader("{"
+            jsonReader = Json.createReader(new StringReader("{"
                     + "  \"apple\":\"red\","
                     + "  \"banana\":\"yellow\""
                     + "}"));
             json = jsonReader.readObject();
-            out.println("Apple: " + json.getStringValue("apple")+"<br>");
-            out.println("Banana: " + json.getStringValue("banana")+"<br>");
+            out.println("Apple: " + json.getString("apple")+"<br>");
+            out.println("Banana: " + json.getString("banana")+"<br>");
             out.println(json);
 
             out.println("<br><br>Reading an array with two objects<br>");
-            jsonReader = new JsonReader(new StringReader("["
+            jsonReader = Json.createReader(new StringReader("["
                     + "  { \"apple\":\"red\" },"
                     + "  { \"banana\":\"yellow\" }"
                     + "]"));
@@ -103,7 +104,7 @@ public class JsonReaderFromReader extends HttpServlet {
             out.println(jsonArr);
 
             out.println("<br><br>Reading a nested structure<br>");
-            jsonReader = new JsonReader(new StringReader("{"
+            jsonReader = Json.createReader(new StringReader("{"
                     + "  \"title\":\"The Matrix\","
                     + "  \"year\":1999,"
                     + "  \"cast\":["

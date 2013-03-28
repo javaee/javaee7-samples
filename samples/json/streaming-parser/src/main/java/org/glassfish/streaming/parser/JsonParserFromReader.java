@@ -146,15 +146,15 @@ public class JsonParserFromReader extends HttpServlet {
                     break;
                     
                 case VALUE_NUMBER:
-                    switch (parser.getNumberType()) {
-                        case INTEGER:
-                            out.format("Found value: <b>%1$d</b><br>", parser.getIntValue());
-//                            out.format("Found value: <b>%1$d</b><br>", parser.getLongValue());
-                            break;
-                        case DECIMAL:
-                            out.format("Found value: <b>%1$f</b><br>", parser.getBigDecimalValue());
-                            break;
-                    }
+//                    switch (parser.getInt()) {
+//                        case INTEGER:
+//                            out.format("Found value: <b>%1$d</b><br>", parser.getInt());
+////                            out.format("Found value: <b>%1$d</b><br>", parser.getLongValue());
+//                            break;
+//                        case DECIMAL:
+//                            out.format("Found value: <b>%1$f</b><br>", parser.getBigDecimal());
+//                            break;
+//                    }
                     break;
                 case VALUE_TRUE:
                 case VALUE_FALSE:
