@@ -83,11 +83,11 @@ public class JsonParserFromStream extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet JsonParserFromStream</title>");            
+            out.println("<title>Servlet JsonParserFromStream</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet JsonParserFromStream at " + request.getContextPath() + "</h1>");
-            
+
             ServletContext servletContext = request.getServletContext();
             out.println("Reading an empty object<br>");
             JsonParser jsonParser = Json.createParser(servletContext.getResourceAsStream("/1.json"));
@@ -104,7 +104,7 @@ public class JsonParserFromStream extends HttpServlet {
             out.println("<br><br>Reading a nested structure<br>");
             jsonParser = Json.createParser(servletContext.getResourceAsStream("/4.json"));
             parseEvents(jsonParser, out);
-            
+
             out.println("</body>");
             out.println("</html>");
         }
@@ -131,17 +131,14 @@ public class JsonParserFromStream extends HttpServlet {
                 case VALUE_STRING:
                     out.format("Found value: <b>%1$s</b><br>", parser.getString());
                     break;
-                    
+
                 case VALUE_NUMBER:
-//                    switch (parser.getInt()) {
-//                        case INTEGER:
-                            out.format("Found value: <b>%1$d</b><br>", parser.getInt());
-//                            out.format("Found value: <b>%1$d</b><br>", parser.getLongValue());
-//                            break;
-//                        case DECIMAL:
-//                            out.format("Found value: <b>%1$f</b><br>", parser.getBigDecimal());
-//                            break;
-//                    }
+                    if (parser.isIntegralNumber()) {
+                        out.format("Found value: <b>%1$d</b><br>", parser.getInt());
+//                        out.format("Found value: <b>%1$d</b><br>", parser.getLong());
+                    } else {
+                        out.format("Found value: <b>%1$f</b><br>", parser.getBigDecimal());
+                    }
                     break;
                 case VALUE_TRUE:
                 case VALUE_FALSE:
@@ -156,7 +153,7 @@ public class JsonParserFromStream extends HttpServlet {
             }
         }
     }
-    
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
