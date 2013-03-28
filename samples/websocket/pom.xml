@@ -21,13 +21,13 @@
         <module>client</module>
         <module>encoder</module>
         <module>encoder-client</module>
-        <!--<module>encoder-programmatic</module>-->
+        <module>encoder-programmatic</module>
         <module>endpoint</module>
         <module>endpoint-javatypes</module>
         <module>endpoint-multipart</module>
-<!--        <module>endpoint-multipart-programmatic</module>
+        <!--<module>endpoint-multipart-programmatic</module>-->
         <module>endpoint-programmatic</module>
-        <module>httpsession</module>-->
+        <module>httpsession</module>
         <module>injection</module>
         <module>javase-client</module>
         <module>messagesize</module>
