@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  */
 public class AppTest extends TestCase {
     
-    ELProcessor elp = new ELProcessor();
+//    ELProcessor elp = new ELProcessor();
     
     /**
      * Create the test case
