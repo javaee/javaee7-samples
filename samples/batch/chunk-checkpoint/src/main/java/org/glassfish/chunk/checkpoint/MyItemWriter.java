@@ -47,10 +47,15 @@ import javax.inject.Named;
  * @author Arun Gupta
  */
 @Named
-public class MyItemWriter extends AbstractItemWriter<MyOutputRecord> {
+public class MyItemWriter extends AbstractItemWriter {
+
+//    @Override
+//    public void writeItems(List<MyOutputRecord> list) {
+//        System.out.println("writeItems: " + list);
+//    }
 
     @Override
-    public void writeItems(List<MyOutputRecord> list) {
-        System.out.println("writeItems: " + list);
+    public void writeItems(List list) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

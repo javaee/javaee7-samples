@@ -45,20 +45,20 @@ import javax.batch.api.chunk.listener.AbstractItemProcessListener;
 /**
  * @author Arun Gupta
  */
-public class MyItemProcessorListener extends AbstractItemProcessListener<MyInputRecord, MyOutputRecord>{
+public class MyItemProcessorListener extends AbstractItemProcessListener {
 
     @Override
-    public void beforeProcess(MyInputRecord item) throws Exception {
+    public void beforeProcess(Object item) throws Exception {
         System.out.println("MyItemProcessorListener.beforeProcess: " + item);
     }
 
     @Override
-    public void afterProcess(MyInputRecord item, MyOutputRecord result) throws Exception {
+    public void afterProcess(Object item, Object result) throws Exception {
         System.out.println("MyItemProcessorListener.afterProcess: " + item + ", " + result);
     }
 
     @Override
-    public void onProcessError(MyInputRecord item, Exception ex) throws Exception {
+    public void onProcessError(Object item, Exception ex) throws Exception {
         System.out.println("MyItemProcessorListener.onProcessError: " + item + ", " + ex.getLocalizedMessage());
     }
 

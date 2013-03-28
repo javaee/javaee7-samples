@@ -49,7 +49,7 @@ import javax.inject.Named;
  * @author Arun Gupta
  */
 @Named
-public class MyItemReader extends AbstractItemReader<MyRecord> {
+public class MyItemReader extends AbstractItemReader {
     
     private final StringTokenizer tokens;
     
@@ -58,7 +58,7 @@ public class MyItemReader extends AbstractItemReader<MyRecord> {
     }
     
     @Override
-    public MyRecord readItem() {
+    public Object readItem() {
         if (tokens.hasMoreTokens()) {
             return new MyRecord(Integer.valueOf(tokens.nextToken()));
         }

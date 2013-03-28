@@ -58,8 +58,7 @@ public class MyChunkListener extends AbstractChunkListener {
     }
 
     @Override
-    public void onError() throws Exception {
+    public void onError(Exception e) throws Exception {
         System.out.println("MyChunkListener.onError");
     }
-
 }

@@ -47,7 +47,7 @@ import javax.inject.Named;
  * @author Arun Gupta
  */
 @Named
-public class MyItemReader extends AbstractItemReader<MyInputRecord> {
+public class MyItemReader extends AbstractItemReader {
     
     private final StringTokenizer tokens;
     
@@ -56,7 +56,7 @@ public class MyItemReader extends AbstractItemReader<MyInputRecord> {
     }
     
     @Override
-    public MyInputRecord readItem() {
+    public Object readItem() {
         if (tokens.hasMoreTokens()) {
             int token = Integer.valueOf(tokens.nextToken());
             if (token == 3)

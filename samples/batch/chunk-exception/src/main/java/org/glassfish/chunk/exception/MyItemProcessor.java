@@ -46,16 +46,16 @@ import javax.inject.Named;
  * @author Arun Gupta
  */
 @Named
-public class MyItemProcessor implements ItemProcessor<MyInputRecord,MyOutputRecord> {
+public class MyItemProcessor implements ItemProcessor {
 
     @Override
-    public MyOutputRecord processItem(MyInputRecord t) {
+    public Object processItem(Object t) {
         System.out.println("MyItemProcessor.processItem: " + t);
         
-        if (t.getId() == 6)
+        if (((MyInputRecord)t).getId() == 6)
             throw new NullPointerException();
         
 //        return (t.getId() % 2 == 0) ? null : new MyOutputRecord(t.getId() * 2);
-        return new MyOutputRecord(t.getId() * 2);
+        return new MyOutputRecord(((MyInputRecord)t).getId() * 2);
     }
 }

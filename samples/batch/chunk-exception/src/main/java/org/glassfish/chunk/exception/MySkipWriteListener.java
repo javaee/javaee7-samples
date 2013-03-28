@@ -46,10 +46,10 @@ import javax.batch.api.chunk.listener.SkipWriteListener;
 /**
  * @author Arun Gupta
  */
-public class MySkipWriteListener implements SkipWriteListener<MyOutputRecord> {
+public class MySkipWriteListener implements SkipWriteListener {
 
     @Override
-    public void onSkipWriteItem(List<MyOutputRecord> list, Exception e) throws Exception {
+    public void onSkipWriteItem(List list, Exception e) throws Exception {
         System.err.println("MySkipWriteListener.onSkipWriteItem: " + list.size() + ", " + e.getMessage());
     }
 

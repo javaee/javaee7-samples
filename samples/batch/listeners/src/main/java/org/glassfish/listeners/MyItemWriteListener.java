@@ -46,20 +46,20 @@ import javax.batch.api.chunk.listener.AbstractItemWriteListener;
 /**
  * @author Arun Gupta
  */
-public class MyItemWriteListener extends AbstractItemWriteListener<MyOutputRecord> {
+public class MyItemWriteListener extends AbstractItemWriteListener {
 
     @Override
-    public void beforeWrite(List<MyOutputRecord> items) throws Exception {
+    public void beforeWrite(List items) throws Exception {
         System.out.println("MyItemWriteListener.beforeWrite: " + items);
     }
 
     @Override
-    public void afterWrite(List<MyOutputRecord> items) throws Exception {
+    public void afterWrite(List items) throws Exception {
         System.out.println("MyItemWriteListener.afterWrite: " + items);
     }
 
     @Override
-    public void onWriteError(List<MyOutputRecord> items, Exception ex) throws Exception {
+    public void onWriteError(List items, Exception ex) throws Exception {
         System.out.println("MyItemWriteListener.onError: " + items + ", " + ex.getLocalizedMessage());
     }
 

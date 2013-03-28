@@ -47,7 +47,7 @@ import javax.inject.Named;
  * @author Arun Gupta
  */
 @Named
-public class MyItemReader extends AbstractItemReader<MyInputRecord> {
+public class MyItemReader extends AbstractItemReader {
     
     private final StringTokenizer tokens;
     

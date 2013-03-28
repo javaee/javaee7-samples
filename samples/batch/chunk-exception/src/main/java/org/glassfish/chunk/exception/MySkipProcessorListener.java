@@ -45,11 +45,11 @@ import javax.batch.api.chunk.listener.SkipProcessListener;
 /**
  * @author Arun Gupta
  */
-public class MySkipProcessorListener implements SkipProcessListener<MyInputRecord>{
+public class MySkipProcessorListener implements SkipProcessListener {
 
     @Override
-    public void onSkipProcessItem(MyInputRecord t, Exception e) throws Exception {
-        System.err.println("MySkipProcessorListener.onSkipProcessItem: " + t.getId() + ", " + e.getMessage());
+    public void onSkipProcessItem(Object t, Exception e) throws Exception {
+        System.err.println("MySkipProcessorListener.onSkipProcessItem: " + ((MyInputRecord)t).getId() + ", " + e.getMessage());
     }
 
 }

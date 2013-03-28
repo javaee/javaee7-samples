@@ -47,10 +47,10 @@ import javax.inject.Named;
  * @author Arun Gupta
  */
 @Named
-public class MyItemWriter extends AbstractItemWriter<MyOutputRecord> {
+public class MyItemWriter extends AbstractItemWriter {
 
     @Override
-    public void writeItems(List<MyOutputRecord> list) {
+    public void writeItems(List list) {
         System.out.println("MyItemWriter.writeItems: " + list);
     }
 }
