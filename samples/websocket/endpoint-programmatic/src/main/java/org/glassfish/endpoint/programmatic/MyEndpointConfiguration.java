@@ -39,18 +39,28 @@
  */
 package org.glassfish.endpoint.programmatic;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Singleton;
-import javax.websocket.server.ServerEndpointConfigurationBuilder;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import javax.websocket.Endpoint;
+import javax.websocket.server.ServerApplicationConfig;
+import javax.websocket.server.ServerEndpointConfig;
 
 /**
  * @author Arun Gupta
  */
-@Singleton
-public class MySingletonBean {
+public class MyEndpointConfiguration implements ServerApplicationConfig {
 
-    @PostConstruct
-    public void init() {
-        ServerEndpointConfigurationBuilder.create(MyEndpoint.class, "/websocket").build();
+    @Override
+    public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> set) {
+        return new HashSet<ServerEndpointConfig>() {{
+            add(ServerEndpointConfig.Builder.create(MyEndpoint.class, "/websocket").build());
+        }};
     }
+
+    @Override
+    public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> set) {
+        return Collections.emptySet();
+    }
+    
 }

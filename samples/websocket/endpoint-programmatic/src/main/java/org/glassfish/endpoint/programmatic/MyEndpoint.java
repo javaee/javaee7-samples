@@ -43,8 +43,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
-import javax.websocket.EndpointConfiguration;
+import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
 import javax.websocket.Session;
 
@@ -54,8 +55,8 @@ import javax.websocket.Session;
 public class MyEndpoint extends Endpoint {
 
     @Override
-    public void onOpen(final Session session, EndpointConfiguration ec) {
-        session.addMessageHandler(new MessageHandler.Basic<String>() {
+    public void onOpen(final Session session, EndpointConfig ec) {
+        session.addMessageHandler(new MessageHandler.Whole<String>() {
 
             @Override
             public void onMessage(String name) {
@@ -67,7 +68,7 @@ public class MyEndpoint extends Endpoint {
             }
         });
         
-        session.addMessageHandler(new MessageHandler.Basic<ByteBuffer>() {
+        session.addMessageHandler(new MessageHandler.Whole<ByteBuffer>() {
 
             @Override
             public void onMessage(ByteBuffer t) {
@@ -78,5 +79,15 @@ public class MyEndpoint extends Endpoint {
                 }
             }
         });
+    }
+
+    @Override
+    public void onClose(Session session, CloseReason closeReason) {
+        System.out.println("Closing: " + closeReason.getReasonPhrase());
+    }
+
+    @Override
+    public void onError(Session session, Throwable t) {
+        System.out.println("Error: " + t.getLocalizedMessage());
     }
 }
