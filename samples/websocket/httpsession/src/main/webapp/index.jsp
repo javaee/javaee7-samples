@@ -57,11 +57,6 @@
                 <input onclick="sayHello();" value="Say Hello" type="button"> 
                 <input id="myField" value="WebSocket" type="text"><br>
             </form>
-            <form action=""> 
-                <h2>Binary Data</h2>
-                <input onclick="echoBinary();" value="Echo" type="button"> 
-                <input id="myField2" value="8" type="text"><br>
-            </form>
         </div>
         <div id="output"></div>
         <script language="javascript" type="text/javascript" src="websocket.js">

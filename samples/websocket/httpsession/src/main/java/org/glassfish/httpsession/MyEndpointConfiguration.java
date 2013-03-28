@@ -40,49 +40,37 @@
 package org.glassfish.httpsession;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.servlet.http.HttpSession;
-import javax.websocket.Extension;
+import javax.websocket.Endpoint;
 import javax.websocket.HandshakeResponse;
-import javax.websocket.server.DefaultServerConfiguration;
 import javax.websocket.server.HandshakeRequest;
-import javax.websocket.server.ServerEndpointConfiguration;
+import javax.websocket.server.ServerApplicationConfig;
+import javax.websocket.server.ServerEndpointConfig;
 
 /**
  * @author Arun Gupta
  */
-// "implements ServerEndpointConfiguration" needs to be here,
-// most likely Servlet issue; see http://java.net/jira/browse/GLASSFISH-19551
-// (should be reopened, it is currently discussed internally)
+public class MyEndpointConfiguration implements ServerApplicationConfig {
 
-// Also providing an implementation of three methods until
-// http://java.net/jira/browse/WEBSOCKET_SPEC-128 is fixed.
-public class MyServerConfiguration extends DefaultServerConfiguration implements ServerEndpointConfiguration {
-
-    public MyServerConfiguration() {
-        super(MyEndpoint.class, "websocket");
+@Override
+    public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> set) {
+        return new HashSet<ServerEndpointConfig>() {{
+            add(ServerEndpointConfig.Builder.create(MyEndpoint.class, "/websocket").build());
+        }};
     }
 
     @Override
-    public String getNegotiatedSubprotocol(List<String> requestedSubprotocols) {
-        return null;
+    public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> set) {
+        return Collections.emptySet();
     }
-
-    @Override
-    public List<Extension> getNegotiatedExtensions(List<Extension> requestedExtensions) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean checkOrigin(String originHeaderValue) {
-        return true;
-    }
-
-    @Override
-    public void modifyHandshake(HandshakeRequest request, HandshakeResponse response) {
-        HttpSession httpSession = (HttpSession)request.getSession();
-        System.out.println(httpSession);
-        System.out.println("Invoked from: " + httpSession.getServletContext().getContextPath());
-        super.modifyHandshake(request, response);
-    }
+    
+//    @Override
+//    public void modifyHandshake(HandshakeRequest request, HandshakeResponse response) {
+//        HttpSession httpSession = (HttpSession)request.getSession();
+//        System.out.println(httpSession);
+//        System.out.println("Invoked from: " + httpSession.getServletContext().getContextPath());
+//        super.modifyHandshake(request, response);
+//    }
 }
