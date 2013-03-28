@@ -11,10 +11,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.sample</groupId>
-    <artifactId>client</artifactId>
+    <artifactId>websocket-client</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>client</name>
+    <name>websocket-client</name>
 
 </project>
