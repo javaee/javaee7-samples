@@ -42,7 +42,6 @@ package org.glassfish.httpsession;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import javax.servlet.http.HttpSession;
 import javax.websocket.Endpoint;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
@@ -52,15 +51,23 @@ import javax.websocket.server.ServerEndpointConfig;
 /**
  * @author Arun Gupta
  */
-public class MyEndpointConfig implements ServerApplicationConfig {
+public class MyApplicationConfig implements ServerApplicationConfig {
 
     @Override
     public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> set) {
-        return new HashSet<ServerEndpointConfig>() {
-            {
-                add(ServerEndpointConfig.Builder.create(MyEndpoint.class, "/websocket").build());
-            }
-        };
+        return new HashSet<ServerEndpointConfig>() {{
+            add(ServerEndpointConfig.Builder
+                    .create(MyEndpoint.class, "/websocket")
+                    .configurator(new ServerEndpointConfig.Configurator() {
+
+                        @Override
+                        public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
+                            super.modifyHandshake(sec, request, response); //To change body of generated methods, choose Tools | Templates.
+                        }
+                        
+                    })
+                    .build());
+        }};
     }
 
     @Override
