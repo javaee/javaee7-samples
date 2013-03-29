@@ -54,11 +54,13 @@ import javax.websocket.server.ServerEndpointConfig;
  */
 public class MyEndpointConfig implements ServerApplicationConfig {
 
-@Override
+    @Override
     public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> set) {
-        return new HashSet<ServerEndpointConfig>() {{
-            add(ServerEndpointConfig.Builder.create(MyEndpoint.class, "/websocket").build());
-        }};
+        return new HashSet<ServerEndpointConfig>() {
+            {
+                add(ServerEndpointConfig.Builder.create(MyEndpoint.class, "/websocket").build());
+            }
+        };
     }
 
     @Override
