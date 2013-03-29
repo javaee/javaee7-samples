@@ -39,18 +39,19 @@
  */
 package org.glassfish.endpoint.programmatic.async;
 
-import java.nio.ByteBuffer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
-import javax.websocket.SendHandler;
-import javax.websocket.SendResult;
 import javax.websocket.Session;
 
 /**
  * @author Arun Gupta
  */
-public class MyEndpoint extends Endpoint {
+public class MyEndpointFuture extends Endpoint {
 
     @Override
     public void onOpen(final Session session, EndpointConfig ec) {
@@ -58,29 +59,25 @@ public class MyEndpoint extends Endpoint {
 
             @Override
             public void onMessage(String data) {
-                session.getAsyncRemote().sendText(data, new SendHandler() {
-
-                    @Override
-                    public void onResult(SendResult sr) {
-                        System.out.println(sr.isOK());
+                System.out.println("Received (MyEndpointFuture) : " + data);
+//                try {
+//                    session.getBasicRemote().sendText(data);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(MyEndpointFuture.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+                
+                Future f = session.getAsyncRemote().sendText(data);
+                try {
+                    Thread.sleep(3000);
+                    if (f.isDone()) {
+                        System.out.println("Message written to the socket (future)");
+                    } else {
+                        System.out.println("Message NOT written to the socket (future)");
                     }
-                    
-                });
-            }
-        });
-        
-        session.addMessageHandler(new MessageHandler.Whole<ByteBuffer>() {
-
-            @Override
-            public void onMessage(ByteBuffer data) {
-                session.getAsyncRemote().sendBinary(data, new SendHandler() {
-
-                    @Override
-                    public void onResult(SendResult sr) {
-                        System.out.println(sr.isOK());
-                    }
-                    
-                });
+                    Object o = f.get();
+                } catch (InterruptedException | ExecutionException ex) {
+                    Logger.getLogger(MyEndpointFuture.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

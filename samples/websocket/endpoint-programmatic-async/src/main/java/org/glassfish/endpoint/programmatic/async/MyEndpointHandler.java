@@ -39,28 +39,40 @@
  */
 package org.glassfish.endpoint.programmatic.async;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import javax.websocket.Endpoint;
-import javax.websocket.server.ServerApplicationConfig;
-import javax.websocket.server.ServerEndpointConfig;
+import javax.websocket.EndpointConfig;
+import javax.websocket.MessageHandler;
+import javax.websocket.SendHandler;
+import javax.websocket.SendResult;
+import javax.websocket.Session;
 
 /**
  * @author Arun Gupta
  */
-public class MyServerConfiguration implements ServerApplicationConfig {
+public class MyEndpointHandler extends Endpoint {
 
     @Override
-    public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> set) {
-        return new HashSet<ServerEndpointConfig>() {{
-            add(ServerEndpointConfig.Builder.create(MyEndpoint.class, "/websocket").build());
-        }};
-    }
+    public void onOpen(final Session session, EndpointConfig ec) {
+        session.addMessageHandler(new MessageHandler.Whole<String>() {
 
-    @Override
-    public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> set) {
-        return Collections.emptySet();
-    }
+            @Override
+            public void onMessage(String data) {
+                System.out.println("Received (MyEndpointHandler) : " + data);
+                
+                session.getAsyncRemote().sendText(data, new SendHandler() {
 
+                    @Override
+                    public void onResult(SendResult sr) {
+                        if (sr.isOK()) {
+                            System.out.println("Message written to the socket (handler)");
+                        } else {
+                            System.out.println("Message NOT written to the socket (handler)");
+                            sr.getException().printStackTrace();
+                        }
+                        
+                    }
+                });
+            }
+        });
+    }
 }

@@ -1,4 +1,3 @@
-<!-- 
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -38,28 +37,31 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
--->
+package org.glassfish.endpoint.programmatic.async;
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Getting Started with JSR 356 - EJB Injection</title>
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import javax.websocket.Endpoint;
+import javax.websocket.server.ServerApplicationConfig;
+import javax.websocket.server.ServerEndpointConfig;
 
-    </head>
-    <body>
-        <h1>Getting Started with JSR 356 - multi-part message</h1>
+/**
+ * @author Arun Gupta
+ */
+public class MyApplicationConfig implements ServerApplicationConfig {
 
-        <div style="text-align: center;">
-            <form action=""> 
-                <h2>Text Data</h2>
-                <input onclick="echoText();" value="Echo Text" type="button"> 
-                <input id="myField" value="WebSocket" type="text"><br>
-            </form>
-        </div>
-        <div id="output"></div>
-        <script language="javascript" type="text/javascript" src="websocket.js">
-        </script>
-    </body>
-</html>
+    @Override
+    public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> set) {
+        return new HashSet<ServerEndpointConfig>() {{
+            add(ServerEndpointConfig.Builder.create(MyEndpointHandler.class, "/websocket-handler").build());
+            add(ServerEndpointConfig.Builder.create(MyEndpointFuture.class, "/websocket-future").build());
+        }};
+    }
+
+    @Override
+    public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> set) {
+        return Collections.emptySet();
+    }
+
+}

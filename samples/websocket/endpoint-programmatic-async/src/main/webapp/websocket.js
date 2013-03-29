@@ -38,44 +38,35 @@
  * holder.
  */
 
-var wsUri = "ws://" + document.location.host + document.location.pathname + "websocket";
+var wsUri = "ws://" + document.location.host + document.location.pathname + "websocket-handler";
+var wsUri2 = "ws://" + document.location.host + document.location.pathname + "websocket-future";
 console.log("Connecting to " + wsUri);
 var websocket = new WebSocket(wsUri);
-websocket.onopen = function(evt) { onOpen(evt) };
+var websocket2 = new WebSocket(wsUri2);
+
+websocket.onopen = function() { onOpen("handler") };
 websocket.onmessage = function(evt) { onMessage(evt) };
 websocket.onerror = function(evt) { onError(evt) };
+
+websocket2.onopen = function() { onOpen("future") };
+websocket2.onmessage = function(evt) { onMessage(evt) };
+websocket2.onerror = function(evt) { onError(evt) };
 
 var output = document.getElementById("output");
 
 function echoText() {
     console.log("echoText: " + myField.value);
     websocket.send(myField.value);
+    websocket2.send(myField.value);
     writeToScreen("SENT (text): " + myField.value);
 }
 
-function echoBinary() {
-//                alert("Sending " + myField2.value.length + " bytes")
-    var buffer = new ArrayBuffer(myField2.value.length);
-    var bytes = new Uint8Array(buffer);
-    for (var i=0; i<bytes.length; i++) {
-        bytes[i] = i;
-    }
-//                alert(buffer);
-    websocket.send(buffer);
-    writeToScreen("SENT (binary): " + buffer.byteLength + " bytes");
-}
-
-function onOpen() {
-    console.log("onOpen");
-    writeToScreen("CONNECTED");
+function onOpen(evt) {
+    writeToScreen("CONNECTED (" + evt + ")");
 }
 
 function onMessage(evt) {
-    if (typeof evt.data == "string") {
-        writeToScreen("RECEIVED (text): " + evt.data);
-    } else {
-        writeToScreen("RECEIVED (binary): " + evt.data);
-    }
+    writeToScreen("RECEIVED: " + evt.data);
 }
 
 function onError(evt) {
