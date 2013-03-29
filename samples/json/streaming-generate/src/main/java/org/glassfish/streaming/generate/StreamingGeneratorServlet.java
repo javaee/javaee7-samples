@@ -70,7 +70,6 @@ public class StreamingGeneratorServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Create JSON structures</title>");
@@ -80,57 +79,57 @@ public class StreamingGeneratorServlet extends HttpServlet {
 //            JsonGeneratorFactory factory = Json.createGeneratorFactory(new JsonConfiguration().withPrettyPrinting());
             JsonGeneratorFactory factory = Json.createGeneratorFactory(null);
 //            JsonGenerator gen = factory.createGenerator(System.out);
-            
+
             out.println("Creating an empty object ...<br>");
             JsonGenerator gen = factory.createGenerator(out);
+//            JsonGenerator gen = Json.createGenerator(out);
             gen.writeStartObject().writeEnd();
-//            gen.close();
+            gen.flush();
             out.println("<br>...done<br>");
 
             out.println("<br>Creating a simple object ...<br>");
             gen = factory.createGenerator(out);
             gen
                     .writeStartObject()
-                        .write("apple", "red")
-                        .write("banana", "yellow")
+                    .write("apple", "red")
+                    .write("banana", "yellow")
                     .writeEnd();
-//            gen.close();
+            gen.flush();
             out.println("<br>...done<br>");
-            
+
             out.println("<br>Creating a simple array ...<br>");
             gen = factory.createGenerator(out);
             gen
                     .writeStartArray()
-                        .writeStartObject()
-                            .write("apple", "red")
-                        .writeEnd()
-                        .writeStartObject()
-                            .write("banana", "yellow")
-                        .writeEnd()
+                    .writeStartObject()
+                    .write("apple", "red")
+                    .writeEnd()
+                    .writeStartObject()
+                    .write("banana", "yellow")
+                    .writeEnd()
                     .writeEnd();
-//            gen.close();
+            gen.flush();
             out.println("<br>...done<br>");
 
             out.println("<br>Creating a nested structure ...<br>");
             gen = factory.createGenerator(out);
             gen
-//                .writeStartArray()
                     .writeStartObject()
-                        .write("title", "The Matrix")
-                        .write("year", 1999)
-                        .writeStartArray("cast")
-                            .write("Keanu Reaves")
-                            .write("Laurence Fishburne")
-                            .write("Carrie-Anne Moss")
-                        .writeEnd()
-//                    .writeEnd()
-                .writeEnd();
-//            gen.close();
+                    .write("title", "The Matrix")
+                    .write("year", 1999)
+                    .writeStartArray("cast")
+                    .write("Keanu Reaves")
+                    .write("Laurence Fishburne")
+                    .write("Carrie-Anne Moss")
+                    .writeEnd()
+                    .writeEnd();
+            gen.flush();
             out.println("<br>...done<br>");
-            
+
             out.println("<br>...done");
             out.println("</body>");
             out.println("</html>");
+            gen.close();
         }
     }
 
