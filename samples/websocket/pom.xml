@@ -26,6 +26,8 @@
         <module>endpoint-javatypes</module>
         <!--<module>endpoint-partial</module>-->
         <module>endpoint-programmatic</module>
+        <module>endpoint-programmatic-async</module>
+        <module>endpoint-programmatic-injection</module>
         <!--<module>endpoint-programmatic-partial</module>-->
         <module>httpsession</module>
         <module>injection</module>
