@@ -47,6 +47,7 @@ import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
+import javax.websocket.PongMessage;
 import javax.websocket.Session;
 
 /**
@@ -79,6 +80,15 @@ public class MyEndpoint extends Endpoint {
                 }
             }
         });
+        
+        session.addMessageHandler(new MessageHandler.Whole<PongMessage>() {
+
+            @Override
+            public void onMessage(PongMessage t) {
+                System.out.println("PongMessage received: " + t.getApplicationData());
+            }
+        });
+        
     }
 
     @Override
