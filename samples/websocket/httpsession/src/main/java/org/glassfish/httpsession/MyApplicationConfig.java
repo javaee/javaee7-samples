@@ -62,9 +62,9 @@ public class MyApplicationConfig implements ServerApplicationConfig {
 
                         @Override
                         public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
-                            super.modifyHandshake(sec, request, response); //To change body of generated methods, choose Tools | Templates.
+                            super.modifyHandshake(sec, request, response);
                         }
-                        
+
                     })
                     .build());
         }};
