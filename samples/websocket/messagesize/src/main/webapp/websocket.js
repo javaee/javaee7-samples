@@ -54,13 +54,11 @@ function echoText() {
 }
 
 function echoBinary() {
-//                alert("Sending " + myField2.value.length + " bytes")
     var buffer = new ArrayBuffer(myField2.value.length);
     var bytes = new Uint8Array(buffer);
     for (var i=0; i<bytes.length; i++) {
         bytes[i] = i;
     }
-//                alert(buffer);
     websocket.send(buffer);
     writeToScreen("SENT (binary): " + buffer.byteLength + " bytes");
 }
