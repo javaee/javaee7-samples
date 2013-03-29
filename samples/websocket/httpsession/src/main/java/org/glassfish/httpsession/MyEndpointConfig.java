@@ -52,7 +52,7 @@ import javax.websocket.server.ServerEndpointConfig;
 /**
  * @author Arun Gupta
  */
-public class MyEndpointConfiguration implements ServerApplicationConfig {
+public class MyEndpointConfig implements ServerApplicationConfig {
 
 @Override
     public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> set) {
@@ -65,12 +65,4 @@ public class MyEndpointConfiguration implements ServerApplicationConfig {
     public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> set) {
         return Collections.emptySet();
     }
-    
-//    @Override
-//    public void modifyHandshake(HandshakeRequest request, HandshakeResponse response) {
-//        HttpSession httpSession = (HttpSession)request.getSession();
-//        System.out.println(httpSession);
-//        System.out.println("Invoked from: " + httpSession.getServletContext().getContextPath());
-//        super.modifyHandshake(request, response);
-//    }
 }
