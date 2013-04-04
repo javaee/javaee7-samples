@@ -42,7 +42,6 @@ package org.glassfish.encoder.client;
 import java.io.StringReader;
 import javax.json.Json;
 import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 /**
  * @author Arun Gupta
