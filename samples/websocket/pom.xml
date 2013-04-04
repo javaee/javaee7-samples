@@ -18,26 +18,31 @@
     <modules>
         <module>binary</module>
         <module>chat</module>
-        <module>client</module>
         <module>encoder</module>
         <module>encoder-client</module>
         <module>encoder-programmatic</module>
         <module>endpoint</module>
+        <module>endpoint-async</module>
         <module>endpoint-javatypes</module>
         <!--<module>endpoint-partial</module>-->
         <module>endpoint-programmatic</module>
         <module>endpoint-programmatic-async</module>
         <module>endpoint-programmatic-injection</module>
         <!--<module>endpoint-programmatic-partial</module>-->
+        <module>endpoint-security</module>
         <module>httpsession</module>
         <module>injection</module>
         <module>javase-client</module>
         <module>messagesize</module>
-        <!--<module>endpoint-programmatic-async</module>-->
         <module>parameters</module>
         <module>properties</module>
         <module>scalability</module>
         <module>subprotocol</module>
+        <module>websocket-client</module>
+        <module>websocket-client-config</module>
+        <module>websocket-client-programmatic</module>
+        <module>websocket-client-programmatic-config</module>
+        <module>websocket-client-programmatic-encoders</module>
         <module>whiteboard</module>
     </modules>
 
