@@ -83,8 +83,7 @@ public class TestClient extends HttpServlet {
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             String uri = "ws://localhost:8080" + request.getContextPath() + "/websocket";
             out.println("Connecting to " + uri);
-//            container.connectToServer(MyClient.class, URI.create(uri));
-            container.connectToServer(MyEndpoint.class, URI.create(uri));
+            container.connectToServer(MyClient.class, URI.create(uri));
             out.println("<br><br>Look in server.log for log messages from message exchange between client/server.");
             
             out.println("</body>");

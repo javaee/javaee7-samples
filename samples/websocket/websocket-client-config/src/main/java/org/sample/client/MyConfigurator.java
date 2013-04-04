@@ -39,39 +39,34 @@
  */
 package org.sample.client;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.websocket.ClientEndpoint;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import java.util.List;
+import java.util.Map;
+import javax.websocket.ClientEndpointConfig;
+import javax.websocket.HandshakeResponse;
 
 /**
  * @author Arun Gupta
  */
-@ClientEndpoint(configurator = MyConfigurator.class)
-public class MyClient {
-    @OnOpen
-    public void onOpen(Session session) {
-        System.out.println("Connected to endpoint: " + session.getBasicRemote());
-        try {
-            String name = "Duke";
-            System.out.println("Sending message from client -> endpoint: " + name);
-            session.getBasicRemote().sendText(name);
-        } catch (IOException ex) {
-            Logger.getLogger(MyClient.class.getName()).log(Level.SEVERE, null, ex);
+ public class MyConfigurator extends ClientEndpointConfig.Configurator {
+
+    @Override
+    public void beforeRequest(Map<String, List<String>> headers) {
+        System.out.println("beforeRequest:");
+        for (String h : headers.keySet()) {
+            for (String k : headers.get(h)) {
+                System.out.println("Header: " + h + ", " + k);
+            }
         }
+
     }
-    
-    @OnMessage
-    public void processMessage(String message) {
-        System.out.println("Received message in client: " + message);
-    }
-    
-    @OnError
-    public void processError(Throwable t) {
-        t.printStackTrace();
+
+    @Override
+    public void afterResponse(HandshakeResponse response) {
+        System.out.println("afterResponse:");
+        for (String h : response.getHeaders().keySet()) {
+            for (String k : response.getHeaders().get(h)) {
+                System.out.println("Header: " + h + ", " + k);
+            }
+        }
     }
 }
