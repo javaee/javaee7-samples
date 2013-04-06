@@ -73,8 +73,8 @@ public class MyBean {
     }
     
 //    @NotNull(validationAppliesTo=ConstraintType.PARAMETERS)
-    @NotNull
-    public void concat(String str1, String str2) {
-        str1.concat(str2);
-    }
+//    @NotNull
+//    public void concat(String str1, String str2) {
+//        str1.concat(str2);
+//    }
 }

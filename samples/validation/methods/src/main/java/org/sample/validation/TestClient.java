@@ -127,27 +127,27 @@ public class TestClient extends HttpServlet {
             out.println(bean.showList(list, "foo") + "<br>");
             out.println("<p><p>");
             
-            out.println("Cross-parameter constraint (with incorrect value, null first parameter)<br>");
-            try {
-                bean.concat(null, "bar");
-                out.println(bean.showList(list, null) + "<br>");
-            } catch (ConstraintViolationException ex) {
-                out.println("ConstraintViolationException caught<br>");
-            } finally {
-                out.println("Was ConstraintViolationException caught ?<br>");
-            }
-            out.println("Cross-parameter constraint (with incorrect value, null second parameter)<br>");
-            try {
-                bean.concat("foo", null);
-                out.println(bean.showList(list, null) + "<br>");
-            } catch (ConstraintViolationException ex) {
-                out.println("ConstraintViolationException caught<br>");
-            } finally {
-                out.println("Was ConstraintViolationException caught ?<br>");
-            }
-            
-            out.println("Multiple parameter constraint (with correct value)<br>");
-            bean.concat("foo", "bar");
+//            out.println("Cross-parameter constraint (with incorrect value, null first parameter)<br>");
+//            try {
+//                bean.concat(null, "bar");
+//                out.println(bean.showList(list, null) + "<br>");
+//            } catch (ConstraintViolationException ex) {
+//                out.println("ConstraintViolationException caught<br>");
+//            } finally {
+//                out.println("Was ConstraintViolationException caught ?<br>");
+//            }
+//            out.println("Cross-parameter constraint (with incorrect value, null second parameter)<br>");
+//            try {
+//                bean.concat("foo", null);
+//                out.println(bean.showList(list, null) + "<br>");
+//            } catch (ConstraintViolationException ex) {
+//                out.println("ConstraintViolationException caught<br>");
+//            } finally {
+//                out.println("Was ConstraintViolationException caught ?<br>");
+//            }
+//            
+//            out.println("Multiple parameter constraint (with correct value)<br>");
+//            bean.concat("foo", "bar");
             out.println("<p><p>");
             
             
