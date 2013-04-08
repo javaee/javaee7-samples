@@ -56,7 +56,7 @@ public class MyItemReader extends AbstractItemReader {
     }
     
     @Override
-    public Object readItem() {
+    public MyInputRecord readItem() {
         if (tokens.hasMoreTokens()) {
             return new MyInputRecord(Integer.valueOf(tokens.nextToken()));
         }
