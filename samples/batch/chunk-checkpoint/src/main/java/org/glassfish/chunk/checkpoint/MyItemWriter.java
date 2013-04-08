@@ -49,11 +49,6 @@ import javax.inject.Named;
 @Named
 public class MyItemWriter extends AbstractItemWriter {
 
-//    @Override
-//    public void writeItems(List<MyOutputRecord> list) {
-//        System.out.println("writeItems: " + list);
-//    }
-
     @Override
     public void writeItems(List list) throws Exception {
         System.out.println(list);
