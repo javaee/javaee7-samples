@@ -10,9 +10,9 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.batch.operations.JobOperator;
-import javax.batch.operations.JobSecurityException;
 import javax.batch.operations.JobStartException;
 import javax.batch.runtime.BatchRuntime;
+import javax.batch.runtime.JobExecution;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -49,8 +49,17 @@ public class TestServlet extends HttpServlet {
             out.println("About to start the job<br>");
             JobOperator jo = BatchRuntime.getJobOperator();
             out.println("Got the job operator: " + jo + "<br>");
-            jo.start("myJob", new Properties());
-            out.println("Job submitted<br>");
+            long jid = jo.start("myJob", new Properties());
+            out.println("Job submitted: " + jid + "<br>");
+            out.println(jo.getJobInstanceCount("myJob") + " job instance found<br/>");
+            JobExecution je = jo.getJobExecution(jid);
+//            jo.abandon(jid);
+            out.println("Job created on: " + je.getCreateTime() + "<br>");
+            out.println("Job started on: " + je.getStartTime() + "<br>");
+            out.println("Found: " + jo.getJobNames().size() + " jobs<br>");
+            for (String j : jo.getJobNames()) {
+                out.println("--> " + j + "<br>");
+            }
             out.println("</body>");
             out.println("</html>");
         } catch (JobStartException ex) {
