@@ -40,7 +40,7 @@
 */
 -->
 
-<job id="myJob" xmlns="http://batch.jsr352/jsl">
+<job id="myJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee">
     <step id="myStep" >
         <listeners>
             <listener ref="mySkipReadListener"/>

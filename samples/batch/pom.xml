@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.sample</groupId>
         <artifactId>javaee7-samples</artifactId>
@@ -15,20 +15,13 @@
     <packaging>pom</packaging>
     <name>batch</name>
 
-<!--    <repositories>
-        <repository>
-            <id>java.net-promoted</id>
-            <url>https://maven.java.net/content/groups/promoted/</url>
-        </repository>
-    </repositories>
-    
     <dependencies>
         <dependency>
             <groupId>javax.batch</groupId>
             <artifactId>javax.batch-api-all</artifactId>
-            <version>1.0-b11</version>        
+            <version>1.0-b14</version>        
         </dependency>
-    </dependencies>-->
+    </dependencies>
 
     <modules>
         <module>batchlet-simple</module>
@@ -37,6 +30,10 @@
         <module>chunk-optional-processor</module>
         <module>chunk-simple</module>
         <module>listeners</module>
+        <module>multiple-steps</module>
+        <module>flow</module>
+        <module>split</module>
+        <module>decision</module>
     </modules>
 
 </project>
