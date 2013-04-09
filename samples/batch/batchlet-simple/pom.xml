@@ -17,19 +17,5 @@
 
     <name>batchlet-simple</name>
 
-    <repositories>
-        <repository>
-            <id>java.net-promoted</id>
-            <url>https://maven.java.net/content/groups/promoted/</url>
-        </repository>
-    </repositories>
-    
-    <dependencies>
-        <dependency>
-            <groupId>javax.batch</groupId>
-            <artifactId>javax.batch-api-all</artifactId>
-            <version>1.0-b10</version>        
-        </dependency>
-    </dependencies>
 </project>
 
