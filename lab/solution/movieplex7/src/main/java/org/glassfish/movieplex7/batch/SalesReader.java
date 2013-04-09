@@ -44,14 +44,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.batch.api.AbstractItemReader;
+import javax.batch.api.chunk.AbstractItemReader;
 import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
 @Named
-public class SalesReader extends AbstractItemReader<String> {
+public class SalesReader extends AbstractItemReader {
 
     private final BufferedReader reader;
 

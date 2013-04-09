@@ -40,12 +40,11 @@
 package org.glassfish.movieplex7.batch;
 
 import java.util.List;
-import javax.batch.api.AbstractItemWriter;
+import javax.batch.api.chunk.AbstractItemWriter;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import org.glassfish.movieplex7.entities.Sales;
 
@@ -53,16 +52,16 @@ import org.glassfish.movieplex7.entities.Sales;
  * @author Arun Gupta
  */
 @Named
-public class SalesWriter extends AbstractItemWriter<Sales> {
+public class SalesWriter extends AbstractItemWriter {
     
 //    @PersistenceContext EntityManager em;
 
     @Override
     @Transactional
-    public void writeItems(List<Sales> list) {
+    public void writeItems(List list) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("movieplex7PU");
         EntityManager em = emf.createEntityManager();
-        for (Sales s : list) {
+        for (Sales s : (List<Sales>)list) {
             System.out.println("SalesWriter.writeItem: " + s);
             em.persist(s);
         }

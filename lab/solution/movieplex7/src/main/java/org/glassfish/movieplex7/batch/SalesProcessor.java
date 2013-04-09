@@ -40,7 +40,7 @@
 package org.glassfish.movieplex7.batch;
 
 import java.util.StringTokenizer;
-import javax.batch.api.ItemProcessor;
+import javax.batch.api.chunk.ItemProcessor;
 import javax.inject.Named;
 import org.glassfish.movieplex7.entities.Sales;
 
@@ -48,13 +48,13 @@ import org.glassfish.movieplex7.entities.Sales;
  * @author Arun Gupta
  */
 @Named
-public class SalesProcessor implements ItemProcessor<String,Sales> {
+public class SalesProcessor implements ItemProcessor {
 
     @Override
-    public Sales processItem(String s) {
+    public Sales processItem(Object s) {
         Sales sales = new Sales();
         
-        StringTokenizer tokens = new StringTokenizer(s, ",");
+        StringTokenizer tokens = new StringTokenizer((String)s, ",");
         sales.setId(Integer.parseInt(tokens.nextToken()));
         sales.setAmount(Float.parseFloat(tokens.nextToken()));
         
