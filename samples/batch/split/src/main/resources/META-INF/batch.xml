@@ -45,5 +45,4 @@
     <ref id="myBatchlet1" class="org.sample.split.MyBatchlet1"/>
     <ref id="myBatchlet2" class="org.sample.split.MyBatchlet2"/>
     <ref id="myBatchlet3" class="org.sample.split.MyBatchlet3"/>
-    <ref id="myBatchlet4" class="org.sample.split.MyBatchlet4"/>
 </batch-artifacts>
