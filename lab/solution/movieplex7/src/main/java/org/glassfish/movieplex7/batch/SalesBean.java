@@ -41,10 +41,8 @@ package org.glassfish.movieplex7.batch;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.batch.operations.JobOperator;
-import javax.batch.operations.exception.JobStartException;
+import javax.batch.operations.JobStartException;
 import javax.batch.runtime.BatchRuntime;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionManagement;
