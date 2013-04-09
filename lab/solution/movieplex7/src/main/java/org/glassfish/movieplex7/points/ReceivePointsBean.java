@@ -60,7 +60,7 @@ import javax.jms.QueueBrowser;
 @JMSDestinationDefinitions({
     @JMSDestinationDefinition(name = "java:global/jms/pointsQueue",
             resourceAdapter = "jmsra",
-            className = "javax.jms.Queue",
+            interfaceName = "javax.jms.Queue",
             destinationName = "pointsQueue",
             description = "Points Queue")
 })
