@@ -15,14 +15,6 @@
     <packaging>pom</packaging>
     <name>batch</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>javax.batch</groupId>
-            <artifactId>javax.batch-api-all</artifactId>
-            <version>1.0-b14</version>        
-        </dependency>
-    </dependencies>
-
     <modules>
         <module>batchlet-simple</module>
         <module>chunk-checkpoint</module>
