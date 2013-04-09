@@ -41,7 +41,7 @@
 -->
 
 <job id="myJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee">
-    <split id="split1">
+    <split id="split1" next="step3">
         <flow id="flow1">
             <step id="step1">
                 <batchlet ref="myBatchlet1"/>
