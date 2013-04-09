@@ -39,6 +39,8 @@
  */
 package org.sample.interceptor;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.Provider;
@@ -53,7 +55,25 @@ public class MyServerWriterInterceptor implements WriterInterceptor {
 
     @Override
     public void aroundWriteTo(WriterInterceptorContext wic) throws IOException, WebApplicationException {
-        System.out.println("aroundWriteTo(server)");
+        System.out.println("MyServerWriterInterceptor");
+        wic.setOutputStream(new FilterOutputStream(wic.getOutputStream()) {
+
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            
+            @Override
+            public void write(int b) throws IOException {
+                baos.write(b);
+                super.write(b);
+            }
+
+            @Override
+            public void close() throws IOException {
+                System.out.println("MyServerWriterInterceptor --> " + baos.toString());
+                super.close();
+            }
+        });
+
+        
         wic.proceed();
     }
 

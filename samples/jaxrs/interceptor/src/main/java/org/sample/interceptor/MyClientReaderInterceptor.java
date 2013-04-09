@@ -39,7 +39,9 @@
  */
 package org.sample.interceptor;
 
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.ws.rs.WebApplicationException;
@@ -53,27 +55,34 @@ public class MyClientReaderInterceptor implements ReaderInterceptor {
 
     @Override
     public Object aroundReadFrom(ReaderInterceptorContext ric) throws IOException, WebApplicationException {
+        
+        System.out.println("MyClientReaderInterceptor");
+//        ric.setInputStream(new FilterInputStream(ric.getInputStream()) {
+//
+//            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//
+//            @Override
+//            public int read(byte[] b, int off, int len) throws IOException {
+//                baos.write(b, off, len);
+////                System.out.println("@@@@@@ " + b);
+//                return super.read(b, off, len);
+//            }
+//
+//            @Override
+//            public void close() throws IOException {
+//                System.out.println("### " + baos.toString());
+//                super.close();
+//            }
+//        });
         final InputStream old = ric.getInputStream();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int c;
+        while ((c = old.read()) != -1) {
+            baos.write(c);
+        }
+        System.out.println("MyClientReaderInterceptor --> " + baos.toString());
         
-        byte[] buf = new byte[1024];
-        old.read(buf);
-        System.out.println(old.available() + " available " + new String(buf));
-//        old.reset();
-        
-        ric.setInputStream(new InputStream() {
-
-            @Override
-            public int read() throws IOException {
-                return old.read();
-            }
-        });
-//        ric.setInputStream(is);
-//        
-//        Reader reader = new InputStreamReader(is);
-//        char[] buf = new char[1024];
-//        int howManyRead = reader.read(buf);
-//        System.out.format("aroundReadFrom(client) %d", howManyRead);
-//        is.reset();
+        ric.setInputStream(new ByteArrayInputStream(baos.toByteArray()));
         
         return ric.proceed();
     }
