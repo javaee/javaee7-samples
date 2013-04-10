@@ -45,10 +45,10 @@
         <batchlet ref="myBatchlet1"/>
     </step>
     <decision id="decider1" ref="myDecider">
-        <!--<next on="foobar" to="step2"/>-->
+        <next on="foobar" to="step3"/>
         <!--<fail on="foobar" exit-status="foobar2"/>-->
         <!--<end on="foobar" exit-status="foobar2"/>-->
-        <stop on="foobar" exit-status="foobar" restart="step3"/>
+        <stop on="foobar2" exit-status="foobar3" restart="step3"/>
     </decision>
     <step id="step2">
         <batchlet ref="myBatchlet2"/>
