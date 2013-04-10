@@ -41,10 +41,12 @@
 package org.glassfish.listeners;
 
 import javax.batch.api.chunk.listener.AbstractItemReadListener;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
+@Named
 public class MyItemReadListener extends AbstractItemReadListener {
 
     @Override

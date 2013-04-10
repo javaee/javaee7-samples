@@ -41,10 +41,12 @@
 package org.glassfish.listeners;
 
 import javax.batch.api.chunk.listener.AbstractChunkListener;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
+@Named
 public class MyChunkListener extends AbstractChunkListener {
 
     @Override

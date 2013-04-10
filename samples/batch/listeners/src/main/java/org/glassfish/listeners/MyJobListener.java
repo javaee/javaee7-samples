@@ -41,10 +41,12 @@
 package org.glassfish.listeners;
 
 import javax.batch.api.listener.AbstractJobListener;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
+@Named
 public class MyJobListener extends AbstractJobListener {
 
     @Override

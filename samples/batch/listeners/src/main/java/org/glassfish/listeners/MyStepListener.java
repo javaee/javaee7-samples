@@ -41,10 +41,12 @@
 package org.glassfish.listeners;
 
 import javax.batch.api.listener.AbstractStepListener;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
+@Named
 public class MyStepListener extends AbstractStepListener {
 
     @Override
