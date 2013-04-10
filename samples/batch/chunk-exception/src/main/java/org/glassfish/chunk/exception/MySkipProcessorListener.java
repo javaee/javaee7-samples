@@ -41,10 +41,12 @@
 package org.glassfish.chunk.exception;
 
 import javax.batch.api.chunk.listener.SkipProcessListener;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
+@Named
 public class MySkipProcessorListener implements SkipProcessListener {
 
     @Override

@@ -41,10 +41,12 @@
 package org.glassfish.chunk.exception;
 
 import javax.batch.api.chunk.listener.SkipReadListener;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
+@Named
 public class MySkipReadListener implements SkipReadListener {
 
     @Override
