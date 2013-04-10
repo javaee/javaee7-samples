@@ -45,7 +45,6 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.batch.operations.JobOperator;
-import javax.batch.operations.JobSecurityException;
 import javax.batch.operations.JobStartException;
 import javax.batch.runtime.BatchRuntime;
 import javax.servlet.ServletException;
@@ -87,7 +86,7 @@ public class TestServlet extends HttpServlet {
             out.println("Job submitted<br>");
             out.println("</body>");
             out.println("</html>");
-        } catch (JobStartException | JobSecurityException ex) {
+        } catch (JobStartException ex) {
             Logger.getLogger(TestServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
