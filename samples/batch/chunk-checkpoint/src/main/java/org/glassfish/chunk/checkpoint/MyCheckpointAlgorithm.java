@@ -41,10 +41,12 @@
 package org.glassfish.chunk.checkpoint;
 
 import javax.batch.api.chunk.AbstractCheckpointAlgorithm;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
+ @Named
 public class MyCheckpointAlgorithm extends AbstractCheckpointAlgorithm {
 
     @Override
