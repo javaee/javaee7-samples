@@ -41,10 +41,12 @@
 package org.sample.split;
 
 import javax.batch.api.AbstractBatchlet;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
+@Named
 public class MyBatchlet2 extends AbstractBatchlet {
 
     @Override
