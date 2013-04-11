@@ -57,13 +57,13 @@ public class MyItemReader extends AbstractItemReader {
     
     private StringTokenizer tokens;
     
-//    @Inject
-//    @BatchProperty(name = "start")
-//    private String startProp;
-//    
-//    @Inject
-//    @BatchProperty(name = "end")
-//    private String endProp;
+    @Inject
+    @BatchProperty(name = "start")
+    private String startProp;
+    
+    @Inject
+    @BatchProperty(name = "end")
+    private String endProp;
     
     @Inject
     JobContext context;
@@ -73,11 +73,8 @@ public class MyItemReader extends AbstractItemReader {
     
     @PostConstruct
     public void init() {
-        System.out.println("init");
-
-        Properties jobParams = BatchRuntime.getJobOperator().getParameters(context.getExecutionId());
-        int start = new Integer(jobParams.getProperty("start"));
-        int end = new Integer(jobParams.getProperty("end"));
+        int start = new Integer(startProp);
+        int end = new Integer(endProp);
         StringBuilder builder = new StringBuilder();
         for (int i=start; i<=end; i++) {
             builder.append(i);

@@ -43,7 +43,12 @@
 <job id="myJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
     <step id="myStep" >
         <chunk item-count="3">
-            <reader ref="myItemReader"></reader> 
+            <reader ref="myItemReader">
+                <properties>
+                    <property name="start" value="#{partitionPlan['start']}"  />
+                    <property name="end" value="#{partitionPlan['end']}"  />
+                </properties>                
+            </reader> 
             <processor ref="myItemProcessor"></processor>
             <writer ref="myItemWriter"></writer> 
         </chunk>
