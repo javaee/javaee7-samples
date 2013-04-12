@@ -46,6 +46,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -86,8 +87,13 @@ public class TestServlet extends HttpServlet {
                     + request.getContextPath()
                     + "/webresources/endpoint");
             
-            String r = target.request().post(Entity.text("fo"), String.class);
-            out.println(r);
+            try {
+                String r = target.request().post(Entity.text("fo"), String.class);
+                out.println(r);
+            } catch (BadRequestException e) {
+                out.println("BadRequestException caught successfully<br><br>");
+            }
+            out.println("Was BadRequestException caught ?");
             out.println("</body>");
             out.println("</html>");
         }

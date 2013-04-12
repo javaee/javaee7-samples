@@ -53,7 +53,8 @@ public class MyResource {
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
-    public String post(String payload) {
+    public String post(@Size(min = 3) String payload) {
+//    public String post(String payload) {
         return payload;
     }
 }
