@@ -39,12 +39,10 @@
  */
 package org.glassfish.sample.partition;
 
-import java.util.Properties;
+import java.io.Serializable;
 import java.util.StringTokenizer;
-import javax.annotation.PostConstruct;
 import javax.batch.api.BatchProperty;
 import javax.batch.api.chunk.AbstractItemReader;
-import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -68,11 +66,8 @@ public class MyItemReader extends AbstractItemReader {
     @Inject
     JobContext context;
     
-    public MyItemReader() {
-    }
-    
-    @PostConstruct
-    public void init() {
+    @Override
+    public void open(Serializable e) {
         int start = new Integer(startProp);
         int end = new Integer(endProp);
         StringBuilder builder = new StringBuilder();
