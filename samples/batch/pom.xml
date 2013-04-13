@@ -19,13 +19,15 @@
         <module>batchlet-simple</module>
         <module>chunk-checkpoint</module>
         <module>chunk-exception</module>
+        <module>chunk-mapper</module>
         <module>chunk-optional-processor</module>
+        <module>chunk-partition</module>
         <module>chunk-simple</module>
+        <module>decision</module>
+        <module>flow</module>
         <module>listeners</module>
         <module>multiple-steps</module>
-        <module>flow</module>
         <module>split</module>
-        <module>decision</module>
-    </modules>
+  </modules>
 
 </project>
