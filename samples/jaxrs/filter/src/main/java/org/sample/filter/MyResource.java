@@ -47,11 +47,9 @@ import javax.ws.rs.Path;
  */
 @Path("fruits")
 public class MyResource {
-    private String[] response = { "apple", "banana", "mango" };
-    
     @GET
-    public String getList() {
-        return response[0];
+    public String getFruit() {
+        return "apple";
     }
 
 }
