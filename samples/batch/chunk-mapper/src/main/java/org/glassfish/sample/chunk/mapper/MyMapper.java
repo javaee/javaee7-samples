@@ -78,5 +78,4 @@ public class MyMapper implements PartitionMapper {
             }
         };
     }
-    
 }
