@@ -1,4 +1,3 @@
-<!-- 
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -38,18 +37,30 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
--->
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
+package org.glassfish.sample.chunk.mapper;
 
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Batch Partition</title>
-    </head>
-    <body>
-        <h1>Batch Partition</h1>
-        Start the <a href="${pageContext.request.contextPath}/TestServlet"/>job</a>.
-    </body>
-</html>
+/**
+ * @author Arun Gupta
+ */
+public class MyInputRecord {
+    private int id;
+            
+    public MyInputRecord() { }
+    
+    public MyInputRecord(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    @Override
+    public String toString() {
+        return "MyInputRecord: " + id;
+    }
+}

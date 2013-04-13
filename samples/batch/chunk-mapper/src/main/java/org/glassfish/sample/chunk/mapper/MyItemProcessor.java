@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.sample.mapper;
+package org.glassfish.sample.chunk.mapper;
 
 import javax.batch.api.chunk.ItemProcessor;
 import javax.inject.Named;

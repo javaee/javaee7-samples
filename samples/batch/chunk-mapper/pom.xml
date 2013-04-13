@@ -9,10 +9,10 @@
     </parent>
 
     <groupId>org.glassfish.sample</groupId>
-    <artifactId>mapper</artifactId>
+    <artifactId>chunk-mapper</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>mapper</name>
+    <name>chunk-mapper</name>
 
 </project>

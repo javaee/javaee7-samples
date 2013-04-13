@@ -37,23 +37,30 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.sample.mapper;
-
-import java.io.Serializable;
-import javax.batch.api.partition.PartitionCollector;
+package org.glassfish.sample.chunk.mapper;
 
 /**
  * @author Arun Gupta
  */
-public class MyCollector implements PartitionCollector {
-
-    @Override
-    public Serializable collectPartitionData() throws Exception {
-        System.out.println("collectPartitionData");
-        
-        return new Serializable() {
+public class MyOutputRecord {
+    private int id;
             
-        };
+    public MyOutputRecord() { }
+    
+    public MyOutputRecord(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
+    @Override
+    public String toString() {
+        return "MyOutputRecord: " + id;
+    }
 }

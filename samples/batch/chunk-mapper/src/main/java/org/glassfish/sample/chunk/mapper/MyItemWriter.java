@@ -37,25 +37,20 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.sample.mapper;
+package org.glassfish.sample.chunk.mapper;
 
-import java.io.Serializable;
-import javax.batch.api.partition.PartitionAnalyzer;
-import javax.batch.runtime.BatchStatus;
+import java.util.List;
+import javax.batch.api.chunk.AbstractItemWriter;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
-public class MyAnalyzer implements PartitionAnalyzer {
+@Named
+public class MyItemWriter extends AbstractItemWriter {
 
     @Override
-    public void analyzeCollectorData(Serializable srlzbl) throws Exception {
-        System.out.println("analyzeCollectorData");
+    public void writeItems(List list) {
+        System.out.println("writeItems: " + list);
     }
-
-    @Override
-    public void analyzeStatus(BatchStatus bs, String string) throws Exception {
-        System.out.println("analyzeStatus");
-    }
-    
 }

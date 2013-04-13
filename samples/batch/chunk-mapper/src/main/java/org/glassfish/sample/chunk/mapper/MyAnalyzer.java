@@ -37,59 +37,25 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.sample.mapper;
+package org.glassfish.sample.chunk.mapper;
 
 import java.io.Serializable;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import javax.batch.api.BatchProperty;
-import javax.batch.api.chunk.AbstractItemReader;
-import javax.batch.runtime.BatchRuntime;
-import javax.batch.runtime.context.JobContext;
-import javax.inject.Inject;
-import javax.inject.Named;
+import javax.batch.api.partition.PartitionAnalyzer;
+import javax.batch.runtime.BatchStatus;
 
 /**
  * @author Arun Gupta
  */
-@Named
-public class MyItemReader extends AbstractItemReader {
-    
-    private StringTokenizer tokens;
-    
-    @Inject
-    @BatchProperty(name = "start")
-    private String startProp;
-    
-    @Inject
-    @BatchProperty(name = "end")
-    private String endProp;
-    
-    @Inject
-    JobContext context;
-    
+public class MyAnalyzer implements PartitionAnalyzer {
+
     @Override
-    public void open(Serializable e) {
-//        Properties jobParams = BatchRuntime.getJobOperator().getParameters(context.getExecutionId());
-//        int start = (Integer)jobParams.get("start");
-//        int end = (Integer)jobParams.get("end");
-        int start = new Integer(startProp);
-        int end = new Integer(endProp);
-        StringBuilder builder = new StringBuilder();
-        for (int i=start; i<=end; i++) {
-            builder.append(i);
-            if (i < end)
-                builder.append(",");
-        }
-        tokens = new StringTokenizer(builder.toString(), ",");        
+    public void analyzeCollectorData(Serializable srlzbl) throws Exception {
+        System.out.println("analyzeCollectorData");
+    }
+
+    @Override
+    public void analyzeStatus(BatchStatus bs, String string) throws Exception {
+        System.out.println("analyzeStatus");
     }
     
-    @Override
-    public MyInputRecord readItem() {
-        if (tokens.hasMoreTokens()) {
-            System.out.format("readItem (%d): %d", context.getExecutionId(), Integer.valueOf(tokens.nextToken()));
-            return new MyInputRecord(Integer.valueOf(tokens.nextToken()));
-        }
-        return null;
-    }
 }

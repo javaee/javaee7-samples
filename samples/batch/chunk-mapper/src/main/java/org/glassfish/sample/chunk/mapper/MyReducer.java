@@ -37,20 +37,35 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.sample.mapper;
+package org.glassfish.sample.chunk.mapper;
 
-import java.util.List;
-import javax.batch.api.chunk.AbstractItemWriter;
+import javax.batch.api.partition.PartitionReducer;
 import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
 @Named
-public class MyItemWriter extends AbstractItemWriter {
+public class MyReducer implements PartitionReducer {
 
     @Override
-    public void writeItems(List list) {
-        System.out.println("writeItems: " + list);
+    public void beginPartitionedStep() throws Exception {
+        System.out.println("beginPartitionedStep");
     }
+
+    @Override
+    public void beforePartitionedStepCompletion() throws Exception {
+        System.out.println("beforePartitionedStepCompletion");
+    }
+
+    @Override
+    public void rollbackPartitionedStep() throws Exception {
+        System.out.println("rollbackPartitionedStep");
+    }
+
+    @Override
+    public void afterPartitionedStepCompletion(PartitionStatus ps) throws Exception {
+        System.out.println("afterPartitionedStepCompletion");
+    }
+    
 }

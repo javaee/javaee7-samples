@@ -37,35 +37,59 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.sample.mapper;
+package org.glassfish.sample.chunk.mapper;
 
-import javax.batch.api.partition.PartitionReducer;
+import java.io.Serializable;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import javax.batch.api.BatchProperty;
+import javax.batch.api.chunk.AbstractItemReader;
+import javax.batch.runtime.BatchRuntime;
+import javax.batch.runtime.context.JobContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
 @Named
-public class MyReducer implements PartitionReducer {
-
+public class MyItemReader extends AbstractItemReader {
+    
+    private StringTokenizer tokens;
+    
+    @Inject
+    @BatchProperty(name = "start")
+    private String startProp;
+    
+    @Inject
+    @BatchProperty(name = "end")
+    private String endProp;
+    
+    @Inject
+    JobContext context;
+    
     @Override
-    public void beginPartitionedStep() throws Exception {
-        System.out.println("beginPartitionedStep");
-    }
-
-    @Override
-    public void beforePartitionedStepCompletion() throws Exception {
-        System.out.println("beforePartitionedStepCompletion");
-    }
-
-    @Override
-    public void rollbackPartitionedStep() throws Exception {
-        System.out.println("rollbackPartitionedStep");
-    }
-
-    @Override
-    public void afterPartitionedStepCompletion(PartitionStatus ps) throws Exception {
-        System.out.println("afterPartitionedStepCompletion");
+    public void open(Serializable e) {
+//        Properties jobParams = BatchRuntime.getJobOperator().getParameters(context.getExecutionId());
+//        int start = (Integer)jobParams.get("start");
+//        int end = (Integer)jobParams.get("end");
+        int start = new Integer(startProp);
+        int end = new Integer(endProp);
+        StringBuilder builder = new StringBuilder();
+        for (int i=start; i<=end; i++) {
+            builder.append(i);
+            if (i < end)
+                builder.append(",");
+        }
+        tokens = new StringTokenizer(builder.toString(), ",");        
     }
     
+    @Override
+    public MyInputRecord readItem() {
+        if (tokens.hasMoreTokens()) {
+            System.out.format("readItem (%d): %d", context.getExecutionId(), Integer.valueOf(tokens.nextToken()));
+            return new MyInputRecord(Integer.valueOf(tokens.nextToken()));
+        }
+        return null;
+    }
 }
