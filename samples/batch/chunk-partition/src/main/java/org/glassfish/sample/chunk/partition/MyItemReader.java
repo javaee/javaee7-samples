@@ -37,30 +37,54 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.sample.partition;
+package org.glassfish.sample.chunk.partition;
+
+import java.io.Serializable;
+import java.util.StringTokenizer;
+import javax.batch.api.BatchProperty;
+import javax.batch.api.chunk.AbstractItemReader;
+import javax.batch.runtime.context.JobContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
-public class MyInputRecord {
-    private int id;
-            
-    public MyInputRecord() { }
+@Named
+public class MyItemReader extends AbstractItemReader {
     
-    public MyInputRecord(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    private StringTokenizer tokens;
+    
+    @Inject
+    @BatchProperty(name = "start")
+    private String startProp;
+    
+    @Inject
+    @BatchProperty(name = "end")
+    private String endProp;
+    
+    @Inject
+    JobContext context;
+    
+    @Override
+    public void open(Serializable e) {
+        int start = new Integer(startProp);
+        int end = new Integer(endProp);
+        StringBuilder builder = new StringBuilder();
+        for (int i=start; i<=end; i++) {
+            builder.append(i);
+            if (i < end)
+                builder.append(",");
+        }
+        tokens = new StringTokenizer(builder.toString(), ",");        
     }
     
     @Override
-    public String toString() {
-        return "MyInputRecord: " + id;
+    public MyInputRecord readItem() {
+        if (tokens.hasMoreTokens()) {
+            System.out.format("readItem (%d): %d", context.getExecutionId(), Integer.valueOf(tokens.nextToken()));
+            return new MyInputRecord(Integer.valueOf(tokens.nextToken()));
+        }
+        return null;
     }
 }

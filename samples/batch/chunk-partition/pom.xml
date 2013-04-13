@@ -9,12 +9,9 @@
     </parent>
 
     <groupId>org.glassfish.sample</groupId>
-    <artifactId>partition</artifactId>
+    <artifactId>chunk-partition</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>partition</name>
-    <properties>
-        <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
-    </properties>
+    <name>chunk-partition</name>
 </project>

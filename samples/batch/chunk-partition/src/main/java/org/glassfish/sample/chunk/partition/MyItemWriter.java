@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.sample.partition;
+package org.glassfish.sample.chunk.partition;
 
 import java.util.List;
 import javax.batch.api.chunk.AbstractItemWriter;

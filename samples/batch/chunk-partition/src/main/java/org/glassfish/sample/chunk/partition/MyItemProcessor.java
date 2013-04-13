@@ -37,30 +37,26 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.sample.partition;
+package org.glassfish.sample.chunk.partition;
+
+import javax.batch.api.chunk.ItemProcessor;
+import javax.batch.runtime.context.JobContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
-public class MyOutputRecord {
-    private int id;
-            
-    public MyOutputRecord() { }
-    
-    public MyOutputRecord(int id) {
-        this.id = id;
-    }
+@Named
+public class MyItemProcessor implements ItemProcessor {
 
-    public int getId() {
-        return id;
-    }
+    @Inject
+    JobContext context;
 
-    public void setId(int id) {
-        this.id = id;
-    }
-    
     @Override
-    public String toString() {
-        return "MyOutputRecord: " + id;
+    public MyOutputRecord processItem(Object t) {
+        System.out.format("processItem (%d): %s", context.getExecutionId(), t);
+
+        return (((MyInputRecord) t).getId() % 2 == 0) ? null : new MyOutputRecord(((MyInputRecord) t).getId() * 2);
     }
 }
