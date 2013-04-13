@@ -1,4 +1,4 @@
-<%-- 
+<!-- 
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -38,7 +38,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
---%>
+-->
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
@@ -50,6 +50,6 @@
     </head>
     <body>
         <h1>JAX-RS 2 Filter</h1>
-        Invoke the <a href="/filter/TestServlet"/>Client</a> and check the server.log for filter output.
+        Invoke the <a href="${pageContext.request.contextPath}/TestServlet"/>Client</a> and check the server.log for filter output.
     </body>
 </html>
