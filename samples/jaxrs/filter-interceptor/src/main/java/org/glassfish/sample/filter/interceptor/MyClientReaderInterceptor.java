@@ -41,7 +41,6 @@ package org.glassfish.sample.filter.interceptor;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.ws.rs.WebApplicationException;
