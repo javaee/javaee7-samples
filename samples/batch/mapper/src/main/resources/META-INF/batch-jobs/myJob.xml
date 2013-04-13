@@ -54,6 +54,9 @@
         </chunk>
         <partition>
             <mapper ref="myMapper"/>
+            <reducer ref="myReducer"/>
+<!--            <collector ref="myCollector"/>
+            <analyzer ref="myAnalyzer"/>-->
         </partition>
     </step>
 </job>
