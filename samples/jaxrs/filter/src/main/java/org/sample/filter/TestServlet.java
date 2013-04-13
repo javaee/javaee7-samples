@@ -48,6 +48,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 
 /**
@@ -72,7 +73,7 @@ public class TestServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         out.println("<html>");
         out.println("<head>");
-        out.println("<title>Servlet TestServlet</title>");            
+        out.println("<title>Servlet TestServlet</title>");
         out.println("</head>");
         out.println("<body>");
         out.println("<h1>Servlet TestServlet at " + request.getContextPath() + "</h1>");
@@ -84,8 +85,17 @@ public class TestServlet extends HttpServlet {
                 + request.getServerPort()
                 + request.getContextPath()
                 + "/webresources/fruits");
-        out.println(target.getUri());
+        out.println(target.getUri()+ "<br><br>");
+        out.println("GET request"+ "<br><br>");
         String result = target.request().get(String.class);
+        out.println("Received response (GET): " + result + "<br><br>");
+
+        System.out.println("**** POST request");
+        result = target
+                .request()
+                .post(Entity.text("1"), String.class);
+        out.println("Received response (POST): " + result + "<br><br>");
+
         out.println("Received response: " + result + "<br><br>");
         out.println("Check server.log for client/server filter output.");
         out.println("</body>");
