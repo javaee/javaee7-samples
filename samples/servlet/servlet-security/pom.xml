@@ -9,10 +9,10 @@
     </parent>
 
     <groupId>org.glassfish.sample</groupId>
-    <artifactId>security</artifactId>
+    <artifactId>servlet-security</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>security</name>
+    <name>servlet-security</name>
 
 </project>
