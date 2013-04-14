@@ -41,8 +41,10 @@ package org.glassfish.messagesize;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import javax.websocket.CloseReason;
+import javax.websocket.OnClose;
+import javax.websocket.OnError;
 import javax.websocket.OnMessage;
-import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 /**
@@ -57,7 +59,17 @@ public class MyEndpoint {
     }
 
     @OnMessage(maxMessageSize=6)
-    public void echoBinary(ByteBuffer data, Session session) throws IOException {
-        session.getBasicRemote().sendBinary(data);
+    public ByteBuffer echoBinary(ByteBuffer data) throws IOException {
+        return data;
+    }
+    
+    @OnClose
+    public void onClose(CloseReason reason) {
+        System.out.println("CLOSED: " + reason.getCloseCode() + ", " + reason.getReasonPhrase());
+    }
+    
+    @OnError
+    public void onError(Throwable t) {
+        t.printStackTrace();
     }
 }
