@@ -44,6 +44,7 @@ var websocket = new WebSocket(wsUri);
 websocket.onopen = function(evt) { onOpen(evt) };
 websocket.onmessage = function(evt) { onMessage(evt) };
 websocket.onerror = function(evt) { onError(evt) };
+websocket.onclose = function(evt) { onClose(evt) };
 
 var output = document.getElementById("output");
 
@@ -78,6 +79,10 @@ function onMessage(evt) {
 
 function onError(evt) {
     writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+}
+
+function onClose(evt) {
+    writeToScreen('<span style="color: red;">CLOSED:</span> ' + evt.data);
 }
 
 function writeToScreen(message) {
