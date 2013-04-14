@@ -55,8 +55,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "TestListenerServlet", urlPatterns = {"/TestListenerServlet"})
 public class TestListenerServlet extends HttpServlet {
 
-    @Resource(name = "concurrent/myExecutor")
-//    @Resource(name = "DefaultManagedExecutorService")
+//    @Resource(name = "concurrent/myExecutor")
+    @Resource(name = "DefaultManagedExecutorService")
     ManagedExecutorService executor;
 
     /**
