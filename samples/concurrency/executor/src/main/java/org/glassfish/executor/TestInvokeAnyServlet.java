@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "TestInvokeAnyServlet", urlPatterns = {"/TestInvokeAnyServlet"})
 public class TestInvokeAnyServlet extends HttpServlet {
 
-//    @Resource(name = "concurrent/myExecutor")
+//    @Resource(name = "concurrent/myExecutor2")
     @Resource(name = "DefaultManagedExecutorService")
     ManagedExecutorService executor;
 
