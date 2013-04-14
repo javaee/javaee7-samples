@@ -61,8 +61,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "TestScheduleServlet", urlPatterns = {"/TestScheduleServlet"})
 public class TestScheduleServlet extends HttpServlet {
 
-    @Resource(name = "concurrent/myScheduledExecutor")
-//    @Resource(name = "DefaultManagedScheduledExecutorService")
+//    @Resource(name = "concurrent/myScheduledExecutor2")
+    @Resource(name = "DefaultManagedScheduledExecutorService")
     ManagedScheduledExecutorService executor;
 
     /**

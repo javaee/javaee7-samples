@@ -56,8 +56,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/TestScheduleWithFixedDelayServlet"})
 public class TestScheduleWithFixedDelayServlet extends HttpServlet {
 
-    @Resource(name = "concurrent/myScheduledExecutor")
-//    @Resource(name = "DefaultManagedScheduledExecutorService")
+//    @Resource(name = "concurrent/myScheduledExecutor2")
+    @Resource(name = "DefaultManagedScheduledExecutorService")
     ManagedScheduledExecutorService executor;
     
     /**
