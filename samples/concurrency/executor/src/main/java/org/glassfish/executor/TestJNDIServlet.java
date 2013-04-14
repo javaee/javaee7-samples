@@ -83,8 +83,8 @@ public class TestJNDIServlet extends HttpServlet {
             try {
                 InitialContext ctx = new InitialContext();
                 
-//                ManagedExecutorService executor = (ManagedExecutorService) ctx.lookup("java:comp/DefaultManagedExecutorService");
-                ManagedExecutorService executor = (ManagedExecutorService) ctx.lookup("java:comp/env/concurrent/myExecutor");
+//                ManagedExecutorService executor = (ManagedExecutorService) ctx.lookup("java:comp/env/concurrent/myExecutor");
+                ManagedExecutorService executor = (ManagedExecutorService) ctx.lookup("java:comp/DefaultManagedExecutorService");
                 for (int i = 0; i < 5; i++) {
                     out.format("submitting runnable(%d)<br>", i);
                     executor.submit(new MyRunnableTask(i));
