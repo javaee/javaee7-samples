@@ -57,36 +57,37 @@ public class MessageSenderAsync {
     @Inject
 //    @JMSConnectionFactory("java:comp/DefaultJMSConnectionFactory")
     JMSContext context;
-    
-    @Resource(mappedName="java:global/jms/mySyncQueue")
+    @Resource(mappedName = "java:global/jms/mySyncQueue")
     Queue syncQueue;
-
-    @Resource(mappedName="java:global/jms/myAsyncQueue")
+    @Resource(mappedName = "java:global/jms/myAsyncQueue")
     Queue asyncQueue;
 
     public void sendMessage(String message) {
-        context.createProducer().setAsync(new CompletionListener() {
-
-            @Override
-            public void onCompletion(Message msg) {
-                try {
-                    System.out.println(msg.getBody(String.class));
-                } catch (JMSException ex) {
-                    Logger.getLogger(MessageSenderAsync.class.getName()).log(Level.SEVERE, null, ex);
+        try {
+            context.createProducer().setAsync(new CompletionListener() {
+                @Override
+                public void onCompletion(Message msg) {
+                    try {
+                        System.out.println(msg.getBody(String.class));
+                    } catch (JMSException ex) {
+                        Logger.getLogger(MessageSenderAsync.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            }
 
-            @Override
-            public void onException(Message msg, Exception e) {
-                try {
-                    System.out.println(msg.getBody(String.class));
-                } catch (JMSException ex) {
-                    Logger.getLogger(MessageSenderAsync.class.getName()).log(Level.SEVERE, null, ex);
+                @Override
+                public void onException(Message msg, Exception e) {
+                    try {
+                        System.out.println(msg.getBody(String.class));
+                    } catch (JMSException ex) {
+                        Logger.getLogger(MessageSenderAsync.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
-            }
-            
-        });
-        
+            });
+        } catch (RuntimeException e) {
+            System.out.println("Caught RuntimeException trying to invoke setAsync - not permitted in Java EE");
+        }
+
+
         context.createProducer().send(syncQueue, message);
         context.createProducer().send(asyncQueue, message);
     }

@@ -50,6 +50,7 @@
     </head>
     <body>
         <h1>JMS 2 Send Message</h1>
-        <a href="${pageContext.request.contextPath}/TestServlet">Send synchronously</a> and receive message<br/>
+        <a href="${pageContext.request.contextPath}/TestServletSendSync">Send synchronously</a> and receive message<br/>
+        <a href="${pageContext.request.contextPath}/TestServletSendAsync">Send asynchronously</a> and receive message<br/>
     </body>
 </html>

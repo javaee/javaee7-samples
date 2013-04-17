@@ -42,8 +42,7 @@ package org.sample.sendmessage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.ejb.EJB;
-import javax.jms.JMSDestinationDefinition;
-import javax.jms.JMSDestinationDefinitions;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -53,23 +52,23 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Arun Gupta
  */
-@JMSDestinationDefinitions({@JMSDestinationDefinition(name = "java:global/jms/mySyncQueue",
-        resourceAdapter = "jmsra",
-        interfaceName = "javax.jms.Queue",
-        destinationName="syncQueue",
-        description="My Sync Queue"),
-    @JMSDestinationDefinition(name = "java:global/jms/myAsyncQueue",
-        resourceAdapter = "jmsra",
-        interfaceName = "javax.jms.Queue",
-        destinationName="asyncQueue",
-        description="My Async Queue")
-})
-@WebServlet(urlPatterns = {"/TestServlet"})
-public class TestServlet extends HttpServlet {
+//@JMSDestinationDefinitions({@JMSDestinationDefinition(name = "java:global/jms/mySyncQueue",
+//        resourceAdapter = "jmsra",
+//        interfaceName = "javax.jms.Queue",
+//        destinationName="syncQueue",
+//        description="My Sync Queue"),
+//    @JMSDestinationDefinition(name = "java:global/jms/myAsyncQueue",
+//        resourceAdapter = "jmsra",
+//        interfaceName = "javax.jms.Queue",
+//        destinationName="asyncQueue",
+//        description="My Async Queue")
+//})
+@WebServlet(urlPatterns = {"/TestServletSendSync"})
+public class TestServletSendSync extends HttpServlet {
     
-    @EJB MessageSenderSync sender;
+    @Inject MessageSenderSync sender;
     
-    @EJB MessageReceiverSync receiver;
+    @Inject MessageReceiverSync receiver;
 
     /**
      * Processes requests for both HTTP
@@ -87,10 +86,10 @@ public class TestServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>JMS2 Send Message</title>");            
+            out.println("<title>JMS2 Send Message (Sync)</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>JMS2 Send/Receive Message using JMS2 " + request.getContextPath() + "</h1>");
+            out.println("<h1>JMS2 Send/Receive (Sync) " + request.getContextPath() + "</h1>");
             String m = "Hello there";
             sender.sendMessage(m);
             out.format("Message sent: %1$s.<br>", m);
