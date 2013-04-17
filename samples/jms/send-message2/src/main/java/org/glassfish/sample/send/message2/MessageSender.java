@@ -53,8 +53,7 @@ import javax.jms.Queue;
 @Stateless
 @JMSDestinationDefinitions({@JMSDestinationDefinition(name = "java:global/jms/myQueue",
         interfaceName = "javax.jms.Queue",
-        destinationName="syncQueue",
-        description="My Queue")
+        destinationName="myQueue")
 })
 public class MessageSender {
 
