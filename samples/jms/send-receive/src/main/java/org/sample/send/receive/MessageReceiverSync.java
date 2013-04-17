@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.sample.sendmessage;
+package org.sample.send.receive;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
@@ -49,20 +49,16 @@ import javax.jms.Queue;
  * @author Arun Gupta
  */
 @Stateless
-public class MessageSenderSync {
+public class MessageReceiverSync {
 
     @Inject
-//    @JMSConnectionFactory("java:comp/DefaultJMSConnectionFactory")
-    JMSContext context;
+    private JMSContext context;
     
     @Resource(mappedName="java:global/jms/mySyncQueue")
-    Queue syncQueue;
+    Queue myQueue;
 
-    @Resource(mappedName="java:global/jms/myAsyncQueue")
-    Queue asyncQueue;
-
-    public void sendMessage(String message) {
-        context.createProducer().send(syncQueue, message);
-        context.createProducer().send(asyncQueue, message);
+    public String receiveMessage() {
+        String message = context.createConsumer(myQueue).receiveBody(String.class, 1000);
+        return "Received " + message;
     }
 }

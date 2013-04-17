@@ -37,12 +37,13 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.sample.sendmessage;
+package org.sample.send.receive;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.ejb.EJB;
 import javax.inject.Inject;
+import javax.jms.JMSDestinationDefinition;
+import javax.jms.JMSDestinationDefinitions;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -52,21 +53,21 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Arun Gupta
  */
-//@JMSDestinationDefinitions({@JMSDestinationDefinition(name = "java:global/jms/mySyncQueue",
-//        resourceAdapter = "jmsra",
-//        interfaceName = "javax.jms.Queue",
-//        destinationName="syncQueue",
-//        description="My Sync Queue"),
-//    @JMSDestinationDefinition(name = "java:global/jms/myAsyncQueue",
-//        resourceAdapter = "jmsra",
-//        interfaceName = "javax.jms.Queue",
-//        destinationName="asyncQueue",
-//        description="My Async Queue")
-//})
-@WebServlet(urlPatterns = {"/TestServletSendSync"})
-public class TestServletSendSync extends HttpServlet {
+@JMSDestinationDefinitions({@JMSDestinationDefinition(name = "java:global/jms/mySyncQueue",
+        resourceAdapter = "jmsra",
+        interfaceName = "javax.jms.Queue",
+        destinationName="syncQueue",
+        description="My Sync Queue"),
+    @JMSDestinationDefinition(name = "java:global/jms/myAsyncQueue",
+        resourceAdapter = "jmsra",
+        interfaceName = "javax.jms.Queue",
+        destinationName="asyncQueue",
+        description="My Async Queue")
+})
+@WebServlet(urlPatterns = {"/TestServletSendAsync"})
+public class TestServletSendAsync extends HttpServlet {
     
-    @Inject MessageSenderSync sender;
+    @Inject MessageSenderAsync sender;
     
     @Inject MessageReceiverSync receiver;
 
@@ -86,10 +87,11 @@ public class TestServletSendSync extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>JMS2 Send Message (Sync)</title>");            
+            out.println("<title>JMS2 Send Message (Async)</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>JMS2 Send/Receive (Sync) " + request.getContextPath() + "</h1>");
+            out.println("<h1>JMS2 Send/Receive (Async) " + request.getContextPath() + "</h1>");
+            out.println("<b>Async not permitted in Java EE, using sync send instead</b><br><br>");
             String m = "Hello there";
             sender.sendMessage(m);
             out.format("Message sent: %1$s.<br>", m);

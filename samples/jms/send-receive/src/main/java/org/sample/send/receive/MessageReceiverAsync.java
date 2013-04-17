@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.sample.sendmessage;
+package org.sample.send.receive;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
