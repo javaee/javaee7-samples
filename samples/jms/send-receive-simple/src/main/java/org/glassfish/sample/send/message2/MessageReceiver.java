@@ -39,18 +39,11 @@
  */
 package org.glassfish.sample.send.message2;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Resource;
-import javax.ejb.MessageDriven;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
 import javax.jms.Queue;
-import javax.jms.TextMessage;
 
 /**
  * @author Arun Gupta
@@ -66,6 +59,6 @@ public class MessageReceiver {
 
     public String receiveMessage() {
         String message = context.createConsumer(myQueue).receiveBody(String.class, 1000);
-        return "Received " + message;
+        return message;
     }
 }
