@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.sample.send.message2;
+package org.glassfish.sample.send.receive.sample;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
