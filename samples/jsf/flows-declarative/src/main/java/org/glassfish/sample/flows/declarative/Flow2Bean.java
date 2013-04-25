@@ -53,12 +53,4 @@ public class Flow2Bean implements Serializable {
     public String getName() {
         return this.getClass().getSimpleName();
     }
-
-    public String getReturnValue() {
-        return "/return";
-    }
-
-    public String getHomeValue() {
-        return "/index";
-    }    
 }

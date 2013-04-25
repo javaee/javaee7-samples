@@ -49,10 +49,10 @@
 
     <flow-definition id="flow2">
         <flow-return id="taskFlowReturn1">
-            <from-outcome>#{flow2Bean.returnValue}</from-outcome>
+            <from-outcome>/return</from-outcome>
         </flow-return>
         <flow-return id="goHome">
-            <from-outcome>#{flow2Bean.homeValue}</from-outcome>
+            <from-outcome>/index</from-outcome>
         </flow-return>
 
         <inbound-parameter>
