@@ -50,8 +50,6 @@ import javax.faces.flow.builder.FlowDefinition;
  */
 public class Flow1 {
 
-    private static final long serialVersionUID = -7623501087369765218L;
-
     @Produces @FlowDefinition
     public Flow defineFlow(@FlowBuilderParameter FlowBuilder flowBuilder) {
         String flowId = "flow1";
