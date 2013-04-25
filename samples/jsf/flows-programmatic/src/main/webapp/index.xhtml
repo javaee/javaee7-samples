@@ -43,8 +43,7 @@
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:h="http://java.sun.com/jsf/html">
 
     <head>
         <title>Outside of flow</title>
@@ -53,13 +52,8 @@
         <h1>Outside of Flow</h1>
 
         <h:form prependId="false">
-            <p><h:commandButton id="start1" value="Enter Flow1" action="flow1">
-                    <f:attribute name="toFlowDocumentId" value=""/>
-                </h:commandButton></p>
-            <p><h:commandButton id="start2" value="Enter Flow2" action="flow2">
-                    <f:attribute name="toFlowDocumentId" value=""/>
-                </h:commandButton></p>
-            <p><h:commandButton id="stay" value="stay" /></p>
+            <p><h:commandButton id="start1" value="Enter Flow1" action="flow1"/></p>
+            <p><h:commandButton id="start2" value="Enter Flow2" action="flow2"/></p>
         </h:form>
     </body>
 </html>
