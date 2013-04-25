@@ -60,6 +60,8 @@ public class Flow1 {
         
         flowBuilder.returnNode("taskFlowReturn1").
                 fromOutcome("#{flow1Bean.returnValue}");
+        flowBuilder.returnNode("goHome").
+                fromOutcome("#{flow1Bean.homeValue}");
         
         flowBuilder.inboundParameter("param1FromFlow2", "#{flowScope.param1Value}");
         flowBuilder.inboundParameter("param2FromFlow2", "#{flowScope.param2Value}");
