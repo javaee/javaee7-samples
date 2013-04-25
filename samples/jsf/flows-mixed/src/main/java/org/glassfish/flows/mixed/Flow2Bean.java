@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.flowmulti;
+package org.glassfish.flows.mixed;
 
 import java.io.Serializable;
 import javax.faces.flow.FlowScoped;
