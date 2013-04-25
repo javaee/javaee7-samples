@@ -46,17 +46,16 @@
       xmlns:h="http://java.sun.com/jsf/html">
 
     <head>
-        <title>Second page in the flow</title>
+        <title>First page in the flow</title>
     </head>
     <body bgcolor="red">
         <h:form prependId="false">
-            <p>Second page in the flow</p>
+            <h1>First page in the flow</h1>
             <p>Flow bean name: #{flow1Bean.name}</p>
 
-            <p>value: <h:inputText id="input" value="#{flowScope.value}" /></p>
+            <p>Has a flow: #{null != facesContext.application.flowHandler.currentFlow}.</p>
 
-            <p><h:commandButton id="start" value="back" action="flow1" /></p>
-            <p><h:commandButton id="flow1b" value="next" action="flow1b" /></p>
+            <p><h:commandButton id="flow1a" value="next" action="flow1a" /></p>
 
         </h:form>
     </body>
