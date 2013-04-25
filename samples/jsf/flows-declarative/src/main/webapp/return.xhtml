@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='UTF-8' ?>
 <!-- 
 /*
 * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
@@ -42,24 +42,22 @@
 -->
 
 <!DOCTYPE html>
+
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html">
-
     <head>
-        <title>Second Page in Flow 2</title>
+        <title>Page navigated to upon return from any flow</title>
     </head>
-    <body bgcolor="blue">
-        <h:form prependId="false">
-            <h1>Second Page in Flow 2</h1>
-            <p>Flow bean name: #{flow2Bean.name}</p>
+    <body>
+        <h1>Page navigated to upon return from any flow</h1>
+        
+    <h:form prependId="false">
+        <p>Has a flow: #{null != facesContext.application.flowHandler.currentFlow}.</p>
+        
+        <p>flowScope value (should be empty): #{flowScope.value}.</p>
 
-            <p>value: <h:inputText id="input" value="#{flowScope.value}" /></p>
-
-            <p><h:commandButton id="start" value="start" action="flow2" /></p>
-            <p><h:commandButton id="back" value="back" action="flow2" /></p>
-            <p><h:commandButton id="next" value="next" action="flow2b" /></p>
-            <p><h:commandButton id="index" value="home" action="goHome" /></p>
-
-        </h:form>
-    </body>
+        <p><h:commandButton id="index" value="home" action="/index" /></p>
+        
+    </h:form>
+</body>
 </html>
