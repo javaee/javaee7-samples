@@ -48,6 +48,9 @@
         http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
     
     <flow-definition id="booking">
+        <flow-return id="goHome">
+            <from-outcome>#{booking.homeValue}</from-outcome>
+        </flow-return>
     </flow-definition>
     
 </faces-config>
