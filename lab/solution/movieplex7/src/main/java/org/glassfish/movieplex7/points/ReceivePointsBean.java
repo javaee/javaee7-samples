@@ -45,8 +45,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSDestinationDefinition;
 import javax.jms.JMSDestinationDefinitions;
@@ -59,36 +59,27 @@ import javax.jms.QueueBrowser;
  */
 @JMSDestinationDefinitions({
     @JMSDestinationDefinition(name = "java:global/jms/pointsQueue",
-            resourceAdapter = "jmsra",
-            interfaceName = "javax.jms.Queue",
-            destinationName = "pointsQueue",
-            description = "Points Queue")
+            interfaceName = "javax.jms.Queue")
 })
 @Named
 @SessionScoped
 public class ReceivePointsBean implements Serializable {
 
-//    @Inject
+    @Inject
 //    @JMSConnectionFactory("java:comp/DefaultJMSConnectionFactory")
-//    JMSContext context;
-    
-    @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
-    ConnectionFactory connectionFactory; 
-    
-    @Resource(mappedName="java:global/jms/pointsQueue")
+    JMSContext context;
+    @Resource(mappedName = "java:global/jms/pointsQueue")
     Queue pointsQueue;
 
     public String receiveMessage() {
-        try (JMSContext context = connectionFactory.createContext()) {
-            String message = context.createConsumer(pointsQueue).receiveBody(String.class);
-            System.out.println("Received message: " + message);
-            return message;
-        }
+        String message = context.createConsumer(pointsQueue).receiveBody(String.class);
+        System.out.println("Received message: " + message);
+        return message;
     }
-    
+
     public int getQueueSize() {
         int count = 0;
-        try (JMSContext context = connectionFactory.createContext()) {
+        try {
             QueueBrowser browser = context.createBrowser(pointsQueue);
             Enumeration elems = browser.getEnumeration();
             while (elems.hasMoreElements()) {
@@ -101,5 +92,4 @@ public class ReceivePointsBean implements Serializable {
         System.out.println("Getting queue size: " + count);
         return count;
     }
-    
 }
