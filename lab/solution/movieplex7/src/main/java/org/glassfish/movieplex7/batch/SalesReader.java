@@ -42,6 +42,7 @@ package org.glassfish.movieplex7.batch;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.batch.api.chunk.AbstractItemReader;
@@ -53,9 +54,10 @@ import javax.inject.Named;
 @Named
 public class SalesReader extends AbstractItemReader {
 
-    private final BufferedReader reader;
+    private BufferedReader reader;
 
-    public SalesReader() {
+    @Override
+    public void open(Serializable checkpoint) throws Exception {
         reader = new BufferedReader(
                 new InputStreamReader(
                 Thread.currentThread()
