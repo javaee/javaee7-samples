@@ -23,7 +23,7 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0-b83</version>
+            <version>7.0-b87</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
