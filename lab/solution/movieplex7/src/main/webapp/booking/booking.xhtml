@@ -56,9 +56,7 @@
                 <h:form prependId="false">
 
                     <h:selectOneRadio value="#{booking.movieId}" layout="pageDirection" required="true">
-                        <f:selectItems value="#{movieFacadeREST.all}" var="m">
-                            <f:selectItem itemValue="#{m.id}" itemLabel="#{m.name}"/>
-                        </f:selectItems>
+                        <f:selectItems value="#{movieFacadeREST.all}" var="m" itemValue="#{m.id}" itemLabel="#{m.name}"/>
                     </h:selectOneRadio>
                     
                     <h:commandButton id="shows" value="Pick a time" action="showtimes" />
