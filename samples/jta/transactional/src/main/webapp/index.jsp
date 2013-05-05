@@ -51,6 +51,6 @@
     </head>
     <body>
         <h1>@Transactional</h1>
-        Start the <a href="${pageContext.request.contextPath}/TestServlet"/>job</a>.
+        Invoke a method with <a href="${pageContext.request.contextPath}/TestServlet"/>default @Transactional</a>.
     </body>
 </html>
