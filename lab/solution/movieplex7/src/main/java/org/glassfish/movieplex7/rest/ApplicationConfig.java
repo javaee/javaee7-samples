@@ -39,7 +39,6 @@
  */
 package org.glassfish.movieplex7.rest;
 
-import java.util.Set;
 import javax.ws.rs.core.Application;
 
 /**
