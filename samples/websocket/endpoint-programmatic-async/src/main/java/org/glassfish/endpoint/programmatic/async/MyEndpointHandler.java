@@ -58,7 +58,7 @@ public class MyEndpointHandler extends Endpoint {
             @Override
             public void onMessage(String data) {
                 System.out.println("Received (MyEndpointHandler) : " + data);
-                
+
                 session.getAsyncRemote().sendText(data, new SendHandler() {
 
                     @Override
@@ -69,7 +69,7 @@ public class MyEndpointHandler extends Endpoint {
                             System.out.println("Message NOT written to the socket (handler)");
                             sr.getException().printStackTrace();
                         }
-                        
+
                     }
                 });
             }
