@@ -51,14 +51,7 @@ import javax.jms.TextMessage;
 /**
  * @author Arun Gupta
  */
-@MessageDriven(mappedName = "java:global/jms/myAsyncQueue", 
-        activationConfig = {
-            @ActivationConfigProperty(
-        propertyName = "destinationType", 
-        propertyValue = "javax.jms.Queue")})
-// Adding the workaround for activationConfig
-// This should not be required after http://java.net/jira/browse/GLASSFISH-19492
-// is fixed.
+@MessageDriven(mappedName = "java:global/jms/myAsyncQueue")
 public class MessageReceiverAsync implements MessageListener {
 
     @Override
