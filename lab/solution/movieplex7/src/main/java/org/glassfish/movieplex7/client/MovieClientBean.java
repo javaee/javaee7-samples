@@ -51,7 +51,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import org.glassfish.jersey.SslConfigurator;
 import org.glassfish.movieplex7.entities.Movie;
 import org.glassfish.movieplex7.json.MovieWriter;
 
@@ -70,8 +69,7 @@ public class MovieClientBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        client = ClientBuilder.newBuilder().sslContext(SslConfigurator.newInstance(false).createSSLContext()).build();
-//        client = ClientBuilder.newClient();
+        client = ClientBuilder.newClient();
         target = client
                 .target("http://localhost:8080/movieplex7/webresources/movie/");
     }
