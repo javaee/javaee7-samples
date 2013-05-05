@@ -1,4 +1,3 @@
-<!-- 
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -38,20 +37,19 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
--->
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
+package org.glassfish.sample.transactional;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>@Transactional</title>
-    </head>
-    <body>
-        <h1>@Transactional</h1>
-        Invoke <a href="${pageContext.request.contextPath}/TestCDIServlet"/>CDI bean</a> with @Transactional.<br/>
-        Invoke a <a href="${pageContext.request.contextPath}/TestEJBServlet"/>EJB</a> that invokes EJB.<br/>
-    </body>
-</html>
+/**
+ * @author Arun Gupta
+ */
+@Stateless
+public class MySessionBean {
+    @Inject MyCDIBean myBean;
+    
+    public void outerTransaction() {
+        myBean.required();
+    }
+}
