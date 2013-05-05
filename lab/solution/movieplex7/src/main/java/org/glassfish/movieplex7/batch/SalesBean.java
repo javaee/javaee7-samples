@@ -45,8 +45,6 @@ import javax.batch.operations.JobOperator;
 import javax.batch.operations.JobStartException;
 import javax.batch.runtime.BatchRuntime;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -56,7 +54,6 @@ import org.glassfish.movieplex7.entities.Sales;
  * @author Arun Gupta
  */
 @Stateless
-@TransactionManagement(TransactionManagementType.BEAN)
 @Named
 public class SalesBean {
     
