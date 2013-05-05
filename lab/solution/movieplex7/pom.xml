@@ -9,12 +9,6 @@
 
     <name>movieplex7</name>
 
-    <properties>
-        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
-    </properties>
-
     <repositories>
         <repository>
             <id>java.net</id>
@@ -30,22 +24,9 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0-b80</version>
+            <version>7.0-b87</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-common</artifactId>
-            <version>2.0-m13-2</version>
-            <scope>provided</scope>
-        </dependency>        
-        <dependency>
-            <groupId>javax.batch</groupId>
-            <artifactId>javax.batch-api-all</artifactId>
-            <version>1.0-b10</version>        
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -71,3 +52,4 @@
     </build>
 
 </project>
+
