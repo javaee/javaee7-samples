@@ -8,7 +8,7 @@
             <property name="javax.persistence.schema-generation.create-script-source" value="META-INF/create.sql"/>
             <property name="javax.persistence.sql-load-script-source" value="META-INF/load.sql"/>
             <property name="eclipselink.deploy-on-startup" value="true"/>
-            <property name="eclipselink.logging.exceptions" value="true"/>
+            <property name="eclipselink.logging.exceptions" value="false"/>
             <!--<property name="eclipselink.logging.level" value="FINE"/>-->
         </properties>
     </persistence-unit>
