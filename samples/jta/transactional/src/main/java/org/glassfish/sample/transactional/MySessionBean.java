@@ -49,7 +49,27 @@ import javax.inject.Inject;
 public class MySessionBean {
     @Inject MyCDIBean myBean;
     
-    public void outerTransaction() {
+    public void requiredOuter() {
         myBean.required();
+    }
+    
+    public void requiresNewOuter() {
+        myBean.requiresNew();
+    }
+    
+    public void mandatoryOuter() {
+        myBean.mandatory();
+    }
+    
+    public void supportsOuter() {
+        myBean.supports();
+    }
+    
+    public void notSupportedOuter() {
+        myBean.notSupported();
+    }
+    
+    public void neverOuter() {
+        myBean.never();
     }
 }

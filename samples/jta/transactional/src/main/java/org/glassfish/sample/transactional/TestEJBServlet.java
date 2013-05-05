@@ -43,12 +43,54 @@ public class TestEJBServlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet TestEJBServlet at " + request.getContextPath() + "</h1>");
-            out.println("EJB calling CDI Bean with Transactional.TxType.REQUIRED</br>");
+            
+            out.println("EJB calling bean with Transactional.TxType.REQUIRED</br>");
             try {
-                mySessionBean.outerTransaction();
+                mySessionBean.requiredOuter();
             } catch (Exception e) {
                 e.printStackTrace(out);
             }
+            out.println("No stack trace, right ?<p/>");
+            
+            out.println("EJB calling bean with Transactional.TxType.REQUIRES_NEW</br>");
+            try {
+                mySessionBean.requiredOuter();
+            } catch (Exception e) {
+                e.printStackTrace(out);
+            }
+            out.println("No stack trace, right ?<p/>");
+            
+            out.println("EJB calling bean with Transactional.TxType.MANDATORY</br>");
+            try {
+                mySessionBean.mandatoryOuter();
+            } catch (Exception e) {
+                e.printStackTrace(out);
+            }
+            out.println("No stack trace, right ?<p/>");
+            
+            out.println("EJB calling bean with Transactional.TxType.SUPPORTS</br>");
+            try {
+                mySessionBean.supportsOuter();
+            } catch (Exception e) {
+                e.printStackTrace(out);
+            }
+            out.println("No stack trace, right ?<p/>");
+            
+            out.println("EJB calling bean with Transactional.TxType.NOT_SUPPORTED</br>");
+            try {
+                mySessionBean.notSupportedOuter();
+            } catch (Exception e) {
+                e.printStackTrace(out);
+            }
+            out.println("No stack trace, right ?<p/>");
+            
+            out.println("EJB calling bean with Transactional.TxType.NEVER</br>");
+            try {
+                mySessionBean.neverOuter();
+            } catch (Exception e) {
+                out.println(e.getMessage() + "<br>");
+            }
+            out.println("Got exception message, right ?<p/>");
             out.println("</body>");
             out.println("</html>");
         }
