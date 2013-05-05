@@ -47,14 +47,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.TransactionalException;
 
 /**
  * @author Arun Gupta
  */
 @WebServlet(urlPatterns = {"/TestServlet"})
 public class TestServlet extends HttpServlet {
-    
-    @Inject MyBean bean;
+
+    @Inject
+    MyBean bean;
 
     /**
      * Processes requests for both HTTP
@@ -73,11 +75,16 @@ public class TestServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet TestServlet</title>");            
+            out.println("<title>Servlet TestServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet TestServlet at " + request.getContextPath() + "</h1>");
-            bean.deleteMovie();
+            try {
+                bean.deleteMovie();
+            } catch (TransactionalException e) {
+                e.printStackTrace(out);
+            }
+            out.println("No stack trace, right ?");
             out.println("</body>");
             out.println("</html>");
         }
