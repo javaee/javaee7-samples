@@ -57,8 +57,4 @@ public class Flow1Bean implements Serializable {
     public String getReturnValue() {
         return "/return";
     }
-
-    public String getHomeValue() {
-        return "/index";
-    }    
 }

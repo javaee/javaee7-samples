@@ -52,7 +52,7 @@
             <from-outcome>#{flow1Bean.returnValue}</from-outcome>
         </flow-return>
         <flow-return id="goHome">
-            <from-outcome>#{flow1Bean.homeValue}</from-outcome>
+            <from-outcome>/index</from-outcome>
         </flow-return>
 
         <inbound-parameter>
