@@ -116,8 +116,4 @@ public class Booking {
             return "none";
         }
     }
-    
-    public String getHomeValue() {
-        return "/index";
-    }
 }

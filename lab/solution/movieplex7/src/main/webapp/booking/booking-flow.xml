@@ -49,7 +49,7 @@
     
     <flow-definition id="booking">
         <flow-return id="goHome">
-            <from-outcome>#{booking.homeValue}</from-outcome>
+            <from-outcome>/index</from-outcome>
         </flow-return>
     </flow-definition>
     
