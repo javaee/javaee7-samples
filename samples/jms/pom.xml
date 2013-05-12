@@ -19,6 +19,7 @@
         <module>send-receive-simple</module>
         <module>send-receive</module>
         <module>temp-destination</module>
-    </modules>
+    <module>jmscontext-cdi</module>
+  </modules>
 
 </project>
