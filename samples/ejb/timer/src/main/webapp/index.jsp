@@ -46,10 +46,11 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JAX-RS 2 Client API</title>
+        <title>EJB Timers</title>
     </head>
     <body>
-        <h1>JAX-RS 2 Client API</h1>
-        Invoke the <a href="${pageContext.request.contextPath}/TestServlet"/>Client API</a>.
+        <h1>EJB Timers</h1>
+        
+        Timer activated, check server.log.
     </body>
 </html>

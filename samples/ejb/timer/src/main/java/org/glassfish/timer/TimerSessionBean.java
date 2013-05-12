@@ -55,8 +55,7 @@ import javax.ejb.Timer;
 @Singleton
 public class TimerSessionBean {
     
-    @Resource
-    private SessionContext ctx;
+    @Resource SessionContext ctx;
 
     @Schedule(hour="*", minute="*", second="*")
     public void printDate() {
