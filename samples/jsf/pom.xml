@@ -22,6 +22,8 @@
         <module>flows-mixed</module>
         <module>flows-programmatic</module>
         <module>flows-declarative</module>
-    </modules>
+    <module>passthrough</module>
+    <module>radio-buttons</module>
+  </modules>
 
 </project>
