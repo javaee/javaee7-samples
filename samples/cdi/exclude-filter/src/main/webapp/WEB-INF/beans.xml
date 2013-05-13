@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+                      http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
+    bean-discovery-mode="all">
+    <scan>
+        <exclude name="org.glassfish.sample.exclude.filter.beans.*">
+            <if-class-available name="org.glassfish.sample.exclude.filter.beans.SimpleGreeting"/>
+        </exclude>
+        
+<!--        <exclude name="org.glassfish.sample.exclude.filter.*">
+            <if-class-not-available name="org.glassfish.sample.exclude.filter.FancyGreeting"/>
+        </exclude>
+        
+        <exclude name="org.glassfish.sample.exclude.filter.*">
+            <if-system-property name="verbosity" value="low"/>
+        </exclude>
+        
+        <exclude name="org.glassfish.sample.exclude.filter.**">
+            <if-system-property name="exclude-ejbs"/>
+        </exclude>-->
+    </scan>
+</beans>
