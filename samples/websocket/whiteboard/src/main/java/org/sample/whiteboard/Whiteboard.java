@@ -72,7 +72,7 @@ public class Whiteboard {
     }
 
     @OnMessage
-    public void boradcastFigure(Figure figure, Session session) throws IOException, EncodeException {
+    public void broadcastFigure(Figure figure, Session session) throws IOException, EncodeException {
         System.out.println("boradcastFigure: " + figure);
         for (Session peer : peers) {
             if (!peer.equals(session)) {
