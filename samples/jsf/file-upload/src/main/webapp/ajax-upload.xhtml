@@ -8,8 +8,8 @@
         <script type="text/javascript">
             var onload_cb = function() {
             }
-            var statusUpdate = function statusUpdate(data) {
-                var statusArea = document.getElementById("fileUploadBean.text");
+            function statusUpdate(data) {
+                var statusArea = document.getElementById("status");
                 var text = statusArea.value;
                 text = text + "Name: " + data.source.id;
                 if (data.type === "event") {
@@ -38,7 +38,7 @@
             <h:outputText value="#{fileUploadBean.text}"/>
         </h:form>
         <h2>Status:</h2>
-        <textarea id="fileUploadBean.text" cols="40" rows="10" readonly="readonly" />
+        <textarea id="status" cols="40" rows="10" readonly="readonly" />
     </h:body>
 </html>
 
