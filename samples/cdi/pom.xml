@@ -17,6 +17,14 @@
 
     <modules>
         <module>vetoed</module>
-  </modules>
+        <module>pkg-level</module>
+        <module>decorators</module>
+        <module>bean-discovery-all</module>
+        <module>bean-discovery-annotated</module>
+        <module>bean-discovery-none</module>
+        <module>exclude-filter</module>
+        <module>built-in</module>
+        <module>interceptors</module>
+    </modules>
 
 </project>
