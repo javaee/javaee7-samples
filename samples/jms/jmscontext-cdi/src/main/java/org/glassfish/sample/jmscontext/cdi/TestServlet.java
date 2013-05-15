@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author arungup
  */
-@WebServlet(urlPatterns = {"/TestServlet2"})
+@WebServlet(urlPatterns = {"/TestServlet"})
 public class TestServlet extends HttpServlet {
     
     @Inject MessageSender sender;
