@@ -19,6 +19,7 @@
         <module>nonblocking</module>
         <module>protocol-handler</module>
         <module>servlet-security</module>
-  </modules>
+        <module>metadata-complete</module>
+    </modules>
 
 </project>
