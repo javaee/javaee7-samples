@@ -48,6 +48,7 @@
     <modules>
         <module>jsonp</module>
         <module>websocket</module>
+        <module>jsf</module>
     </modules>
 
 </project>
