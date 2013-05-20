@@ -1,0 +1,30 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
+    </head>
+    <body>
+        <form action="">
+            Color: <input type="color" name="favcolor"><br>
+            Birthday: <input type="date" name="bday"><br>
+            Birthday (date and time): <input type="datetime" name="bdaytime"><br>
+            E-mail: <input type="email" name="email"><br>
+            Quantity (between 1 and 5): <input type="number" name="quantity" min="1" max="5"><br>
+            Range: <input type="range" name="points" min="1" max="10"><br>
+            Search Google: <input type="search" name="googlesearch"><br>
+            Telephone: <input type="tel" name="usrtel"><br>
+            Add your homepage: <input type="url" name="homepage"><br>
+            Date-*: <input id="data" type="text" data-length="3" name="data"/>
+            <input type="submit">
+        </form>
+        <script type="text/javascript">
+            var data = document.getElementById("data");
+            console.log(data.dataset.length);
+        </script>
+    </body>
+</html>
