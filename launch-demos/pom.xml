@@ -51,6 +51,7 @@
         <module>jsf</module>
         <module>jms</module>
         <module>jta</module>
+        <module>batch</module>
     </modules>
 
 </project>
