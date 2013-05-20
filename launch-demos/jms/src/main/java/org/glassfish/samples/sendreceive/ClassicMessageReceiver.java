@@ -53,7 +53,7 @@ import javax.jms.Session;
  * @author Arun Gupta
  */
 @Stateless
-public class MessageReceiverClassic {
+public class ClassicMessageReceiver {
 
     @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
     ConnectionFactory connectionFactory;

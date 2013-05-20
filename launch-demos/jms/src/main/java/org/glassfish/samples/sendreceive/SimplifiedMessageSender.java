@@ -41,44 +41,26 @@ package org.glassfish.samples.sendreceive;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
-import javax.jms.MessageProducer;
+import javax.inject.Inject;
+import javax.jms.JMSContext;
+import javax.jms.JMSDestinationDefinition;
 import javax.jms.Queue;
-import javax.jms.Session;
-import javax.jms.TextMessage;
 
 /**
  * @author Arun Gupta
  */
 @Stateless
-public class MessageSenderClassic {
+@JMSDestinationDefinition(name = "java:global/jms/myQueue",
+        interfaceName = "javax.jms.Queue")
+public class SimplifiedMessageSender {
 
-    @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
-    ConnectionFactory connectionFactory;
+    @Inject
+    JMSContext context;
     
-    @Resource(mappedName = "java:global/jms/myQueue")
-    Queue demoQueue;
+    @Resource(mappedName="java:global/jms/myQueue")
+    Queue myQueue;
 
-    public void sendMessage(String payload) {
-        Connection connection = null;
-        try {
-            connection = connectionFactory.createConnection();
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(demoQueue);
-            TextMessage textMessage = session.createTextMessage(payload);
-            messageProducer.send(textMessage);
-        } catch (JMSException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (JMSException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+    public void sendMessage(String message) {
+        context.createProducer().send(myQueue, message);
     }
 }

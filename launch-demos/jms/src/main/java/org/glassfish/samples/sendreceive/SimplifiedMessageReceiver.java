@@ -43,26 +43,21 @@ import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
-import javax.jms.JMSDestinationDefinition;
-import javax.jms.JMSDestinationDefinitions;
 import javax.jms.Queue;
 
 /**
  * @author Arun Gupta
  */
 @Stateless
-@JMSDestinationDefinitions({@JMSDestinationDefinition(name = "java:global/jms/myQueue",
-        interfaceName = "javax.jms.Queue")
-})
-public class MessageSenderSimplified {
+public class SimplifiedMessageReceiver {
 
     @Inject
-    JMSContext context;
+    private JMSContext context;
     
     @Resource(mappedName="java:global/jms/myQueue")
     Queue myQueue;
 
-    public void sendMessage(String message) {
-        context.createProducer().send(myQueue, message);
+    public String receiveMessage() {
+        return context.createConsumer(myQueue).receiveBody(String.class);
     }
 }

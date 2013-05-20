@@ -19,13 +19,13 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/TestServlet"})
 public class TestServlet extends HttpServlet {
     
-    @EJB MessageSenderSimplified senderSimplified;
+    @EJB SimplifiedMessageSender senderSimplified;
     
-    @EJB MessageReceiverSimplified receiverSimplified;
+    @EJB SimplifiedMessageReceiver receiverSimplified;
     
-    @EJB MessageSenderClassic senderClassic;
+    @EJB ClassicMessageSender senderClassic;
     
-    @EJB MessageReceiverClassic receiverClassic;
+    @EJB ClassicMessageReceiver receiverClassic;
 
     /**
      * Processes requests for both HTTP
