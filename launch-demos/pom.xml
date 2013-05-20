@@ -49,6 +49,7 @@
         <module>jsonp</module>
         <module>websocket</module>
         <module>jsf</module>
+        <module>jms</module>
     </modules>
 
 </project>
