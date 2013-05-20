@@ -51,6 +51,6 @@
     </head>
     <body>
         <h1>@TransactionScope</h1>
-        Check the values in <a href="${pageContext.request.contextPath}/TestServlet"/>two different transactions</a><br/>
+        <a href="${pageContext.request.contextPath}/TestServlet"/>Inject @TransactionScoped beans</a><br/>
     </body>
 </html>

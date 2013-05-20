@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.Resource;
+import javax.enterprise.context.ContextNotActiveException;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,8 +20,6 @@ import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
-import javax.transaction.Transaction;
-import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
 /**
@@ -33,10 +31,10 @@ public class TestServlet extends HttpServlet {
     
     @Inject MyBean bean;
     
+    @Inject MyBean bean2;
+    
     @Inject UserTransaction ut;
     
-    @Resource TransactionManager tm;
-
     /**
      * Processes requests for both HTTP
      * <code>GET</code> and
@@ -59,19 +57,24 @@ public class TestServlet extends HttpServlet {
             out.println("<body>");
             out.println("<h1>Servlet TestServlet at " + request.getContextPath() + "</h1>");
             try {
+                out.println("<b>Scenario 1</b>: Bean1 injected twice, same id<br>");
                 ut.begin();
-                out.println("Bean initial value (t1): " + bean.getValue());
-                bean.setValue(10);
-                out.println("Bean set value (t1): " + bean.getValue());
-                Transaction t1 = tm.suspend();
+                out.println("Bean1: " + bean.getId() + "<br>");
+                out.println("Bean2: " + bean2.getId());
+                ut.commit();
+                
+                out.println("<p><p>S<b>cenario 2</b>: Repeat of Scenario 1, different transaction, different ids<br>");
                 ut.begin();
-                out.println("Bean initial value (t2): " + bean.getValue());
-                bean.setValue(20);
-                out.println("Bean set value (t2): " + bean.getValue());
+                out.println("Bean1: " + bean.getId() + "<br>");
+                out.println("Bean2: " + bean2.getId());
                 ut.commit();
-                tm.resume(t1);
-                out.println("Bean set value (t1): " + bean.getValue());
-                ut.commit();
+                
+                out.println("<p><p><b>Scenario 3</b>: Bean outside a transaction<br>");
+                try {
+                    bean.getId();
+                } catch (ContextNotActiveException ex) {
+                    out.println("Got expected ContextNotActiveException");
+                }
             } catch (NotSupportedException 
                     | SystemException 
                     | RollbackException 
