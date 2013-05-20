@@ -50,6 +50,7 @@
         <module>websocket</module>
         <module>jsf</module>
         <module>jms</module>
+        <module>jta</module>
     </modules>
 
 </project>
