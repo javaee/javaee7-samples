@@ -13,5 +13,5 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>Batch 1.0 Chunk Sample</name>
+    <name>Batch 1.0 Chunk</name>
 </project>
