@@ -56,7 +56,7 @@
     <groupId>org.javaee7.samples</groupId>
     <artifactId>jsonp</artifactId>
     <packaging>jar</packaging>
-    <name>JSON-P Streaming and Object Model API</name>
+    <name>JSON-P 1.0 Streaming and Object Model API</name>
     
     <dependencies>
         <dependency>
