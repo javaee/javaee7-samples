@@ -80,6 +80,7 @@ public class TestServlet extends HttpServlet {
         out.println("<body>");
         out.println("<h1>JAX-RS 2 Client API</h1>");
         out.println("Initializing client...<br>");
+        
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://"
                 + request.getServerName()
@@ -113,15 +114,6 @@ public class TestServlet extends HttpServlet {
         map.add("id", "6");
         target.request().post(Entity.form(map));
         out.print("POSTed a new item ...<br>");
-
-        // GET
-        out.print("GETTing...<br>");
-        list = target.request().get(Person[].class);
-        for (Person p : list) {
-            out.print(p + "<br>");
-        }
-        out.println("... done.<br>");
-
 
         out.println("</body>");
         out.println("</html>");
