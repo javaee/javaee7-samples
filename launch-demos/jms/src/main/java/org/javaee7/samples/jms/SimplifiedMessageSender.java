@@ -37,27 +37,30 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.samples.sendreceive;
+package org.javaee7.samples.jms;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
+import javax.jms.JMSDestinationDefinition;
 import javax.jms.Queue;
 
 /**
  * @author Arun Gupta
  */
 @Stateless
-public class SimplifiedMessageReceiver {
+@JMSDestinationDefinition(name = "java:global/jms/myQueue",
+        interfaceName = "javax.jms.Queue")
+public class SimplifiedMessageSender {
 
     @Inject
-    private JMSContext context;
+    JMSContext context;
     
     @Resource(mappedName="java:global/jms/myQueue")
     Queue myQueue;
 
-    public String receiveMessage() {
-        return context.createConsumer(myQueue).receiveBody(String.class);
+    public void sendMessage(String message) {
+        context.createProducer().send(myQueue, message);
     }
 }

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.glassfish.samples.sendreceive;
+package org.javaee7.samples.jms;
 
 import java.io.IOException;
 import java.io.PrintWriter;

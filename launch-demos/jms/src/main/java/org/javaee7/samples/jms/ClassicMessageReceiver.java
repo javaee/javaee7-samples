@@ -37,23 +37,23 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.samples.sendreceive;
+package org.javaee7.samples.jms;
 
 import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
-import javax.jms.MessageProducer;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
 import javax.jms.Queue;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 
 /**
  * @author Arun Gupta
  */
 @Stateless
-public class ClassicMessageSender {
+public class ClassicMessageReceiver {
 
     @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
     ConnectionFactory connectionFactory;
@@ -61,14 +61,15 @@ public class ClassicMessageSender {
     @Resource(mappedName = "java:global/jms/myQueue")
     Queue demoQueue;
 
-    public void sendMessage(String payload) {
+    public String receiveMessage() {
+        String response = null;
         Connection connection = null;
         try {
             connection = connectionFactory.createConnection();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer messageProducer = session.createProducer(demoQueue);
-            TextMessage textMessage = session.createTextMessage(payload);
-            messageProducer.send(textMessage);
+            MessageConsumer messageConsumer = session.createConsumer(demoQueue);
+            Message message = messageConsumer.receive();
+            response = message.getBody(String.class);
         } catch (JMSException ex) {
             ex.printStackTrace();
         } finally {
@@ -80,5 +81,6 @@ public class ClassicMessageSender {
                 }
             }
         }
+        return response;
     }
 }
