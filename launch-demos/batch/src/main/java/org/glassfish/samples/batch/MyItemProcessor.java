@@ -52,6 +52,6 @@ public class MyItemProcessor implements ItemProcessor {
     public MyOutputRecord processItem(Object t) {
         System.out.println("processItem: " + t);
         
-        return (((MyInputRecord)t).getId() % 2 == 0) ? null : new MyOutputRecord(((MyInputRecord)t).getId() * 2);
+        return new MyOutputRecord(((MyInputRecord)t).getId() * 2);
     }
 }
