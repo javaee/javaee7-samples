@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.samples.passthrough;
+package org.javaee7.samples.jsf;
 
 import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
