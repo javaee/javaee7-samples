@@ -82,7 +82,7 @@ public class TicTacToeEndpoint {
     }
 
     @OnClose
-    public void onClose(Session session) {
+    public void onClose(Session session ) {
         sessions.remove(session.getId());
     }
 
