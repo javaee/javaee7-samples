@@ -56,7 +56,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>tictactoe-client</name>
+    <name>WebSocket 1.0 Tic Tac Toe Client</name>
                    
     <properties>
         <javafx.version>2.2</javafx.version>
