@@ -57,7 +57,7 @@
     <groupId>org.javaee7.samples</groupId>
     <artifactId>websocket</artifactId>
 
-    <name>WebSocket Tictactoe Sample Application</name>
+    <name>WebSocket 1.0 Tic Tac Toe</name>
 
     <modules>
         <module>client</module>
