@@ -37,30 +37,31 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.samples.batch;
+package org.javaee7.samples.batch;
+
+import java.io.Serializable;
+import java.util.StringTokenizer;
+import javax.batch.api.chunk.AbstractItemReader;
+import javax.inject.Named;
 
 /**
  * @author Arun Gupta
  */
-public class MyInputRecord {
-    private int id;
-            
-    public MyInputRecord() { }
+@Named
+public class MyItemReader extends AbstractItemReader {
     
-    public MyInputRecord(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    private StringTokenizer tokens;
+    
+    @Override
+    public void open(Serializable checkpoint) throws Exception {
+        tokens = new StringTokenizer("1,2,3,4,5,6,7,8,9,10", ",");
     }
     
     @Override
-    public String toString() {
-        return "MyInputRecord: " + id;
+    public MyInputRecord readItem() {
+        if (tokens.hasMoreTokens()) {
+            return new MyInputRecord(Integer.valueOf(tokens.nextToken()));
+        }
+        return null;
     }
 }

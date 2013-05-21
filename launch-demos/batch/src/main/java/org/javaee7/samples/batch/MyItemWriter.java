@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.samples.batch;
+package org.javaee7.samples.batch;
 
 import java.util.List;
 import javax.batch.api.chunk.AbstractItemWriter;
