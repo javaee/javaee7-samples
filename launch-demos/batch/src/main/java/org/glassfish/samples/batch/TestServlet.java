@@ -75,22 +75,12 @@ public class TestServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet TestServlet</title>");            
-            out.println("</head>");
+            out.println("<html><head><title>Servlet TestServlet</title></head>");
             out.println("<body>");
             out.println("<h1>Batch Job Submission (Java EE 7)</h1>");
             JobOperator jo = BatchRuntime.getJobOperator();
             long jid = jo.start("myJob", new Properties());
-            out.println("Job id: " + jid + "<br>");
-            out.println(jo.getJobInstanceCount("myJob") + " job instance found<br/>");
-            JobExecution je = jo.getJobExecution(jid);
-            out.println("Job created on: " + je.getCreateTime() + "<br>");
-            out.println("Job started on: " + je.getStartTime() + "<br>");
-            out.println("<p><p>Check server.log for output");
-            out.println("</body>");
-            out.println("</html>");
+            out.println("</body></html>");
         } catch (JobStartException | JobSecurityException ex) {
             Logger.getLogger(TestServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
