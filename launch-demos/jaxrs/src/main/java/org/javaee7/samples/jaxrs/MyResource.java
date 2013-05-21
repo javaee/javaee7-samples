@@ -37,44 +37,62 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.samples.jaxrs;
+package org.javaee7.samples.jaxrs;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.Min;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 /**
  * @author Arun Gupta
  */
-@XmlRootElement
-public class Person {
-    private int id;
-    private String name;
-
-    public Person() {
+@Path("persons")
+public class MyResource {
+    // Ideally this state should be stored in a database
+    private static List<Person> list;
+    
+    @PostConstruct
+    public void init() {
+        list = new ArrayList<>();
+        list.add(new Person(1, "Penny"));
+        list.add(new Person(2, "Leonard"));
+        list.add(new Person(3, "Bernadette"));
+        list.add(new Person(4, "Howard"));
+        list.add(new Person(5, "Rajesh"));
     }
 
-    public Person(int id, String name) {
-        this.id = id;
-        this.name = name;
+    @GET
+    @Produces("application/xml")
+    public Person[] getList() {
+        return list.toArray(new Person[0]);
+    }
+    
+    @GET
+    @Produces({"application/json", "application/xml"})
+    @Path("{id}")
+    public Person getPerson(@PathParam("id") @Min(1) int id) {
+        return list.get(id);
     }
 
-    public String getName() {
-        return name;
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void addToList(@FormParam("id") int id, @FormParam("name") String name) {
+        list.add(new Person(id, name));
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return name + "(" + id + ")";
+    @DELETE
+    @Path("${id}")
+    public void deleteFromList(@PathParam("id") @Min(1) int id) {
+        list.remove(id);
     }
 }
