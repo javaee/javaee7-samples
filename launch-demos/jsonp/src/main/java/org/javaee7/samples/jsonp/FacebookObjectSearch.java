@@ -65,10 +65,9 @@ public class FacebookObjectSearch {
             JsonObject obj = rdr.readObject();
             JsonArray results = obj.getJsonArray("data");
             for (JsonObject result : results.getValuesAs(JsonObject.class)) {
-                System.out.print(result.getJsonObject("from").getString("name"));
-                System.out.print(": ");
-                System.out.println(result.getString("message", ""));
-                System.out.println("-----------");
+                System.out.println("----> " + result.getJsonObject("from").getString("name"));
+                System.out.println("----> " + result.getString("message", ""));
+                System.out.println("**************");
             }
         }
     }

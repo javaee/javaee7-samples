@@ -69,13 +69,12 @@ public class FacebookStreamSearch {
                     switch (parser.getString()) {
                         case "name":
                             parser.next();
-                            System.out.print(parser.getString());
-                            System.out.print(": ");
+                            System.out.println("----> " + parser.getString());
                             break;
                         case "message":
                             parser.next();
-                            System.out.println(parser.getString());
-                            System.out.println("---------");
+                            System.out.println("----> " + parser.getString());
+                            System.out.println("**************");
                             break;
                     }
                 }
