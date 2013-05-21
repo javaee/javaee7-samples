@@ -13,6 +13,6 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>JAX-RS Client API</name>
+    <name>JAX-RS 2.0 Client API</name>
 </project>
 
