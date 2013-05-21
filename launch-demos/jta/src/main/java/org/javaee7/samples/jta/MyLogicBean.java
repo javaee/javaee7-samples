@@ -39,16 +39,40 @@
  */
 package org.javaee7.samples.jta;
 
-import java.io.Serializable;
-import javax.transaction.TransactionScoped;
+import javax.enterprise.context.ContextNotActiveException;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * @author Arun Gupta
  */
-@TransactionScoped
-public class MyBean implements Serializable {
+public class MyLogicBean {
 
-    public String getId() {
-        return this + "";
+    @Inject
+    MyDataBean bean1;
+    @Inject
+    MyDataBean bean2;
+
+    @Transactional
+    public void scenario1() {
+        System.out.println("Scenario 1: Bean injected twice, same id");
+        System.out.println(bean1.getId());
+        System.out.println(bean2.getId());
+    }
+
+    @Transactional
+    public void scenario2() {
+        System.out.println("Scenario 2: Repeat of Scenario 1, different transaction, different ids");
+        System.out.println(bean1.getId());
+        System.out.println(bean2.getId());
+    }
+
+    public void scenario3() {
+        System.out.println("Scenario 3: Bean outside a transaction");
+        try {
+            bean1.getId();
+        } catch (ContextNotActiveException ex) {
+            System.out.println("Got expected ContextNotActiveException");
+        }
     }
 }
