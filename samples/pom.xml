@@ -11,13 +11,6 @@
     <properties>
         <netbeans.hint.deploy.server>gfv3ee6</netbeans.hint.deploy.server>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>java.net-promoted</id>
-            <url>https://maven.java.net/content/groups/promoted/</url>
-        </repository>
-    </repositories>
     
     <dependencies>
         <dependency>
