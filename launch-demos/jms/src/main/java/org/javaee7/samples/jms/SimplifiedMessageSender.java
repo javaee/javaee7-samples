@@ -43,15 +43,12 @@ import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.jms.JMSContext;
-import javax.jms.JMSDestinationDefinition;
 import javax.jms.Queue;
 
 /**
  * @author Arun Gupta
  */
 @Stateless
-@JMSDestinationDefinition(name = "java:global/jms/myQueue",
-        interfaceName = "javax.jms.Queue")
 public class SimplifiedMessageSender {
 
     @Inject
