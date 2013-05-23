@@ -60,10 +60,10 @@ public class FacebookObjectSearch {
     public static void main(String... args) throws Exception {
         URL url = new URL("https://graph.facebook.com/search?q=java&type=post");
         try (InputStream is = url.openStream();
-             JsonReader rdr = Json.createReader(is)) {
+             JsonReader reader = Json.createReader(is)) {
 
-            JsonObject obj = rdr.readObject();
-            JsonArray results = obj.getJsonArray("data");
+            JsonObject object = reader.readObject();
+            JsonArray results = object.getJsonArray("data");
             for (JsonObject result : results.getValuesAs(JsonObject.class)) {
                 System.out.println("----> " + result.getJsonObject("from").getString("name"));
                 System.out.println("----> " + result.getString("message", ""));
