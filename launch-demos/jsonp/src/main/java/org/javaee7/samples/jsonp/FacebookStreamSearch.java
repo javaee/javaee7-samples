@@ -62,7 +62,8 @@ public class FacebookStreamSearch {
     public static void main(String... args) throws Exception {
         URL url = new URL("https://graph.facebook.com/search?q=java&type=post");
         try (InputStream is = url.openStream();
-                JsonParser parser = Json.createParser(is)) {
+             JsonParser parser = Json.createParser(is)) {
+            
             while (parser.hasNext()) {
                 Event event = parser.next();
                 if (event == Event.KEY_NAME) {
