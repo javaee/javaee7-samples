@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/TestServlet"})
 public class TestServlet extends HttpServlet {
     
-    @Inject MyLogicBean bean;
+    @Inject MyTransactionalBean bean;
 
     /**
      * Processes requests for both HTTP
