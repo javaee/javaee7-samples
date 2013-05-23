@@ -64,8 +64,8 @@ public class FacebookStreamSearch {
         try (InputStream is = url.openStream();
                 JsonParser parser = Json.createParser(is)) {
             while (parser.hasNext()) {
-                Event e = parser.next();
-                if (e == Event.KEY_NAME) {
+                Event event = parser.next();
+                if (event == Event.KEY_NAME) {
                     switch (parser.getString()) {
                         case "name":
                             parser.next();
