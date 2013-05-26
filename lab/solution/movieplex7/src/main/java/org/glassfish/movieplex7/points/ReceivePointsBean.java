@@ -49,7 +49,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jms.JMSContext;
 import javax.jms.JMSDestinationDefinition;
-import javax.jms.JMSDestinationDefinitions;
 import javax.jms.JMSException;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
@@ -57,10 +56,8 @@ import javax.jms.QueueBrowser;
 /**
  * @author Arun Gupta
  */
-@JMSDestinationDefinitions({
-    @JMSDestinationDefinition(name = "java:global/jms/pointsQueue",
-            interfaceName = "javax.jms.Queue")
-})
+@JMSDestinationDefinition(name = "java:global/jms/pointsQueue",
+        interfaceName = "javax.jms.Queue")
 @Named
 @SessionScoped
 public class ReceivePointsBean implements Serializable {
