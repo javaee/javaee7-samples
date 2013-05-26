@@ -22,6 +22,8 @@ public class MyBean {
     String password;
     String inputText;
     String inputTextarea;
+    boolean selectBooleanCheckbox;
+    String[] selectManyCheckbox;
     
     @PostConstruct
     public void init() {
@@ -78,4 +80,23 @@ public class MyBean {
     public void setInputTextarea(String inputTextarea) {
         this.inputTextarea = inputTextarea;
     }
+
+    public boolean isSelectBooleanCheckbox() {
+        return selectBooleanCheckbox;
+    }
+
+    public void setSelectBooleanCheckbox(boolean selectBooleanCheckbox) {
+        this.selectBooleanCheckbox = selectBooleanCheckbox;
+    }
+
+    public String[] getSelectManyCheckbox() {
+        return selectManyCheckbox;
+    }
+
+    public void setSelectManyCheckbox(String[] selectManyCheckbox) {
+        this.selectManyCheckbox = selectManyCheckbox;
+    }
+
+    
+    
 }
