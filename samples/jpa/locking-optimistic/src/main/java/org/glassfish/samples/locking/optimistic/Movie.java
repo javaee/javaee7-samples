@@ -54,7 +54,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Arun Gupta
  */
 @Entity
-@Table(name = "MOVIE_LOCKING")
+@Table(name = "MOVIE_OPTIMISTIC")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Movie.findAll", query = "SELECT m FROM Movie m"),
