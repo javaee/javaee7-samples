@@ -42,14 +42,8 @@ package org.glassfish.samples.locking.optimistic;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.criteria.Root;
 
 /**
  * @author Arun Gupta
@@ -61,32 +55,20 @@ public class MovieBean {
     EntityManager em;
 
     public List<Movie> listMovies() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaQuery listCriteria = builder.createQuery(Movie.class);
-        Root<Movie> listRoot = listCriteria.from(Movie.class);
-        listCriteria.select(listRoot);
-        TypedQuery<Movie> query = em.createQuery(listCriteria);
-        return query.getResultList();
+        return em.createNamedQuery("Movie.findAll", Movie.class).getResultList();
     }
 
     public void updateMovie() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaUpdate updateCriteria = builder.createCriteriaUpdate(Movie.class);
-        Root<Movie> updateRoot = updateCriteria.from(Movie.class);
-        updateCriteria.where(builder.equal(updateRoot.get(Movie_.name), "Inception"));
-        updateCriteria.set(updateRoot.get(Movie_.name), "INCEPTION");
-        Query q = em.createQuery(updateCriteria);
-        q.executeUpdate();
+        Movie m = em.find(Movie.class, 3);
+        em.lock(m, LockModeType.PESSIMISTIC_WRITE);
+        m.setName("INCEPTION");
+        em.merge(m);
         em.flush();
     }
     
     public void deleteMovie() {
-        CriteriaBuilder builder = em.getCriteriaBuilder();
-        CriteriaDelete deleteCriteria = builder.createCriteriaDelete(Movie.class);
-        Root<Movie> updateRoot = deleteCriteria.from(Movie.class);
-        deleteCriteria.where(builder.equal(updateRoot.get(Movie_.name), "The Matrix"));
-        Query q = em.createQuery(deleteCriteria);
-        q.executeUpdate();
+        Movie m = em.find(Movie.class, 1);
+        em.remove(m);
         em.flush();
     }
     
