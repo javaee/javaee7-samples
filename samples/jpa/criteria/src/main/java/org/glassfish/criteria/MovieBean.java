@@ -74,6 +74,7 @@ public class MovieBean {
         CriteriaUpdate updateCriteria = builder.createCriteriaUpdate(Movie.class);
         Root<Movie> updateRoot = updateCriteria.from(Movie.class);
         updateCriteria.where(builder.equal(updateRoot.get(Movie_.name), "Inception"));
+        updateCriteria.set(updateRoot.get(Movie_.name), "INCEPTION");
         Query q = em.createQuery(updateCriteria);
         q.executeUpdate();
         em.flush();
