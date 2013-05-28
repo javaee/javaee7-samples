@@ -41,15 +41,7 @@ package org.glassfish.criteria;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.ejb.EJB;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -59,11 +51,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Arun Gupta
  */
-@WebServlet(name = "TestServlet", urlPatterns = {"/TestServlet"})
+@WebServlet(urlPatterns = {"/TestServlet"})
 public class TestServlet extends HttpServlet {
-    
-    @PersistenceUnit
-    EntityManagerFactory emf;
     
     @EJB MovieBean bean;
 
@@ -80,8 +69,7 @@ public class TestServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        try {
+        try (PrintWriter out = response.getWriter()) {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -90,27 +78,26 @@ public class TestServlet extends HttpServlet {
             out.println("<body>");
             out.println("<h1>Servlet TestServlet at " + request.getContextPath() + "</h1>");
 
-            out.println("Listing movies");
+            out.println("Listing movies<br>");
             for (Movie m : bean.listMovies()) {
                 out.println(m.getName() + "<br>");
             }
-            out.println("Updating a movie");
+            
+            out.println("<p>Updating a movie<br>");
             bean.updateMovie();
             out.println("Listing movies");
             for (Movie m : bean.listMovies()) {
                 out.println(m.getName() + "<br>");
             }
-            out.println("Deleting a movie");
+            out.println("<p>Deleting a movie<br>");
             bean.deleteMovie();
-            out.println("Listing movies");
+            out.println("Listing movies<br>");
             for (Movie m : bean.listMovies()) {
                 out.println(m.getName() + "<br>");
             }
             
             out.println("</body>");
             out.println("</html>");
-        } finally {
-            out.close();
         }
     }
 
@@ -151,15 +138,4 @@ public class TestServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    private void listMovies(CriteriaBuilder builder, EntityManager em, PrintWriter out) {
-        CriteriaQuery listCriteria = builder.createQuery(Movie.class);
-        Root<Movie> listRoot = listCriteria.from(Movie.class);
-        listCriteria.select(listRoot);
-        TypedQuery<Movie> query = em.createQuery(listCriteria);
-        List<Movie> list = query.getResultList();
-        for (Movie m : list) {
-            out.println(m.getName() + "<br>");
-        }
-    }
 }
