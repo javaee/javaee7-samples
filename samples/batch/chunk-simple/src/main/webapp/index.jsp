@@ -46,10 +46,10 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Getting Started with Batch API - Simple Chunk!</title>
+        <title>Simple Chunk</title>
     </head>
     <body>
-        <h1>Getting Started with Batch API - Simple Chunk!</h1>
+        <h1>Simple Chunk</h1>
         Start the <a href="${pageContext.request.contextPath}/TestServlet"/>job</a>.
     </body>
 </html>
