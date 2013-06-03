@@ -86,7 +86,7 @@ public class Booking {
     public void setStartTime(String startTime) {
         StringTokenizer tokens = new StringTokenizer(startTime, ",");
         startTimeId = Integer.parseInt(tokens.nextToken());
-        this.startTime = tokens.nextToken();;
+        this.startTime = tokens.nextToken();
     }
 
     public int getStartTimeId() {
