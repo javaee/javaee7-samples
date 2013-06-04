@@ -39,6 +39,7 @@
  */
 package org.glassfish.samples.lifecycle;
 
+import javax.annotation.Priority;
 import javax.interceptor.AroundConstruct;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -46,17 +47,13 @@ import javax.interceptor.InvocationContext;
 /**
  * @author Arun Gupta
  */
-@MyAroundConstruct
+@Priority(Interceptor.Priority.APPLICATION+10)
 @Interceptor
+@MyAroundConstructInterceptorBinding
 public class MyAroundConstructInterceptor {
     
     @AroundConstruct
     public void validateConstructor(InvocationContext context) {
-        String name = context.getMethod().getName();
-        String params = "";
-        for (Object param : context.getParameters()) {
-            params += param + " ";
-        }
-        System.out.println(name + "  " + params);
+        System.out.println("MyAroundConstructInterceptor.validateConstructor");
     }
 }

@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponse;
 public class TestServlet extends HttpServlet {
     
     @Inject MyStatefulBean stateful;
-    @Inject MyStatelessBean stateless;
+//    @Inject MyStatelessBean stateless;
 
     /**
      * Processes requests for both HTTP

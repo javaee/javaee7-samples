@@ -46,10 +46,14 @@ import javax.annotation.PreDestroy;
 import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Stateful;
+import javax.enterprise.context.Dependent;
+import javax.interceptor.InvocationContext;
 
 /**
  * @author Arun Gupta
  */
+@Dependent
+@MyAroundConstructInterceptorBinding
 @Stateful
 public class MyStatefulBean {
     private List<String> list;
@@ -58,29 +62,24 @@ public class MyStatefulBean {
         System.out.println("MyStatefulBean.ctor");
     }
     
-    @MyAroundConstruct
-    public void aroundConstruct() {
-        System.out.println("MyStatefulBean.aroundConstruct");        
-    }
-    
     @PostConstruct
-    public void postConstruct() {
+    private void postConstruct() {
         list = new ArrayList<>();
         System.out.println("MyStatefulBean.postConstruct");
     }
     
     @PreDestroy
-    public void preDestroy() {
+    private void preDestroy() {
         System.out.println("MyStatefulBean.preDestroy");
     }
 
     @PrePassivate
-    public void prePassivate() {
+    private void prePassivate(InvocationContext context) {
         System.out.println("MyStatefulBean.prePassivate");
     }
     
     @PostActivate
-    public void postActivate() {
+    private void postActivate(InvocationContext context) {
         System.out.println("MyStatefulBean.postActivate");
     }
     

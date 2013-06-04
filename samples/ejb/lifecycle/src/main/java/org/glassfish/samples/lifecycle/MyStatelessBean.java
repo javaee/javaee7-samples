@@ -48,18 +48,18 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class MyStatelessBean {
-    @MyAroundConstruct
+    @MyAroundConstructInterceptorBinding
     public MyStatelessBean() {
         System.out.println("MyStatelessBean.ctor");
     }
     
     @PostConstruct
-    public void postConstruct() {
+    private void postConstruct() {
         System.out.println("MyStatelessBean.postConstruct");
     }
     
     @PreDestroy
-    public void preDestroy() {
+    private void preDestroy() {
         System.out.println("MyStatelessBean.preDestroy");
     }
     
