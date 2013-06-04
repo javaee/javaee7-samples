@@ -57,7 +57,7 @@ public class MyInterceptor {
         for (Object param : context.getParameters()) {
             params += param + " ";
         }
-        System.out.println(name + "  " + params);
+        System.out.println("MyInterceptor: " + name + "  " + params);
         return context.proceed();
     }
 }
