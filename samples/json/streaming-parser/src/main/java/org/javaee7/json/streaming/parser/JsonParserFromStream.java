@@ -37,11 +37,10 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.streaming.parser;
+package org.javaee7.json.streaming.parser;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import javax.json.Json;
 import javax.json.stream.JsonParser;
 import static javax.json.stream.JsonParser.Event.END_ARRAY;
@@ -54,6 +53,7 @@ import static javax.json.stream.JsonParser.Event.VALUE_NULL;
 import static javax.json.stream.JsonParser.Event.VALUE_NUMBER;
 import static javax.json.stream.JsonParser.Event.VALUE_STRING;
 import static javax.json.stream.JsonParser.Event.VALUE_TRUE;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -63,8 +63,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Arun Gupta
  */
-@WebServlet(urlPatterns = {"/JsonParserFromReader"})
-public class JsonParserFromReader extends HttpServlet {
+@WebServlet(name = "JsonParserFromStream", urlPatterns = {"/JsonParserFromStream"})
+public class JsonParserFromStream extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -83,39 +83,26 @@ public class JsonParserFromReader extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet JsonParserFromReader</title>");
+            out.println("<title>Servlet JsonParserFromStream</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet JsonParserFromReader at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet JsonParserFromStream at " + request.getContextPath() + "</h1>");
 
+            ServletContext servletContext = request.getServletContext();
             out.println("Reading an empty object<br>");
-            JsonParser jsonParser = Json.createParser(new StringReader("{}"));
+            JsonParser jsonParser = Json.createParser(servletContext.getResourceAsStream("/1.json"));
             parseEvents(jsonParser, out);
 
             out.println("<br><br>Reading an object with two elements<br>");
-            jsonParser = Json.createParser(new StringReader("{"
-                    + "  \"apple\":\"red\","
-                    + "  \"banana\":\"yellow\""
-                    + "}"));
+            jsonParser = Json.createParser(servletContext.getResourceAsStream("/2.json"));
             parseEvents(jsonParser, out);
 
             out.println("<br><br>Reading an array with two objects<br>");
-            jsonParser = Json.createParser(new StringReader("["
-                    + "  { \"apple\":\"red\" },"
-                    + "  { \"banana\":\"yellow\" }"
-                    + "]"));
+            jsonParser = Json.createParser(servletContext.getResourceAsStream("/3.json"));
             parseEvents(jsonParser, out);
 
             out.println("<br><br>Reading a nested structure<br>");
-            jsonParser = Json.createParser(new StringReader("{"
-                    + "  \"title\":\"The Matrix\","
-                    + "  \"year\":1999,"
-                    + "  \"cast\":["
-                    + "    \"Keanu Reaves\","
-                    + "    \"Laurence Fishburne\","
-                    + "    \"Carrie-Anne Moss\""
-                    + "  ]"
-                    + "}"));
+            jsonParser = Json.createParser(servletContext.getResourceAsStream("/4.json"));
             parseEvents(jsonParser, out);
 
             out.println("</body>");
@@ -144,13 +131,13 @@ public class JsonParserFromReader extends HttpServlet {
                 case VALUE_STRING:
                     out.format("Found value: <b>%1$s</b><br>", parser.getString());
                     break;
-                    
+
                 case VALUE_NUMBER:
                     if (parser.isIntegralNumber()) {
-                            out.format("Found value: <b>%1$d</b><br>", parser.getInt());
-//                            out.format("Found value: <b>%1$d</b><br>", parser.getLongValue());
+                        out.format("Found value: <b>%1$d</b><br>", parser.getInt());
+//                        out.format("Found value: <b>%1$d</b><br>", parser.getLong());
                     } else {
-                            out.format("Found value: <b>%1$f</b><br>", parser.getBigDecimal());
+                        out.format("Found value: <b>%1$f</b><br>", parser.getBigDecimal());
                     }
                     break;
                 case VALUE_TRUE:

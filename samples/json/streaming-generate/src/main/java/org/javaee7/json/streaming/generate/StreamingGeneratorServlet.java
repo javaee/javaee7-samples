@@ -37,15 +37,13 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.object.reader;
+package org.javaee7.json.streaming.generate;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringReader;
 import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import javax.json.stream.JsonGenerator;
+import javax.json.stream.JsonGeneratorFactory;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -55,8 +53,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Arun Gupta
  */
-@WebServlet(urlPatterns = {"/JsonReaderFromReader"})
-public class JsonReaderFromReader extends HttpServlet {
+@WebServlet(urlPatterns = {"/StreamingGeneratorServlet"})
+public class StreamingGeneratorServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -72,53 +70,66 @@ public class JsonReaderFromReader extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet TestJsonParser</title>");
+            out.println("<title>Create JSON structures</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet TestJsonParser at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet TestServlet at " + request.getContextPath() + "</h1>");
+//            JsonGeneratorFactory factory = Json.createGeneratorFactory(new JsonConfiguration().withPrettyPrinting());
+            JsonGeneratorFactory factory = Json.createGeneratorFactory(null);
+//            JsonGenerator gen = factory.createGenerator(System.out);
 
-            out.println("Reading an empty object<br>");
-            JsonReader jsonReader = Json.createReader(new StringReader("{}"));
-            JsonObject json = jsonReader.readObject();
-            out.println(json);
+            out.println("Creating an empty object ...<br>");
+            JsonGenerator gen = factory.createGenerator(out);
+//            JsonGenerator gen = Json.createGenerator(out);
+            gen.writeStartObject().writeEnd();
+            gen.flush();
+            out.println("<br>...done<br>");
 
-            out.println("<br><br>Reading an object with two elements<br>");
-            jsonReader = Json.createReader(new StringReader("{"
-                    + "  \"apple\":\"red\","
-                    + "  \"banana\":\"yellow\""
-                    + "}"));
-            json = jsonReader.readObject();
-            out.println("Apple: " + json.getString("apple")+"<br>");
-            out.println("Banana: " + json.getString("banana")+"<br>");
-            out.println(json);
+            out.println("<br>Creating a simple object ...<br>");
+            gen = factory.createGenerator(out);
+            gen
+                    .writeStartObject()
+                    .write("apple", "red")
+                    .write("banana", "yellow")
+                    .writeEnd();
+            gen.flush();
+            out.println("<br>...done<br>");
 
-            out.println("<br><br>Reading an array with two objects<br>");
-            jsonReader = Json.createReader(new StringReader("["
-                    + "  { \"apple\":\"red\" },"
-                    + "  { \"banana\":\"yellow\" }"
-                    + "]"));
-            JsonArray jsonArr = jsonReader.readArray();
-            out.println(jsonArr);
+            out.println("<br>Creating a simple array ...<br>");
+            gen = factory.createGenerator(out);
+            gen
+                    .writeStartArray()
+                    .writeStartObject()
+                    .write("apple", "red")
+                    .writeEnd()
+                    .writeStartObject()
+                    .write("banana", "yellow")
+                    .writeEnd()
+                    .writeEnd();
+            gen.flush();
+            out.println("<br>...done<br>");
 
-            out.println("<br><br>Reading a nested structure<br>");
-            jsonReader = Json.createReader(new StringReader("{"
-                    + "  \"title\":\"The Matrix\","
-                    + "  \"year\":1999,"
-                    + "  \"cast\":["
-                    + "    \"Keanu Reaves\","
-                    + "    \"Laurence Fishburne\","
-                    + "    \"Carrie-Anne Moss\""
-                    + "  ]"
-                    + "}"));
-            json = jsonReader.readObject();
-            out.println(json);
+            out.println("<br>Creating a nested structure ...<br>");
+            gen = factory.createGenerator(out);
+            gen
+                    .writeStartObject()
+                    .write("title", "The Matrix")
+                    .write("year", 1999)
+                    .writeStartArray("cast")
+                    .write("Keanu Reaves")
+                    .write("Laurence Fishburne")
+                    .write("Carrie-Anne Moss")
+                    .writeEnd()
+                    .writeEnd();
+            gen.flush();
+            out.println("<br>...done<br>");
 
-
+            out.println("<br>...done");
             out.println("</body>");
             out.println("</html>");
+            gen.close();
         }
     }
 

@@ -37,16 +37,13 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.object.builder;
+package org.javaee7.json.object.builder;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -82,7 +79,7 @@ public class DOMGeneratorServlet extends HttpServlet {
             
             out.println("Creating an empty object (using DOM generator)...<br>");
             JsonObject jsonObject = Json.createObjectBuilder().build();
-            Json.createWriter(out).write(jsonObject);
+            Json.createWriter(System.out).write(jsonObject);
             out.println("<br>...done<br>");
 
             out.println("<br>Creating a simple object (using DOM generator)...<br>");
@@ -90,7 +87,7 @@ public class DOMGeneratorServlet extends HttpServlet {
                     .add("apple", "red")
                     .add("banana", "yellow")
                     .build();
-            Json.createWriter(out).write(jsonObject);
+            Json.createWriter(System.out).write(jsonObject);
             out.println("<br>...done<br>");
             
             out.println("<br>Creating a simple array (using streaming generator)...<br>");
@@ -98,7 +95,7 @@ public class DOMGeneratorServlet extends HttpServlet {
                     .add(Json.createObjectBuilder().add("apple","red"))
                     .add(Json.createObjectBuilder().add("banana","yellow"))
                     .build();
-            Json.createWriter(out).write(jsonArray);
+            Json.createWriter(System.out).write(jsonArray);
             out.println("<br>...done<br>");
             
             out.println("Creating a nested structure (using builder)...<br>");
@@ -110,7 +107,7 @@ public class DOMGeneratorServlet extends HttpServlet {
                             .add("Laurence Fishburne")
                             .add("Carrie-Anne Moss"))
                 .build();
-            Json.createWriter(out).write(jsonObject);
+            Json.createWriter(System.out).write(jsonObject);
             out.println("</body>");
             out.println("</html>");
         }

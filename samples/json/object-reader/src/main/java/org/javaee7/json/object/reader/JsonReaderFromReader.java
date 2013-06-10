@@ -37,23 +37,15 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.streaming.parser;
+package org.javaee7.json.object.reader;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import javax.json.Json;
-import javax.json.stream.JsonParser;
-import static javax.json.stream.JsonParser.Event.END_ARRAY;
-import static javax.json.stream.JsonParser.Event.END_OBJECT;
-import static javax.json.stream.JsonParser.Event.KEY_NAME;
-import static javax.json.stream.JsonParser.Event.START_ARRAY;
-import static javax.json.stream.JsonParser.Event.START_OBJECT;
-import static javax.json.stream.JsonParser.Event.VALUE_FALSE;
-import static javax.json.stream.JsonParser.Event.VALUE_NULL;
-import static javax.json.stream.JsonParser.Event.VALUE_NUMBER;
-import static javax.json.stream.JsonParser.Event.VALUE_STRING;
-import static javax.json.stream.JsonParser.Event.VALUE_TRUE;
-import javax.servlet.ServletContext;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -63,8 +55,8 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author Arun Gupta
  */
-@WebServlet(name = "JsonParserFromStream", urlPatterns = {"/JsonParserFromStream"})
-public class JsonParserFromStream extends HttpServlet {
+@WebServlet(urlPatterns = {"/JsonReaderFromReader"})
+public class JsonReaderFromReader extends HttpServlet {
 
     /**
      * Processes requests for both HTTP
@@ -83,74 +75,50 @@ public class JsonParserFromStream extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet JsonParserFromStream</title>");
+            out.println("<title>Servlet TestJsonParser</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet JsonParserFromStream at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet TestJsonParser at " + request.getContextPath() + "</h1>");
 
-            ServletContext servletContext = request.getServletContext();
             out.println("Reading an empty object<br>");
-            JsonParser jsonParser = Json.createParser(servletContext.getResourceAsStream("/1.json"));
-            parseEvents(jsonParser, out);
+            JsonReader jsonReader = Json.createReader(new StringReader("{}"));
+            JsonObject json = jsonReader.readObject();
+            out.println(json);
 
             out.println("<br><br>Reading an object with two elements<br>");
-            jsonParser = Json.createParser(servletContext.getResourceAsStream("/2.json"));
-            parseEvents(jsonParser, out);
+            jsonReader = Json.createReader(new StringReader("{"
+                    + "  \"apple\":\"red\","
+                    + "  \"banana\":\"yellow\""
+                    + "}"));
+            json = jsonReader.readObject();
+            out.println("Apple: " + json.getString("apple")+"<br>");
+            out.println("Banana: " + json.getString("banana")+"<br>");
+            out.println(json);
 
             out.println("<br><br>Reading an array with two objects<br>");
-            jsonParser = Json.createParser(servletContext.getResourceAsStream("/3.json"));
-            parseEvents(jsonParser, out);
+            jsonReader = Json.createReader(new StringReader("["
+                    + "  { \"apple\":\"red\" },"
+                    + "  { \"banana\":\"yellow\" }"
+                    + "]"));
+            JsonArray jsonArr = jsonReader.readArray();
+            out.println(jsonArr);
 
             out.println("<br><br>Reading a nested structure<br>");
-            jsonParser = Json.createParser(servletContext.getResourceAsStream("/4.json"));
-            parseEvents(jsonParser, out);
+            jsonReader = Json.createReader(new StringReader("{"
+                    + "  \"title\":\"The Matrix\","
+                    + "  \"year\":1999,"
+                    + "  \"cast\":["
+                    + "    \"Keanu Reaves\","
+                    + "    \"Laurence Fishburne\","
+                    + "    \"Carrie-Anne Moss\""
+                    + "  ]"
+                    + "}"));
+            json = jsonReader.readObject();
+            out.println(json);
+
 
             out.println("</body>");
             out.println("</html>");
-        }
-    }
-
-    private void parseEvents(JsonParser parser, PrintWriter out) {
-        while (parser.hasNext()) {
-            switch (parser.next()) {
-                case START_ARRAY:
-                    out.println("Starting an array<br>");
-                    break;
-                case START_OBJECT:
-                    out.println("Starting an object<br>");
-                    break;
-                case END_ARRAY:
-                    out.println("Ending an array<br>");
-                    break;
-                case END_OBJECT:
-                    out.println("Ending an object<br>");
-                    break;
-                case KEY_NAME:
-                    out.format("Found key: <b>%1$s</b><br>", parser.getString());
-                    break;
-                case VALUE_STRING:
-                    out.format("Found value: <b>%1$s</b><br>", parser.getString());
-                    break;
-
-                case VALUE_NUMBER:
-                    if (parser.isIntegralNumber()) {
-                        out.format("Found value: <b>%1$d</b><br>", parser.getInt());
-//                        out.format("Found value: <b>%1$d</b><br>", parser.getLong());
-                    } else {
-                        out.format("Found value: <b>%1$f</b><br>", parser.getBigDecimal());
-                    }
-                    break;
-                case VALUE_TRUE:
-                case VALUE_FALSE:
-                    out.format("Found boolean value: <b>%1$b</b><br>", parser.getString());
-                    break;
-                case VALUE_NULL:
-                    out.format("Found null value");
-                    break;
-                default:
-                    out.format("What did you find ?");
-                    break;
-            }
         }
     }
 
