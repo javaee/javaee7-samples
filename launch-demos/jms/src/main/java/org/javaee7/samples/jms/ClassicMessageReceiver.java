@@ -66,9 +66,10 @@ public class ClassicMessageReceiver {
         Connection connection = null;
         try {
             connection = connectionFactory.createConnection();
+            connection.start();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             MessageConsumer messageConsumer = session.createConsumer(demoQueue);
-            Message message = messageConsumer.receive();
+            Message message = messageConsumer.receive(5000);
             response = message.getBody(String.class);
         } catch (JMSException ex) {
             ex.printStackTrace();
