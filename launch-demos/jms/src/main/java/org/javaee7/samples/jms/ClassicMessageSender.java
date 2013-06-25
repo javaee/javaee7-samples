@@ -65,6 +65,7 @@ public class ClassicMessageSender {
         Connection connection = null;
         try {
             connection = connectionFactory.createConnection();
+            connection.start();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             MessageProducer messageProducer = session.createProducer(demoQueue);
             TextMessage textMessage = session.createTextMessage(payload);
