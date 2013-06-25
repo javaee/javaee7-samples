@@ -6,7 +6,7 @@ package org.javaee7.samples.jms;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,13 +19,13 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/TestServlet"})
 public class TestServlet extends HttpServlet {
     
-    @EJB SimplifiedMessageSender senderSimplified;
+    @Inject SimplifiedMessageSender senderSimplified;
     
-    @EJB SimplifiedMessageReceiver receiverSimplified;
+    @Inject SimplifiedMessageReceiver receiverSimplified;
     
-    @EJB ClassicMessageSender senderClassic;
+    @Inject ClassicMessageSender senderClassic;
     
-    @EJB ClassicMessageReceiver receiverClassic;
+    @Inject ClassicMessageReceiver receiverClassic;
 
     /**
      * Processes requests for both HTTP
