@@ -15,6 +15,6 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>chunk-optional-processor</name>
+    <name>${project.artifactId}</name>
 
 </project>
