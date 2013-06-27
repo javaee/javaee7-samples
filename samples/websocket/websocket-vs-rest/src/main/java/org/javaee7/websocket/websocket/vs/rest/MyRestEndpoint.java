@@ -53,17 +53,9 @@ import javax.ws.rs.Produces;
 @Path("rest")
 public class MyRestEndpoint {
 
-    @Context
-    private UriInfo context;
-
-    /**
-     * Retrieves representation of an instance of org.glassfish.scalability.MyRestEndpoint
-     * @return an instance of java.lang.String
-     */
     @POST
     @Produces("text/plain")
     public String getXml(String payload) {
-//        System.out.println(payload);
         return payload;
     }
 }
