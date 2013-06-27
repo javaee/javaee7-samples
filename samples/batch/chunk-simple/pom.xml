@@ -15,5 +15,5 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>chunk-simple</name>
+    <name>${project.artifactId}</name>
 </project>
