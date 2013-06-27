@@ -16,6 +16,6 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>chunk-exception</name>
+    <name>${project.artifactId}</name>
 
 </project>
