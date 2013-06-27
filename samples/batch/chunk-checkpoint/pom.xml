@@ -13,6 +13,6 @@
     <artifactId>chunk-checkpoint</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>chunk-checkpoint</name>
+    <name>${project.artifactId}</name>
 
 </project>
