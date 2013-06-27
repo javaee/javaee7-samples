@@ -13,6 +13,6 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>split</name>
+    <name>${project.artifactId}</name>
 
 </project>
