@@ -2,19 +2,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     
     <parent>
-        <groupId>org.sample</groupId>
-        <artifactId>websocket</artifactId>
+        <groupId>org.javaee7.websocket</groupId>
+        <artifactId>websocket-samples</artifactId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.sample</groupId>
+    <groupId>org.javaee7.websocket</groupId>
     <artifactId>websocket-client-programmatic-config</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>websocket-client-programmatic-config</name>
+    <name>${project.artifactId}</name>
 
 </project>

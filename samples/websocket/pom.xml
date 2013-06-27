@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.sample</groupId>
+        <groupId>org.javaee7</groupId>
         <artifactId>javaee7-samples</artifactId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -9,11 +9,11 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.sample</groupId>
-    <artifactId>websocket</artifactId>
+    <groupId>org.javaee7.websocket</groupId>
+    <artifactId>websocket-samples</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>websocket</name>
+    <name>${project.artifactId}</name>
 
     <modules>
         <module>binary</module>
@@ -36,7 +36,7 @@
         <module>messagesize</module>
         <module>parameters</module>
         <module>properties</module>
-        <module>scalability</module>
+        <module>websocket-vs-rest</module>
         <module>subprotocol</module>
         <module>websocket-client</module>
         <module>websocket-client-config</module>
