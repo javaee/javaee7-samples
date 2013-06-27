@@ -13,7 +13,7 @@
     <artifactId>batch-samples</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>batch</name>
+    <name>${project.artifactId}</name>
 
     <modules>
         <module>batchlet-simple</module>
