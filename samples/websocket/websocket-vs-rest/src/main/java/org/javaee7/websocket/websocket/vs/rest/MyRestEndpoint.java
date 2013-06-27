@@ -37,19 +37,33 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.scalability;
+package org.javaee7.websocket.websocket.vs.rest;
 
-import javax.websocket.OnMessage;
-import javax.websocket.server.ServerEndpoint;
+import javax.ws.rs.POST;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 /**
+ * REST Web Service
+ *
  * @author Arun Gupta
  */
-@ServerEndpoint(value="/websocket")
-public class MyWebSocketEndpoint {
-    
-    @OnMessage
-    public String echoText(String text) {
-        return text;
+@Path("rest")
+public class MyRestEndpoint {
+
+    @Context
+    private UriInfo context;
+
+    /**
+     * Retrieves representation of an instance of org.glassfish.scalability.MyRestEndpoint
+     * @return an instance of java.lang.String
+     */
+    @POST
+    @Produces("text/plain")
+    public String getXml(String payload) {
+//        System.out.println(payload);
+        return payload;
     }
 }
