@@ -2,19 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
+        <groupId>org.javaee7.json</groupId>
         <artifactId>json</artifactId>
-        <groupId>org.sample</groupId>
         <version>1.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.glassfish.sample</groupId>
+    <groupId>org.javaee7.json</groupId>
     <artifactId>twitter-search</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>twitter-search</name>
-    
     <dependencies>
         <dependency>
             <groupId>org.glassfish.samples</groupId>
