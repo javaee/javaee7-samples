@@ -56,7 +56,7 @@
     <br><br>
         If you see this page, that means database tables are created 
         using JPA 2.1 standard properties. Look for table name "Employee" in the 
-        database resource identified by "jdbc/sample". If this application 
+        database resource identified by "jdbc:derby://localhost:1527/sun-appserv-samples". If this application 
         is deployed on GlassFish, then this is the default JavaDB database.
     </body>
 </html>
