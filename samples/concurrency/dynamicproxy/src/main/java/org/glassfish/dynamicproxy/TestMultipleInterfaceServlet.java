@@ -59,10 +59,10 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/TestMultipleInterfaceServlet"})
 public class TestMultipleInterfaceServlet extends HttpServlet {
 
-    @Resource(name = "DefaultManagedThreadFactory")
+    @Resource(name = "java:comp/DefaultManagedThreadFactory")
     ManagedThreadFactory factory;
     
-    @Resource(name = "DefaultContextService")
+    @Resource(name = "java:comp/DefaultContextService")
     ContextService service;
     
 
