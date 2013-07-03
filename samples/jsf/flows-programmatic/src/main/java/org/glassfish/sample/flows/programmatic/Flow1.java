@@ -50,12 +50,10 @@ import javax.faces.flow.builder.FlowDefinition;
  */
 public class Flow1 {
 
-    private static final long serialVersionUID = -7623501087369765218L;
-
     @Produces @FlowDefinition
     public Flow defineFlow(@FlowBuilderParameter FlowBuilder flowBuilder) {
         String flowId = "flow1";
-        flowBuilder.id("unique", flowId);
+        flowBuilder.id("", flowId);
         flowBuilder.viewNode(flowId, "/" + flowId + "/" + flowId + ".xhtml").markAsStartNode();
         
         flowBuilder.returnNode("taskFlowReturn1").

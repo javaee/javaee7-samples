@@ -47,7 +47,7 @@ import javax.inject.Named;
  * @author Arun Gupta
  */
 @Named
-@FlowScoped("flow2")
+@FlowScoped(value="flow2")
 public class Flow2Bean implements Serializable {
 
     public String getName() {
