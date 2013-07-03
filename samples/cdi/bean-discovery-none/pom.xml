@@ -12,7 +12,4 @@
     <artifactId>bean-discovery-none</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-
-    <name>bean-discovery-none</name>
-
 </project>

@@ -12,6 +12,4 @@
     <artifactId>decorators</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-
-    <name>decorators</name>
 </project>

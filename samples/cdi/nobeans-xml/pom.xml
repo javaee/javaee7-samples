@@ -12,6 +12,4 @@
     <artifactId>nobeans-xml</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
-
-    <name>nobeans-xml</name>
 </project>
