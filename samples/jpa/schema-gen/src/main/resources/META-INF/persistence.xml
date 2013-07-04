@@ -4,8 +4,6 @@
         <properties>
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="javax.persistence.schema-generation.create-source" value="metadata"/> 
-<!--            <property name="javax.persistence.schema-generation.create-source" value="createfoo.sql"/> 
-            <property name="javax.persistence.schema-generation.drop-source" value="dropfoo.sql"/> -->
         </properties>
     </persistence-unit>
 </persistence>
