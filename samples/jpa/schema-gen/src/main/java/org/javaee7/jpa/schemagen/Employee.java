@@ -37,27 +37,54 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.sample.schemagen;
+package org.javaee7.jpa.schemagen;
 
-import java.util.List;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.io.Serializable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * @author Arun Gupta
  */
-@Stateless
-public class EmployeeBean {
-
-    @PersistenceContext
-    EntityManager em;
+@Entity
+@Table
+@NamedQueries({
+    @NamedQuery(name = "Employee.findAll", query = "SELECT e FROM Employee e")
+})
+public class Employee implements Serializable {
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
     
-    public void persist(Employee e) {
-        em.persist(e);
+    @Column(length=40)
+    private String name;
+    
+    public Employee() { }
+    
+    public Employee(String name) {
+        this.name = name;
     }
     
-    public List<Employee> get() {
-        return em.createNamedQuery("Employee.findAll", Employee.class).getResultList();
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

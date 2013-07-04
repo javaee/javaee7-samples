@@ -37,7 +37,7 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.sample.schemagen;
+package org.javaee7.jpa.schemagen;
 
 import java.io.IOException;
 import java.io.PrintWriter;
