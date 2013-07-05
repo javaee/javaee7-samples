@@ -21,7 +21,7 @@
         <module>storedprocedure</module>
         <module>jndi-context</module>
         <module>locking-optimistic</module>
-        <module>schema-gen2</module>
+        <module>schema-gen-scripts</module>
   </modules>
 
 </project>
