@@ -39,18 +39,60 @@
  */
 package org.javaee7.platform.twitter.hashtag;
 
-import javax.ejb.Schedule;
+import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import org.glassfish.jersey.filter.LoggingFilter;
 
 /**
  * @author Arun Gupta
  */
 @Stateless
 public class TwitterPingBean {
+    
+    WebTarget target;
+    
+    @PostConstruct
+    private void init() {
+        Client client = ClientBuilder.newClient();
+//        client.register(new LoggingFilter(Logger.getAnonymousLogger(), true));
+        target = client
+                .target("https://api.twitter.com/1.1/search/tweets.json")
+                .queryParam("q", "%23javaee7")
+                .queryParam("result_type", "mixed")
+                .queryParam("count", "100");
+    }
 
-    @Schedule(hour = "*", minute = "*", second = "0")
+//    @Schedule(hour = "*", minute = "1", second = "0", persistent = false)
     public void pingTwitter() {
         System.out.println("pinging Twitter ...");
+        target.queryParam("since_id", "335724844056449027");
+        
+        String response = target
+                .request(MediaType.TEXT_PLAIN)
+                .header("Authorization", "OAuth oauth_consumer_key=\"myE71Pd0EDFGnisST8XQ\", oauth_nonce=\"f4f1506b69e50ff53b7416cff1137a32\", oauth_signature=\"6IeMHOlgyBy4W75vFZRZTrzuIs8%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1371254570\", oauth_token=\"12387972-28nXVXAmjdtfb83Y6s3Qf1hPIurv7YrGKhxmjEnrJ\", oauth_version=\"1.0\"")
+                .get(String.class);
+        System.out.println(response);
+    }
+    
+    public void pingFacebook() {
+            Client client = ClientBuilder.newClient();
+            WebTarget t = client.target("https://graph.facebook.com/search?q=java&type=post");
+            
+            JsonObject object = t.request().get(JsonObject.class);
+            JsonArray results = object.getJsonArray("data");
+            for (JsonObject result : results.getValuesAs(JsonObject.class)) {
+                System.out.println("Name ----> " + result.getJsonObject("from").getString("name") + "<br>");
+                System.out.println("Message ----> " + result.getString("message", "") + "<br>");
+                System.out.println("<p><p>");
+            }
+
     }
 
 }
