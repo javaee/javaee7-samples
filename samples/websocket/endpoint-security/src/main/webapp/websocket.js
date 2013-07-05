@@ -38,34 +38,38 @@
  * holder.
  */
 
-var wsUri = "ws://" + document.location.host + document.location.pathname + "websocket";
-console.log("Connecting to " + wsUri);
-var websocket = new WebSocket(wsUri);
-websocket.onopen = function(evt) { onOpen(evt) };
-websocket.onmessage = function(evt) { onMessage(evt) };
-websocket.onerror = function(evt) { onError(evt) };
+//var wsUri = "ws://u1:p1@" + document.location.host + document.location.pathname + "websocket";
 
-var output = document.getElementById("output");
 
 function echo() {
-    websocket.send(myField.value);
-    writeToScreen("SENT (text): " + myField.value);
+    var wsUri = "ws://" + document.location.host + document.location.pathname + "websocket";
+    console.log("Connecting to " + wsUri);
+    var websocket = new WebSocket(wsUri);
+    websocket.onopen = function() { writeToScreen("CONNECTED");
+        websocket.send(myField.value);
+        writeToScreen("SENT: " + myField.value);
+    };
+    websocket.onmessage = function(evt) { writeToScreen("RECEIVED: " + evt.data); };
+//    websocket.onerror = function(evt) { onError(evt) };
+    
+    
 }
 
-function onOpen() {
-    console.log("onOpen");
-    writeToScreen("CONNECTED");
-}
-
-function onMessage(evt) {
-    writeToScreen("RECEIVED: " + evt.data);
-}
-
-function onError(evt) {
-    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
-}
+//function onOpen() {
+//    console.log("onOpen");
+//    writeToScreen("CONNECTED");
+//}
+//
+//function onMessage(evt) {
+//    writeToScreen("RECEIVED: " + evt.data);
+//}
+//
+//function onError(evt) {
+//    writeToScreen('<span style="color: red;">ERROR:</span> ' + evt.data);
+//}
 
 function writeToScreen(message) {
+    var output = document.getElementById("output");
     var pre = document.createElement("p");
     pre.style.wordWrap = "break-word";
     pre.innerHTML = message;

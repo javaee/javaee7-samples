@@ -49,7 +49,7 @@ import javax.websocket.server.ServerEndpoint;
 public class MyEndpoint {
     
     @OnMessage
-    public String echoText(String name) {
-        return name;
+    public String echoText(String text) {
+        return text;
     }
 }
