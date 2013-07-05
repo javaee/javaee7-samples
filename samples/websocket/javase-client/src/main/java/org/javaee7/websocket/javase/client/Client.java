@@ -37,42 +37,34 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.javase.client;
+package org.javaee7.websocket.javase.client;
 
 import java.io.IOException;
+import java.net.URI;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.websocket.Session;
-import javax.websocket.WebSocketClient;
-import javax.websocket.WebSocketError;
-import javax.websocket.WebSocketMessage;
-import javax.websocket.WebSocketOpen;
+import javax.websocket.ContainerProvider;
+import javax.websocket.DeploymentException;
+import javax.websocket.WebSocketContainer;
 
 /**
  * @author Arun Gupta
  */
-@WebSocketClient
-public class MyClientEndpoint {
-    @WebSocketOpen
-    public void onOpen(Session session) {
-        System.out.println("Connected to endpoint: " + session.getRemote());
+public class Client {
+
+    final static CountDownLatch messageLatch = new CountDownLatch(1);
+    
+    public static void main(String[] args) {
         try {
-            String name = "Duke";
-            System.out.println("Sending message to endpoint: " + name);
-            session.getRemote().sendString(name);
-        } catch (IOException ex) {
-            Logger.getLogger(MyClientEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+            String uri = "ws://echo.websocket.org:80/";
+            System.out.println("Connecting to " + uri);
+            container.connectToServer(MyClientEndpoint.class, URI.create(uri));
+            messageLatch.await(100, TimeUnit.SECONDS); 
+        } catch (DeploymentException | InterruptedException | IOException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-    
-    @WebSocketMessage
-    public void processMessage(String message) {
-        System.out.println("Received message in client: " + message);
-        Client.messageLatch.countDown();
-    }
-    
-    @WebSocketError
-    public void processError(Throwable t) {
-        t.printStackTrace();
     }
 }

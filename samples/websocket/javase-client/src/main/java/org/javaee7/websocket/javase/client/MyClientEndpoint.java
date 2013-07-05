@@ -37,33 +37,42 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
-package org.glassfish.javase.client;
+package org.javaee7.websocket.javase.client;
 
-import java.net.URI;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.websocket.ContainerProvider;
-import javax.websocket.DeploymentException;
-import javax.websocket.WebSocketContainer;
+import javax.websocket.ClientEndpoint;
+import javax.websocket.OnError;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
 
 /**
  * @author Arun Gupta
  */
-public class Client {
-
-    final static CountDownLatch messageLatch = new CountDownLatch(1);
-    
-    public static void main(String[] args) {
+@ClientEndpoint
+public class MyClientEndpoint {
+    @OnOpen
+    public void onOpen(Session session) {
+        System.out.println("Connected to endpoint: " + session.getBasicRemote());
         try {
-            WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-            String uri = "ws://echo.websocket.org:80/";
-            System.out.println("Connecting to " + uri);
-            container.connectToServer(MyClientEndpoint.class, URI.create(uri));
-            messageLatch.await(100, TimeUnit.SECONDS); 
-        } catch (DeploymentException | InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            String name = "Duke";
+            System.out.println("Sending message to endpoint: " + name);
+            session.getBasicRemote().sendText(name);
+        } catch (IOException ex) {
+            Logger.getLogger(MyClientEndpoint.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    @OnMessage
+    public void processMessage(String message) {
+        System.out.println("Received message in client: " + message);
+        Client.messageLatch.countDown();
+    }
+    
+    @OnError
+    public void processError(Throwable t) {
+        t.printStackTrace();
     }
 }
