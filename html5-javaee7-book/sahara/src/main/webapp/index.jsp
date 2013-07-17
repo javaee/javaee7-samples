@@ -53,8 +53,11 @@
 
         List authors using <a href="${pageContext.request.contextPath}/TestServlet?author"/>Servlet</a>.<p/>
         List books using <a href="${pageContext.request.contextPath}/TestServlet"/>Servlet</a>.<p/>
-        List authors using <a href="${pageContext.request.contextPath}/webresources/authors"/>REST</a>.<p/>
+        List all authors using <a href="${pageContext.request.contextPath}/webresources/authors"/>REST</a>.<p/>
+        List an author using <a href="${pageContext.request.contextPath}/webresources/authors/1"/>REST</a>.<p/>
         List books using <a href="${pageContext.request.contextPath}/webresources/books"/>REST</a>.<p/>
+        List a book using <a href="${pageContext.request.contextPath}/webresources/books/1234567890"/>REST</a>.<p/>
+
 
 <br><br>
 If you see this page, that means database tables are created 
