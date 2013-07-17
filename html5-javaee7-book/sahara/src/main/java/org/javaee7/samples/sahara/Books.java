@@ -40,11 +40,13 @@
 package org.javaee7.samples.sahara;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -53,9 +55,11 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * @author Arun Gupta
+ *
+ * @author arungup
  */
 @Entity
 @Table(name = "BOOKS")
@@ -63,7 +67,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Books.findAll", query = "SELECT b FROM Books b"),
     @NamedQuery(name = "Books.findByIsbn", query = "SELECT b FROM Books b WHERE b.isbn = :isbn"),
-    @NamedQuery(name = "Books.findByAuthor", query = "SELECT b FROM Books b WHERE b.author = :author"),
     @NamedQuery(name = "Books.findByTitle", query = "SELECT b FROM Books b WHERE b.title = :title"),
     @NamedQuery(name = "Books.findByPublishedDate", query = "SELECT b FROM Books b WHERE b.publishedDate = :publishedDate"),
     @NamedQuery(name = "Books.findByPublisher", query = "SELECT b FROM Books b WHERE b.publisher = :publisher"),
@@ -79,11 +82,6 @@ public class Books implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "AUTHOR")
-    private String author;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
     @Column(name = "TITLE")
     private String title;
     @Column(name = "PUBLISHED_DATE")
@@ -95,6 +93,8 @@ public class Books implements Serializable {
     @Size(max = 100)
     @Column(name = "DESCRIPTION")
     private String description;
+    @ManyToMany(mappedBy = "booksCollection")
+    private Collection<Author> authorCollection;
 
     public Books() {
     }
@@ -103,9 +103,8 @@ public class Books implements Serializable {
         this.isbn = isbn;
     }
 
-    public Books(String isbn, String author, String title) {
+    public Books(String isbn, String title) {
         this.isbn = isbn;
-        this.author = author;
         this.title = title;
     }
 
@@ -115,14 +114,6 @@ public class Books implements Serializable {
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public String getTitle() {
@@ -155,6 +146,15 @@ public class Books implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @XmlTransient
+    public Collection<Author> getAuthorCollection() {
+        return authorCollection;
+    }
+
+    public void setAuthorCollection(Collection<Author> authorCollection) {
+        this.authorCollection = authorCollection;
     }
 
     @Override
