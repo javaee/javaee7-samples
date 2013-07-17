@@ -90,7 +90,7 @@ public class Books implements Serializable {
     @Size(max = 50)
     @Column(name = "PUBLISHER")
     private String publisher;
-    @Size(max = 100)
+    @Size(max = 500)
     @Column(name = "DESCRIPTION")
     private String description;
     @ManyToMany(mappedBy = "booksCollection")

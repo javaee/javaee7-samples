@@ -1,4 +1,3 @@
-<!-- 
 /*
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
  *
@@ -9,7 +8,7 @@
  * and Distribution License("CDDL") (collectively, the "License").  You
  * may not use this file except in compliance with the License.  You can
  * obtain a copy of the License at
- * https://glassfish.dev.java.net/public/CDDL+GPL_1_1.html
+ * http://glassfish.java.net/public/CDDL+GPL_1_1.html
  * or packager/legal/LICENSE.txt.  See the License for the specific
  * language governing permissions and limitations under the License.
  *
@@ -38,28 +37,28 @@
  * only if the new code is made subject to such option by the copyright
  * holder.
  */
--->
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-    "http://www.w3.org/TR/html4/loose.dtd">
+package org.javaee7.samples.sahara;
 
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Sahara</title>
-    </head>
-    <body>
-        <h1>Sahara</h1>
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
-        List authors using <a href="${pageContext.request.contextPath}/TestServlet?author"/>Servlet</a>.<p/>
-        List books using <a href="${pageContext.request.contextPath}/TestServlet"/>Servlet</a>.<p/>
-        List authors using <a href="${pageContext.request.contextPath}/webresources/authors"/>REST</a>.<p/>
-        List books using <a href="${pageContext.request.contextPath}/webresources/books"/>REST</a>.<p/>
+/**
+ * @author Arun Gupta
+ */
+@Stateless
+public class AuthorSessionBean {
 
-<br><br>
-If you see this page, that means database tables are created 
-using JPA 2.1 standard properties. Look for table name "BOOKS" in the 
-database resource identified by "jdbc:derby://localhost:1527/sun-appserv-samples". If this application 
-is deployed on GlassFish, then this is the default JavaDB database.
-</body>
-</html>
+    @PersistenceContext
+    EntityManager em;
+    
+    public void persist(Author e) {
+        em.persist(e);
+    }
+    
+    public List<Author> get() {
+        return em.createNamedQuery("Author.findAll", Author.class).getResultList();
+    }
+
+}

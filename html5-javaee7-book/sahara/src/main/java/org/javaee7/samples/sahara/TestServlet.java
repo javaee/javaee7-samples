@@ -54,7 +54,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/TestServlet"})
 public class TestServlet extends HttpServlet {
     
-    @Inject BooksSessionBean bean;
+    @Inject BooksSessionBean bookBean;
+    @Inject AuthorSessionBean authorBean;
 
     /**
      * Processes requests for both HTTP
@@ -75,9 +76,16 @@ public class TestServlet extends HttpServlet {
             out.println("<title>Servlet TestServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet TestServlet at " + request.getContextPath() + "</h1>");
-            for (Books b : bean.get()) {
-                out.println(b.getTitle()+ "<br>");
+            if (request.getParameter("author") != null) {
+                out.println("<h1>Authors</h1>");
+                for (Author a : authorBean.get()) {
+                    out.println(a.getFirstName() + " " + a.getLastName() + "<br>");
+                }
+            } else {
+                out.println("<h1>Books</h1>");
+                for (Books b : bookBean.get()) {
+                    out.println(b.getTitle()+ "<br>");
+                }
             }
             out.println("</body>");
             out.println("</html>");
