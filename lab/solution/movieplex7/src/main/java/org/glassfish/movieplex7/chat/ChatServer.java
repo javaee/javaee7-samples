@@ -71,7 +71,7 @@ public class ChatServer {
     @OnMessage
     public void message(String message, Session client) throws IOException, EncodeException {
         for (Session peer : peers) {
-            if (!peers.equals(client))
+            if (!peer.equals(client))
                 peer.getBasicRemote().sendObject(message);
         }
     }
