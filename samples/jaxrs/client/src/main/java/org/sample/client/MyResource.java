@@ -92,7 +92,7 @@ public class MyResource {
     }
 
     @DELETE
-    @Path("${name}")
+    @Path("{name}")
     public void deleteFromList(@PathParam("name") String name) {
         bean.deletePerson(name);
     }
