@@ -114,7 +114,6 @@ public class MovieClientBean implements Serializable {
                 .post(Entity.entity(m, MediaType.APPLICATION_JSON));
     }
 
-    @Transactional
     public void deleteMovie() {
         target
                 .path("{movieId}")
