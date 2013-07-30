@@ -50,6 +50,9 @@ websocket.onmessage = function(evt) { onMessage(evt); };
 websocket.onerror = function(evt) { onError(evt); };
 websocket.onclose = function(evt) { onClose(evt); };
 var output = document.getElementById("output");
+var textField = document.getElementById("textField");
+var users = document.getElementById("users");
+var chatlog = document.getElementById("chatlog");
 
 function join() {
     username = textField.value;
