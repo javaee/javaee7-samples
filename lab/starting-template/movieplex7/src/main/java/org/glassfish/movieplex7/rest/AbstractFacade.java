@@ -59,8 +59,9 @@ public abstract class AbstractFacade<T> {
         getEntityManager().persist(entity);
     }
 
-    public void edit(T entity) {
-        getEntityManager().merge(entity);
+    public void edit(Object id) {
+        T t = getEntityManager().find(entityClass, id);
+        getEntityManager().merge(t);
     }
 
     public void remove(T entity) {

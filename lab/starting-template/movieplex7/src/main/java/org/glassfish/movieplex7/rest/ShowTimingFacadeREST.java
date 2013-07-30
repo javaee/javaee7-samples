@@ -76,10 +76,10 @@ public class ShowTimingFacadeREST extends AbstractFacade<ShowTiming> {
     }
 
     @PUT
-    @Override
     @Consumes({"application/xml", "application/json"})
-    public void edit(ShowTiming entity) {
-        super.edit(entity);
+    @Path("{id}")
+    public void edit(@PathParam("id") Integer id) {
+        super.edit(id);
     }
 
     @DELETE
@@ -90,7 +90,6 @@ public class ShowTimingFacadeREST extends AbstractFacade<ShowTiming> {
 
     @GET
     @Path("{id}")
-    @Produces({"application/xml", "application/json"})
     public ShowTiming find(@PathParam("id") Integer id) {
         return super.find(id);
     }
