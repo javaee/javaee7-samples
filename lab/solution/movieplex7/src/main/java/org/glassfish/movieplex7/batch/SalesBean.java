@@ -44,20 +44,21 @@ import java.util.Properties;
 import javax.batch.operations.JobOperator;
 import javax.batch.operations.JobStartException;
 import javax.batch.runtime.BatchRuntime;
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import org.glassfish.movieplex7.entities.Sales;
+
 
 /**
  * @author Arun Gupta
  */
-@Stateless
 @Named
+@RequestScoped
 public class SalesBean {
     
-    @PersistenceContext EntityManager em;
+    @PersistenceUnit EntityManagerFactory em;
     
     public void runJob() {
         try {
@@ -70,6 +71,6 @@ public class SalesBean {
     }
     
     public List<Sales> getSalesData() {
-        return em.createNamedQuery("Sales.findAll", Sales.class).getResultList();
+        return em.createEntityManager().createNamedQuery("Sales.findAll", Sales.class).getResultList();
     }
 }
