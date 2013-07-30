@@ -76,10 +76,9 @@ public class MovieFacadeREST extends AbstractFacade<Movie> {
     }
 
     @PUT
-    @Override
-    @Consumes({"application/xml", "application/json"})
-    public void edit(Movie entity) {
-        super.edit(entity);
+    @Path("{id}")
+    public void edit(@PathParam("id") Integer id) {
+        super.edit(id);
     }
 
     @DELETE

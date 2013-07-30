@@ -77,10 +77,9 @@ public class SalesFacadeREST extends AbstractFacade<Sales> {
     }
 
     @PUT
-    @Override
-    @Consumes({"application/xml", "application/json"})
-    public void edit(Sales entity) {
-        super.edit(entity);
+    @Path("{id}")
+    public void edit(@PathParam("id") Integer id) {
+        super.edit(id);
     }
 
     @DELETE

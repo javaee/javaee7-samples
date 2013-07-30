@@ -76,10 +76,9 @@ public class TheaterFacadeREST extends AbstractFacade<Theater> {
     }
 
     @PUT
-    @Override
-    @Consumes({"application/xml", "application/json"})
-    public void edit(Theater entity) {
-        super.edit(entity);
+    @Path("{id}")
+    public void edit(@PathParam("id") Integer id) {
+        super.edit(id);
     }
 
     @DELETE
