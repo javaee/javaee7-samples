@@ -50,7 +50,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-
 /**
  * @author Arun Gupta
  */
