@@ -39,10 +39,9 @@
  */
 package org.glassfish.movieplex7.client;
 
-import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.client.Client;
@@ -57,8 +56,8 @@ import org.glassfish.movieplex7.json.MovieWriter;
  * @author Arun Gupta
  */
 @Named
-@SessionScoped
-public class MovieClientBean implements Serializable {
+@RequestScoped
+public class MovieClientBean {
 
     @Inject
     MovieBackingBean bean;
