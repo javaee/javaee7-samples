@@ -39,9 +39,8 @@
  */
 package org.glassfish.movieplex7.points;
 
-import java.io.Serializable;
 import javax.annotation.Resource;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jms.JMSContext;
@@ -49,12 +48,13 @@ import javax.jms.Queue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+
 /**
  * @author Arun Gupta
  */
 @Named
-@SessionScoped
-public class SendPointsBean implements Serializable {
+@RequestScoped
+public class SendPointsBean {
 
     @Inject
 //    @JMSConnectionFactory("java:comp/DefaultJMSConnectionFactory")
@@ -72,7 +72,7 @@ public class SendPointsBean implements Serializable {
         this.message = message;
     }
 
-    @Resource(mappedName = "java:global/jms/pointsQueue")
+    @Resource(lookup = "java:global/jms/pointsQueue")
     Queue pointsQueue;
 
     public void sendMessage() {

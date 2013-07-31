@@ -39,12 +39,11 @@
  */
 package org.glassfish.movieplex7.points;
 
-import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jms.JMSContext;
@@ -59,13 +58,14 @@ import javax.jms.QueueBrowser;
 @JMSDestinationDefinition(name = "java:global/jms/pointsQueue",
         interfaceName = "javax.jms.Queue")
 @Named
-@SessionScoped
-public class ReceivePointsBean implements Serializable {
+@RequestScoped
+public class ReceivePointsBean {
 
     @Inject
 //    @JMSConnectionFactory("java:comp/DefaultJMSConnectionFactory")
     JMSContext context;
-    @Resource(mappedName = "java:global/jms/pointsQueue")
+    
+    @Resource(lookup = "java:global/jms/pointsQueue")
     Queue pointsQueue;
 
     public String receiveMessage() {
