@@ -526,7 +526,9 @@ span.line-numbers { border-right: 1px solid #E5E5E5; color: #999; display: inlin
 <li>
 <ul class="sectlevel2">
 <li><a href="#_set_the_stage_5">5.1. Set the stage</a></li>
-<li><a href="#_summary_5">5.2. Summary</a></li>
+<li><a href="#_define_the_partition_strategy">5.2. Define the partition strategy</a></li>
+<li><a href="#_test_the_partitioned_execution">5.3. Test the partitioned execution</a></li>
+<li><a href="#_summary_5">5.4. Summary</a></li>
 </ul>
 </li>
 </ul>
@@ -2488,17 +2490,145 @@ Info:   ** PayrollInputRecordReadListener:: onReadError : null; Exception: java.
 <h2 id="_lab_job_partitioning">5. Lab: Job Partitioning</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To Do</p>
+<p>By default, all steps in a job run on the same thread.  Multi-threading can be leveraged to increase throughput and better utilize underlying hardware, that is what <strong>partitioned step</strong> brings. A serially processed step can be break it into <strong>partitions</strong> that will run on different threads. Once we have defined the partition strategy, the batch runtime will manage the threads and will handle all aspects of checkpoints.</p>
 </div>
 <div class="sect2">
 <h3 id="_set_the_stage_5">5.1. Set the stage</h3>
 <div class="paragraph">
-<p>To Do</p>
+<p>We will start from an usual payroll batch job and will enhance it to support partition. Open Lab 5 and run the <code>PartitionedJobSubmitterServlet.java</code> servlet. In this application, you can select for which month the payroll should be calculated. Don&#8217;t run a batch job at this stage, as it will fails.</p>
+</div>
+<div class="paragraph">
+<p>If you look at the Chunk&#8217;s reader (<code>SimpleItemReader.java</code>), you will notice that the <code>open()</code> method is slightly different. Based on the execution ID of the current job, it gets, via the Batch Runtime and the job context, some properties such as the selected month, the partition index, the start and the end employee ID. Those information are used to return of subset of the available data.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">  <span class="directive">public</span> <span class="type">void</span> open(<span class="predefined-type">Serializable</span> e) <span class="directive">throws</span> <span class="exception">Exception</span> {
+
+    <span class="predefined-type">Properties</span> jobParameters = BatchRuntime.getJobOperator().getParameters(jobContext.getExecutionId());
+    <span class="predefined-type">String</span> monthYear = (<span class="predefined-type">String</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">monthYear</span><span class="delimiter">&quot;</span></span>);
+    <span class="predefined-type">Integer</span> partitionNumber = (<span class="predefined-type">Integer</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">partitionNumber</span><span class="delimiter">&quot;</span></span>);
+    <span class="predefined-type">Integer</span> fromKey = (<span class="predefined-type">Integer</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">startEmpID</span><span class="delimiter">&quot;</span></span>);
+    <span class="predefined-type">Integer</span> toKey = (<span class="predefined-type">Integer</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">endEmpID</span><span class="delimiter">&quot;</span></span>);
+
+    <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">SimpleItemReader[partition #</span><span class="delimiter">&quot;</span></span> + partitionNumber + <span class="string"><span class="delimiter">&quot;</span><span class="content"> will process </span><span class="delimiter">&quot;</span></span>
+    + <span class="string"><span class="delimiter">&quot;</span><span class="content"> from employeeId: </span><span class="delimiter">&quot;</span></span> + fromKey + <span class="string"><span class="delimiter">&quot;</span><span class="content"> to </span><span class="delimiter">&quot;</span></span> + toKey
+    + <span class="string"><span class="delimiter">&quot;</span><span class="content"> for the month of </span><span class="delimiter">&quot;</span></span> + monthYear);
+
+    payrollInputRecords = dataBean.getPayrollInputRecords(monthYear, fromKey, toKey);
+
+  }</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_summary_5">5.2. Summary</h3>
+<h3 id="_define_the_partition_strategy">5.2. Define the partition strategy</h3>
+<div class="paragraph">
+<p>A partition mapper is a java class the implements the <code>javax.batch.api.partition.PartitionMapper</code> interface.
+So create a java classes called "PayrollPartitionMapper", implements the PartitionMapper interface. And as usual, decorate the class with the <code>@Named("PayrollPartitionMapper)</code> annotation, resolve any missing imports and implements the abstract methods imposed by the interface.</p>
+</div>
+<div class="paragraph">
+<p>Inject the JobConext and the SampleDataHolderBean as we will need them.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">   <span class="annotation">@Inject</span>
+   <span class="directive">private</span> JobContext jobContext;
 
+   <span class="annotation">@EJB</span>
+   <span class="directive">private</span> SampleDataHolderBean bean;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>mapPartitions()</code> method return a <code>PartitionPlan</code> object, so let&#8217;s modify the body of the method as follow :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">   <span class="annotation">@Override</span>
+   <span class="directive">public</span> PartitionPlan mapPartitions() <span class="directive">throws</span> <span class="exception">Exception</span> {
+
+      <span class="keyword">return</span> <span class="keyword">new</span> PartitionPlanImpl() {
+          <span class="annotation">@Override</span>
+          <span class="directive">public</span> <span class="type">int</span> getPartitions() {
+              <span class="keyword">return</span> <span class="integer">5</span>;
+          }
+
+          <span class="annotation">@Override</span>
+          <span class="directive">public</span> <span class="predefined-type">Properties</span><span class="type">[]</span> getPartitionProperties() {
+              <span class="predefined-type">Properties</span> jobParameters = BatchRuntime.getJobOperator().getParameters(jobContext.getExecutionId());
+
+              <span class="predefined-type">String</span> monthYear = (<span class="predefined-type">String</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">monthYear</span><span class="delimiter">&quot;</span></span>);
+              <span class="type">int</span> partitionSize = bean.getMaxEmployees() / getPartitions();
+
+              <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">**[PayrollPartitionMapper] jobParameters: </span><span class="delimiter">&quot;</span></span> + jobParameters
+              + <span class="string"><span class="delimiter">&quot;</span><span class="content">; executionId: </span><span class="delimiter">&quot;</span></span> + jobContext.getExecutionId() + <span class="string"><span class="delimiter">&quot;</span><span class="content">; partitionSize = </span><span class="delimiter">&quot;</span></span> + partitionSize);
+
+              <span class="predefined-type">Properties</span><span class="type">[]</span> props = <span class="keyword">new</span> <span class="predefined-type">Properties</span>[getPartitions()];
+              <span class="keyword">for</span> (<span class="type">int</span> i=<span class="integer">0</span>; i&lt;getPartitions(); i++) {
+                <span class="predefined-type">Properties</span> partProps = <span class="keyword">new</span> <span class="predefined-type">Properties</span>();
+                partProps.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">monthYear</span><span class="delimiter">&quot;</span></span>, monthYear);
+                partProps.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">partitionNumber</span><span class="delimiter">&quot;</span></span>, i);
+                partProps.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">startEmpID</span><span class="delimiter">&quot;</span></span>, i * partitionSize);
+                partProps.put(<span class="string"><span class="delimiter">&quot;</span><span class="content">endEmpID</span><span class="delimiter">&quot;</span></span>, (i + <span class="integer">1</span>) * partitionSize);
+
+                props[i] = partProps;
+                <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">**[PayrollPartitionMapper[</span><span class="delimiter">&quot;</span></span> + i + <span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span> + getPartitions() + <span class="string"><span class="delimiter">&quot;</span><span class="content">] : </span><span class="delimiter">&quot;</span></span> + partProps);
+                }
+
+                <span class="keyword">return</span> props;
+            }
+        };</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We should now update the JSL to link the partition mapper to the chunk step.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">&lt;job id=<span class="string"><span class="delimiter">&quot;</span><span class="content">partitioned-payroll</span><span class="delimiter">&quot;</span></span> xmlns=<span class="string"><span class="delimiter">&quot;</span><span class="content">http://xmlns.jcp.org/xml/ns/javaee</span><span class="delimiter">&quot;</span></span> version=<span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>&gt;
+    &lt;step id=<span class="string"><span class="delimiter">&quot;</span><span class="content">process</span><span class="delimiter">&quot;</span></span>&gt;
+        &lt;chunk item-count=<span class="string"><span class="delimiter">&quot;</span><span class="content">3</span><span class="delimiter">&quot;</span></span>&gt;
+            &lt;reader ref=<span class="string"><span class="delimiter">&quot;</span><span class="content">SimpleItemReader</span><span class="delimiter">&quot;</span></span>&gt;&lt;/reader&gt;
+            &lt;processor ref=<span class="string"><span class="delimiter">&quot;</span><span class="content">SimpleItemProcessor</span><span class="delimiter">&quot;</span></span>&gt;&lt;/processor&gt;
+            &lt;writer ref=<span class="string"><span class="delimiter">&quot;</span><span class="content">SimpleItemWriter</span><span class="delimiter">&quot;</span></span>&gt;&lt;/writer&gt;
+        &lt;/chunk&gt;
+        &lt;partition&gt;
+            &lt;mapper ref=<span class="string"><span class="delimiter">&quot;</span><span class="content">PayrollPartitionMapper</span><span class="delimiter">&quot;</span></span>/&gt;
+        &lt;/partition&gt;
+    &lt;/step&gt;
+&lt;/job&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_test_the_partitioned_execution">5.3. Test the partitioned execution</h3>
+<div class="paragraph">
+<p>If you now run the job for a particular month, you will see in the GlassFish logs that data are spread across 5 threads as defined by the <code>getPartitions()</code> method of the partition mapper.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code>Info: ** JobSubmitterServlet: JAN-2013
+Info: **[PayrollPartitionMapper] jobParameters: {monthYear=JAN-2013}; executionId: 79; partitionSize = 6
+Info: **[PayrollPartitionMapper[0/5] : {endEmpID=6, partitionNumber=0, startEmpID=0, monthYear=JAN-2013}
+Info: **[PayrollPartitionMapper[1/5] : {endEmpID=12, partitionNumber=1, startEmpID=6, monthYear=JAN-2013}
+Info: **[PayrollPartitionMapper[2/5] : {endEmpID=18, partitionNumber=2, startEmpID=12, monthYear=JAN-2013}
+Info: **[PayrollPartitionMapper[3/5] : {endEmpID=24, partitionNumber=3, startEmpID=18, monthYear=JAN-2013}
+Info: **[PayrollPartitionMapper[4/5] : {endEmpID=30, partitionNumber=4, startEmpID=24, monthYear=JAN-2013}
+Info: SimpleItemReader[partition #2 will process from employeeId: 12 to 18 for the month of JAN-2013
+Info: SimpleItemReader[partition #0 will process from employeeId: 0 to 6 for the month of JAN-2013
+Info: SimpleItemReader[partition #1 will process from employeeId: 6 to 12 for the month of JAN-2013
+Info: SimpleItemReader[partition #4 will process from employeeId: 24 to 30 for the month of JAN-2013
+Info: SimpleItemReader[partition #3 will process from employeeId: 18 to 24 for the month of JAN-2013</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_summary_5">5.4. Summary</h3>
+<div class="paragraph">
+<p>In this Lab, we learnt</p>
+</div>
+<div class="paragraph">
+<p><strong>TO DO</strong></p>
+</div>
 </div>
 </div>
 </div>
