@@ -538,7 +538,7 @@ span.line-numbers { border-right: 1px solid #E5E5E5; color: #999; display: inlin
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Batch processing is used in many industries for tasks ranging from payroll processing; statement generation; end-of-day jobs such as interest calculation, ETL (extract, load, and transform) in a data warehouse; and many more. Typically, batch processing is bulk-oriented, non-interactive, and long running—and might be data- or computation-intensive. Batch jobs can be run on schedule or initiated on demand. Also, since batch jobs are typically long-running jobs, check-pointing and restarting are common features found in batch jobs.</p>
+<p>Batch processing is used in many industries for tasks ranging from payroll processing; statement generation; end-of-day jobs such as interest calculation, ETL (extract, load, and transform) in a data warehouse; and many more. Typically, batch processing is bulk-oriented, non-interactive, and long running and might be data or computation-intensive. Batch jobs can be run on schedule or initiated on demand. Also, since batch jobs are typically long-running jobs, check-pointing and restarting are common features found in batch jobs.</p>
 </div>
 <div class="paragraph">
 <p>JSR 352 (Batch Processing for Java Platform), part of the Java EE 7 platform, defines the programming model for batch applications and the runtime to run and manage batch jobs. This Hands-on Lab will take you through the key concepts of JSR352.</p>
@@ -590,7 +590,7 @@ JavaOne attendees, everything has been installed and pre-configured. <strong>XXA
 <p><strong>Lab 1</strong> will introduce you the main concepts of JSR 352 such as Step, Job, JSL, etc. In this exercise, you will be guided to build from scratch a complete application that will run a simple batch job to perform some hypothetical payroll calculations.</p>
 </li>
 <li>
-<p><strong>Lab 2</strong> will enhance the first exercice and introduce mutli-steps jobs combining Chunk step with a Batchlet step..</p>
+<p><strong>Lab 2</strong> will enhance the first exercise and introduce mutli-steps jobs combining Chunk step with a Batchlet step..</p>
 </li>
 <li>
 <p><strong>Lab 3</strong> will cover checkpoint and the JobOperator interface which can be used to resume failed job.</p>
@@ -604,7 +604,7 @@ JavaOne attendees, everything has been installed and pre-configured. <strong>XXA
 </ul>
 </div>
 <div class="paragraph">
-<p>Unless you are already familiar with the Batch API, it is recommended to follow the suggested exercices order.</p>
+<p>Unless you are already familiar with the Batch API, it is recommended to follow the suggested exercises order.</p>
 </div>
 </div>
 <div class="sect2">
@@ -696,7 +696,7 @@ The sample applications and the code may not always be following best practices 
 <h2 id="_lab_jsr_352_introduction">1. Lab: JSR 352 introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This exercice will introduce you the main concepts of JSR 352 : Step, Job, Job Specification Language, batch runtime, etc. You will build a complete application that will run a simple batch job performing some hypothetical salary calculations. The application has been intentionally kept quite simple in order to focus on the key concepts of JSR 352.</p>
+<p>This exercise will introduce you the main concepts of JSR 352 : Step, Job, Job Specification Language, batch runtime, etc. You will build a complete application that will run a simple batch job performing some hypothetical salary calculations. The application has been intentionally kept quite simple in order to focus on the key concepts of JSR 352.</p>
 </div>
 <div class="sect2">
 <h3 id="_set_the_stage">1.1. Set the stage</h3>
@@ -821,7 +821,7 @@ You can now right click on your Servlet class and select "Run File". If everythi
 <p>A typical enterprise application needs some data to consume. In real life, those data are  high likely stored in a database, received over the network (eg. through a REST endpoint) or via a JMS Queue, etc.</p>
 </div>
 <div class="paragraph">
-<p>Our exercice also needs some data but for the sake of simplicity, we will mock a data producer behind a simple Singleton EJB as the focus of the Lab is really on the Batch API and not so much on other APIs such as JPA or JAX-RS.</p>
+<p>Our exercise also needs some data but for the sake of simplicity, we will mock a data producer behind a simple Singleton EJB as the focus of the Lab is really on the Batch API and not so much on other APIs such as JPA or JAX-RS.</p>
 </div>
 <div class="sect3">
 <h4 id="_create_the_the_input_record">1.2.1. Create the the Input Record</h4>
@@ -1041,7 +1041,7 @@ A waved red underlined line of code means that NetBeans is unable to compile tha
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay"><code class="java language-java"><span class="keyword">import</span> <span class="include">javax.ejb.Singleton</span>;
-<span class="keyword">import</span> <span class="include">javax.ejb.Startup</span>;<span class="error">`</span></code></pre>
+<span class="keyword">import</span> <span class="include">javax.ejb.Startup</span>;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1135,7 +1135,7 @@ We also define a <code>PayrollOutputRecord</code> collection and some related me
 <div class="sect2">
 <h3 id="_payroll_job_the_reader_the_processor_the_writer">1.3. PayRoll Job : the Reader, the Processor, the Writer</h3>
 <div class="paragraph">
-<p>Now that we have everything set in place, we can tackle the main part of the exercice, i.e. create the batch job!</p>
+<p>Now that we have everything set in place, we can tackle the main part of the exercise, i.e. create the batch job!</p>
 </div>
 <div class="paragraph">
 <p>A batch job uses a simple <em>Read - Process - Write</em> pattern. A <strong>Reader</strong> is used to retrieve the input data, a <strong>Processor</strong> will then do some processing on those data and finally, a <strong>Writer</strong> will save the results somewhere. How the data are actually read (e.g. from a filesystem, from a database, from memory, etc.) is not specified so we are free to use, in a Reader, the mechanism we want. In our exercise, we will just read some data stored in an EJB.</p>
@@ -1187,7 +1187,7 @@ JSR 352 also defines a XML based language called <strong>JSL</strong> (Job Speci
 <div class="sect3">
 <h4 id="_reader">1.3.1. Reader</h4>
 <div class="paragraph">
-<p>A Reader is  class that extends the abstract <code>javax.batch.api.chunk.AbstractItemReader</code> class defined in JSR 352.</p>
+<p>A Reader is class that extends the abstract <code>javax.batch.api.chunk.AbstractItemReader</code> class defined in JSR 352.</p>
 </div>
 <div class="paragraph">
 <p>Create, in the right package, a new class called PayrollInputRecordReader and in the class declaration, specify that this class should extends the <code>AbstractItemReader</code> class.</p>
@@ -1226,7 +1226,7 @@ You can see that NetBeans is still unable to compile the code, this is because t
 </div>
 </div>
 <div class="paragraph">
-<p>Now we should initialize it with the data contained in the EJB.  We will do this in the <code>open()</code> method defined in the <code>AbstractItemReader</code> class. As its name imply, this method is invoked by the Batch runtime to open ressources required by the Reader.</p>
+<p>Now we should initialize it with the data contained in the EJB.  We will do this in the <code>open()</code> method defined in the <code>AbstractItemReader</code> class. As its name implies, this method is invoked by the Batch runtime to open ressources required by the Reader.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1313,7 +1313,7 @@ The code is fairly easy to understand, it iterates over all the employees and fo
 <div class="sect3">
 <h4 id="_processor">1.3.2. Processor</h4>
 <div class="paragraph">
-<p>As its name imply, a Processor will handle, within a batch step, the actual data processing, data that are provided by the Reader. Technically, a Processor is a class that implements the <code>javax.batch.api.chunk.ItemProcessor</code> interface defined in the JSR 352 specification and has a <code>processItem()</code> method. This method gets an object as a parameter (an item) and it returns another object.</p>
+<p>As its name implies, a Processor will handle, within a batch step, the actual data processing, data that is provided by the Reader. Technically, a Processor is a class that implements the <code>javax.batch.api.chunk.ItemProcessor</code> interface defined in the JSR 352 specification and has a <code>processItem()</code> method. This method gets an object as a parameter (an item) and it returns another object.</p>
 </div>
 <div class="paragraph">
 <p>So, create a new class called <code>NetPayProcessor</code> and specify that it implements the  <code>ItemProcessor</code> interface. Resolve the missing import and ask NetBeans to implement the abstract method. We should now change the <code>processItem()</code> method to perform the actual data processing, so change this method as follow:</p>
@@ -1336,7 +1336,7 @@ The code is fairly easy to understand, it iterates over all the employees and fo
 </div>
 </div>
 <div class="paragraph">
-<p>This method cast the received object to a <code>PayrollInputRecord</code>. It does some computations and then creates and initializes a <code>PayrollOutputRecord</code> object, compute and set a net salary. That <code>PayrollOutputRecord</code> object is then returned to the calling method.</p>
+<p>This method casts the received object to a <code>PayrollInputRecord</code>. It does some computations and then creates and initializes a <code>PayrollOutputRecord</code> object, compute and set a net salary. That <code>PayrollOutputRecord</code> object is then returned to the calling method.</p>
 </div>
 <div class="paragraph">
 <p>We can use the open() method to initialize any ressources that is required by the Reader. In our case, the initialisation is limited to copy the <code>payrollDataHolderBean</code> data to to the <code>payrollInputRecordsIterator</code>.</p>
@@ -1371,7 +1371,7 @@ You should now know how to detect any missing import and how to solve this.
 <p>After the Reader and the Processor, we now need to develop the Writer to save our results. A Writer is a class that extends the <code>javax.batch.api.chunk.AbstractItemWriter</code> interface and implements the <code>writeItems()</code> method.</p>
 </div>
 <div class="paragraph">
-<p>As usual, creates in the right package a class named <code>PayrollOutputRecordWriter</code>. Resolve the import and ask NetBeans to implement the abstract method.</p>
+<p>As usual, create a class named <code>PayrollOutputRecordWriter</code> in the right package. Resolve the import and ask NetBeans to implement the abstract method.</p>
 </div>
 <div class="paragraph">
 <p>Remember that for the sake of simplicity, we will save the results in the Bean we have created earlier, so you need to inject that bean with the following code.</p>
@@ -1635,7 +1635,7 @@ Hard coding HTML directly in a servlet is not recommended for any serious applic
 </div>
 </div>
 <div class="paragraph">
-<p>This method display, in a HTML form, a table containing the job results using the <code>payrollDataHolderBean</code> bean. Towards the end, you can also see that the method print raw HTML with the 2 buttons that the end user will use to control the application (e.g. "Caluclate Payroll" &amp; "Refresh").</p>
+<p>This method displays, in a HTML form, a table containing the job results using the <code>payrollDataHolderBean</code> bean. Towards the end, you can also see that the method print raw HTML with the 2 buttons that the end user will use to control the application (e.g. "Caluclate Payroll" &amp; "Refresh").</p>
 </div>
 <div class="paragraph">
 <p>Finally, we will rewrite the existing <code>processRequest()</code> servlet method to use those utilities methods:</p>
@@ -1680,7 +1680,7 @@ Hard coding HTML directly in a servlet is not recommended for any serious applic
 <div class="sect2">
 <h3 id="_testing_the_payroll_application">1.6. Testing the Payroll application</h3>
 <div class="paragraph">
-<p>To test the application, right click on the <code>BatchJobSubmitter.java</code> servlet in the "Project" tab and select "Run". This action will compile and deploy the application and invoke your local browser with the Servlet URL. The first ime, you should will see the following screen.</p>
+<p>To test the application, right click on the <code>BatchJobSubmitter.java</code> servlet in the "Project" tab and select "Run". This action will compile and deploy the application and invoke your local browser with the Servlet URL. The first time, you should will see the following screen.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -1736,7 +1736,7 @@ Since the data set is minimal and the processing trivial, the batch execution is
 <h2 id="_lab_batchlet_and_multi_steps_job">2. Lab: Batchlet and Multi-steps Job</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In the first exercise, we have developed a simple job made of a single step, a Chunk step. This exercice will introduce you to <strong>Batchlet</strong>, the second type of step supported by JSR 352. Chunk step are used to work on data while Batchlet are used to perform tasks within a job. To illustrate this, we will define a multi-steps job that combine 2 steps: a Chunk step and  a Batchlet step.</p>
+<p>In the first exercise, we have developed a simple job made of a single step, a Chunk step. This exercise will introduce you to <strong>Batchlet</strong>, the second type of step supported by JSR 352. Chunk step are used to work on data while Batchlet are used to perform tasks within a job. To illustrate this, we will define a multi-steps job that combine 2 steps: a Chunk step and  a Batchlet step.</p>
 </div>
 <div class="sect2">
 <h3 id="_set_the_stage_2">2.1. Set the stage</h3>
@@ -1912,7 +1912,7 @@ Make sure to also update the "prepare" step to specify that the next step to inv
 <p>This exercise is focusing on two additional JSR 352 aspects: checkpoint and the JobOperator interface.</p>
 </div>
 <div class="paragraph">
-<p><strong>JobOperator</strong> provides an interface to manage all aspects of job processing, including operational commands, such as start, restart, and stop, as well as job repository commands. We have already used it in previous exercices to start jobs and also to get their execution status. In this exercice, we will see how we can resume the execution of a failed job.</p>
+<p><strong>JobOperator</strong> provides an interface to manage all aspects of job processing, including operational commands, such as start, restart, and stop, as well as job repository commands. We have already used it in previous exercises to start jobs and also to get their execution status. In this exercise, we will see how we can resume the execution of a failed job.</p>
 </div>
 <div class="paragraph">
 <p>To avoid having to restart a failed job from the beginning, JSR 352 support the concept of checkpoint. A <strong>checkpoint</strong> allows a step to periodically bookmark its current progress to enable restart from the last point of consistency should this job be stopped (intentionally or unintentionally).</p>
@@ -2010,7 +2010,7 @@ The "item-count" attribue (the size) of the "chunk" element specify the number o
 <i class="icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Any real application would obviously implement more severe validation strategies. We haven&#8217;t because it&#8217;s not the purpose of this exercice and we are also using that weaknesses to demonstrate some of the JSR5352 features.
+Any real application would obviously implement more severe validation strategies. We haven&#8217;t because it&#8217;s not the purpose of this exercise and we are also using that weaknesses to demonstrate some of the JSR5352 features.
 </td>
 </tr>
 </table>
@@ -2076,8 +2076,8 @@ Any real application would obviously implement more severe validation strategies
 <h2 id="_lab_listeners">4. Lab: Listeners</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In the first exercice, we have created the simple batch application from scratch.
-This exercice will build on that initial application and will introduce listeners.
+<p>In the first exercise, we have created the simple batch application from scratch.
+This exercise will build on that initial application and will introduce listeners.
 <strong>Listeners</strong> are used to intervene, at the different levels, during the life-cylcle of a batch job.</p>
 </div>
 <div class="paragraph">
@@ -2090,7 +2090,7 @@ Technically, a listener is a class that that implements one of the listener inte
 <div class="paragraph">
 <p>We will now start from a NetBeans project that already contains a simple batch application. So just open the "Lab4" project in NetBeans.
 As you explore the project files, you will notice the servlet that is used to control the batch, the reader, the processor and the writer, the JSL that defines the job, etc.
-In short, this application does almost what we developed in the first exercice.
+In short, this application does almost what we developed in the first exercise.
 The only real difference is that it is now possible to add Payroll input records in the UI and restart the last executed job. Run the job and check the result in the GlassFish console.</p>
 </div>
 <div class="listingblock">
@@ -2170,7 +2170,7 @@ Since this is a Job level listener, there is no Step context.
 </div>
 </div>
 <div class="paragraph">
-<p>If we run the batch once again, we can observer in the console that the job level listener has been invoked at the beginng (<code>beforeJob()</code> method) and at the end (<code>afterJob()</code> method).</p>
+<p>If we run the batch once again, we can observer in the console that the job level listener has been invoked at the beginning (<code>beforeJob()</code> method) and at the end (<code>afterJob()</code> method).</p>
 </div>
 <div class="listingblock">
 <div class="content">
