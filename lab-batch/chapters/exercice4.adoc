@@ -1,0 +1,333 @@
+:imagesdir: ../pic
+
+== Lab: Listeners
+
+In the first exercise, we have created the simple batch application from scratch. 
+This exercise will build on that initial application and will introduce listeners.
+*Listeners* are used to intervene, at the different levels, during the life-cylcle of a batch job. 
+
+A listener is configured to receive the execution control at some well defined phases during the execution of the job.
+They can be configured at different level (step level before or after, job level, ...)
+Technically, a listener is a class that that implements one of the listener interfaces defined in the JSR 352 specification.
+
+=== Set the stage
+
+We will now start from a NetBeans project that already contains a simple batch application. So just open the "Lab4" project in NetBeans.
+As you explore the project files, you will notice the servlet that is used to control the batch, the reader, the processor and the writer, the JSL that defines the job, etc.
+In short, this application does almost what we developed in the first exercise.
+The only real difference is that it is now possible to add Payroll input records in the UI and restart the last executed job. Run the job and check the result in the GlassFish console.
+
+[source]
+----
+... PayrollInputRecordReader: resuming from: 0
+... ** Calculating net pay for empId: 1
+... ** Calculating net pay for empId: 2
+... ** Calculating net pay for empId: 3
+... PayrollInputRecordReader: Checkpointing reader position: 3
+... ** Calculating net pay for empId: 4
+... ** Calculating net pay for empId: 5
+... PayrollInputRecordReader: Checkpointing reader position: 5
+----
+
+
+=== Defining a listener at the Job level
+
+Let's define a listener at the job level.
+For that, you should create a class called "PayrollJobListener" that implements the `javax.batch.api.listener.JobListener` interface. 
+Make sure to decorate the class with the `@Named` annotation.
+NetBeans will help you to resolve the missing import and implement the abstract methods : `beforeJob()` and `afterJob()`.
+
+To use, in the listener, information related to the job instance, we need to inject the job context object.
+
+[source,java]
+----
+   @Inject
+   JobContext jobContext;
+----
+
+--
+TIP: Since this is a Job level listener, there is no Step context. 
+--
+
+Rewrite the 2 methods as follow : 
+[source,java]
+----
+    @Override
+    public void beforeJob() throws Exception {
+        System.out.println("** PayrollJobListener:: Job started at: " + (new Date()));
+    }
+
+    @Override
+    public void afterJob() throws Exception {
+        System.out.println("** PayrollJobListener:: Job completed at: " + (new Date())
+            + "; exitStatus : " + jobContext.getExitStatus() + "; " + jobContext.getBatchStatus());
+    }
+----
+
+The last thing we need to do is to update the JSL to include this listener ans since it is a Job level listener, we should make sure to define it at the job level!
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="PayrollJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+    <listeners>
+        <listener ref="payrollJobListener"/>
+    </listeners>
+	...
+----
+
+If we run the batch once again, we can observer in the console that the job level listener has been invoked at the beginning (`beforeJob()` method) and at the end (`afterJob()` method).
+[source]
+----
+Info:   ** PayrollJobListener:: Job started at: Tue Aug 12
+Info:   ** PayrollStepListener:: Step started at: Tue Aug 12; stepContext: STARTED
+Info:   PayrollInputRecordReader: resuming from: 0
+Info:   ** Calculating net pay for empId: 1
+Info:   ** Calculating net pay for empId: 2
+Info:   ** Calculating net pay for empId: 3
+Info:   PayrollInputRecordReader: Checkpointing reader position: 3
+Info:   ** Calculating net pay for empId: 4
+Info:   ** Calculating net pay for empId: 5
+Info:   PayrollInputRecordReader: Checkpointing reader position: 5
+Info:   ** PayrollStepListener:: Step ended at: Tue Aug 12; stepContext: STARTED
+Info:   ** PayrollJobListener:: Job completed at: Tue Aug 12; exitStatus : null; STARTED
+----
+
+=== Defining listener(s) at the Step level
+
+Setting listeners at the level of the job might be, in some cases, too coarse grained. 
+Luckily, JSR 352 allows us to define listeners at the step level. 
+
+In the project source directory, create a new java class called "PayrollStepListener".
+This class needs to implement the `javax.batch.api.listener.StepListener` interface.
+Use NetBeans to resolve the import and implements the abstract methods.
+
+You should now have 2 methods : `beforeStep()` and `afterStep()`
+
+In the previous listener, we used the Job context but this time, we have also the step context at our disposal.
+You can inject the step context in your listener.
+
+[source,java]
+----
+   @Inject
+   StepContext stepContext;
+----
+
+We will use this context to gather some information.
+Update the `beforeStep()` and `afterStep()` methods as follow (make the necessary changes for the 2nd method).
+
+[source,java]
+----
+   System.out.println("\t** PayrollStepListener:: Step started at: " + (new Date())
+      + "; stepContext: " + stepContext.getBatchStatus());
+----
+
+--
+TIP: Make sure to annotate the class declaration with the `@Named` annotation.
+--
+
+Now that we have defined the implementation of the listener, we need to update the batch JSL to reference it.
+Update the step defined in the JSL as follow: 
+
+[source,xml]
+----
+...
+  <step id="prepare">
+     <listeners>
+        <listener ref="payrollStepListener"/>
+     </listeners>
+...
+----
+
+If you run the batch, you will see that our 2 listeners are correctly invoked.
+You can also notice the listener invokation chain order : _job before_, _step before_, _step after_, _job after_.
+[source]
+----
+Info:   ** PayrollJobListener:: Job started at: Thu Jul 31 04:06:39 CEST 2014
+Info:   ** PayrollStepListener:: Step started at: Thu Jul 31 04:06:39 CEST 2014; stepContext: STARTED
+Info:   ** Calculating net pay for empId: 1
+...
+Info:   ** Calculating net pay for empId: 5
+Info:   ** PayrollStepListener:: Step completed at: Thu Jul 31 04:06:39 CEST 2014; stepContext: STARTED
+Info:   ** PayrollJobListener:: Job completed at: Thu Jul 31 04:06:39 CEST 2014; exitStatus : null; STARTED
+----
+
+=== Defining listener(s) within a Step
+
+We saw that we can define listeners at the level of a Job and at the level of a Step but this might still be too coarse grained.
+JSR 352 also allows to define listeners within a step itself.
+
+Before adding this listener, let's simulate a use case in the application by adding a record.
+Make sure to respect the format expected by the application : int,salary.
+For example, fill in "6,10000" and click "add".
+You can now launch the job. After you have hit "refresh", the displayed results should includes the record you have just added.
+
+.Adding a record
+image::E2.1.png[]
+
+Let's now pretend we did a mistake and add a record using an incorrect format (e.g. "61000").
+If you now run the batch again, GlassFish will throw some exceptions as clearly the application can only handle record correctly formated.
+
+[source]
+----
+Info:   ** Calculating net pay for empId: 4
+Info:   ** Calculating net pay for empId: 5
+Severe:   Failure in Read-Process-Write Loop
+com.ibm.jbatch.container.exception.BatchContainerRuntimeException: java.lang.IllegalArgumentException: Salary cannot be null
+...
+Warning:   Caught throwable in chunk processing. Attempting to close all readers and writers.
+Warning:   Caught exception executing step: com.ibm.jbatch.container.exception.BatchContainerRuntimeException: Failure in Read-Process-Write Loop
+...
+Caused by: com.ibm.jbatch.container.exception.BatchContainerRuntimeException: java.lang.IllegalArgumentException: Salary cannot be null
+...
+Caused by: java.lang.IllegalArgumentException: Salary cannot be null
+...
+----
+
+Our step is made of a reader, a processor and a writer.
+JSR 352 allows to also define listener at this level, i.e. within a step.
+In this example, we will define a listener at the reader level.
+Typically, such a listener would be used to intervene and handle any misread data by the reader.
+
+In the source directory, create a new java class called "PayrollInputRecordReadListener" and decorate it with the `@Named` annotation.
+As we want a reader at the reader level, we need to implements the `javax.batch.api.chunk.listener.ItemReadListener` interface, so update your class definition accordingly.
+Use NetBeans to implement the abstract methods of the interface.
+
+We can inject, in our listener, contexts: the job and the step context.
+
+[source,java]
+----
+   @Inject
+   JobContext jobContext;
+    
+   @Inject
+   StepContext stepContext;
+----
+
+You can remove the body of the `beforeRead()` and the `afterRead()` methods as we won't use them.
+Change the `onReadError()` method as follows:
+[source,java]
+----
+    @Override
+    public void onReadError(Exception ex) throws Exception {
+        System.out.println("\t** PayrollInputRecordReadListener:: onReadError : "
+                + stepContext.getTransientUserData() + "; Exception: " + ex);
+    }
+----
+
+Your `PayrollInputRecordReadListener.java` listener should now looks like this.
+[source,java]
+----
+package org.glassfish.javaee7.batch.lab4;
+import javax.batch.api.chunk.listener.ItemReadListener;
+import javax.batch.runtime.context.JobContext;
+import javax.batch.runtime.context.StepContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+@Named
+public class PayrollInputRecordReadListener
+    implements ItemReadListener {
+
+    @Inject
+    JobContext jobContext;
+    
+    @Inject
+    StepContext stepContext;
+
+    @Override
+    public void beforeRead() throws Exception {
+    }
+
+    @Override
+    public void afterRead(Object item) throws Exception {
+    }
+
+    @Override
+    public void onReadError(Exception ex) throws Exception {
+        System.out.println("\t** PayrollInputRecordReadListener:: onReadError : "
+                + stepContext.getTransientUserData() + "; Exception: " + ex);
+    }          
+}
+----
+
+Now that we have defined the listener implementation, we need to configure our job JSL file as follow:
+
+[source,xml]
+----
+<job id="PayrollJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+     <step id="prepare">
+        <listeners>
+            <listener ref="payrollInputRecordReadListener"/>
+        </listeners>
+        <chunk item-count="3">
+            <reader ref="payrollInputRecordReader"></reader> 
+            <processor ref="netPayProcessor"></processor>
+            <writer ref="payrollOutputRecordWriter"></writer>
+        </chunk>
+    </step>
+</job>
+----
+
+If you test the batch with a incorrect record, you will notice that the Listener is invoked but you can also see that exceptions are still thrown.
+[source]
+----
+...
+Info:   ** Calculating net pay for empId: 4
+Info:   ** Calculating net pay for empId: 5
+Info:   ** PayrollInputRecordReadListener:: onReadError : null; Exception: java.lang.IllegalArgumentException
+Severe:   Failure in Read-Process-Write Loop
+com.ibm.jbatch.container.exception.BatchContainerRuntimeException: java.util.NoSuchElementException...
+...
+----
+
+To avoid that, we can define a set of exceptions that can be skipped if they are thrown during the execution of the step.
+To do that, define at the step level in the JSL which exception(s) can be skipped.
+[source,xml]
+----
+   <skippable-exception-classes>
+       <include class="java.lang.IllegalArgumentException"/>
+       <include class="java.lang.NumberFormatException"/>
+   </skippable-exception-classes> 
+----
+
+
+The updated JSL should now looks like this (previous listeners have been removed for shortness, you can keep them):
+[source,xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="PayrollJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+    <step id="prepare">
+        <listeners>
+            <listener ref="payrollInputRecordReadListener"/>
+        </listeners>
+        <chunk item-count="3">
+            <reader ref="payrollInputRecordReader"></reader> 
+            <processor ref="netPayProcessor"></processor>
+            <writer ref="payrollOutputRecordWriter"></writer>
+            <skippable-exception-classes>
+                <include class="java.lang.IllegalArgumentException"/>
+                <include class="java.lang.NumberFormatException"/>
+            </skippable-exception-classes> 
+        </chunk>
+    </step>
+</job>
+----
+
+If you try again to run the batch job with an incorrect record, you should get the following output in the GlassFish console.
+[source]
+----
+Info:   ** Calculating net pay for empId: 1
+Info:   ** Calculating net pay for empId: 2
+Info:   ** Calculating net pay for empId: 3
+Info:   ** Calculating net pay for empId: 4
+Info:   ** Calculating net pay for empId: 5
+Info:   ** PayrollInputRecordReadListener:: onReadError : null; Exception: java.lang.IllegalArgumentException: Salary cannot be null
+----
+
+=== Summary
+
+In this Lab, we learnt
+
+* about listeners 
+* how to define listeners at different levels (step, job, etc.)
+* how to ignore Exception(s) on a step

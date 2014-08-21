@@ -1,0 +1,137 @@
+:imagesdir: ../pic
+
+== Lab: Job Partitioning
+
+By default, all steps in a job run on the same thread.  Multi-threading can be leveraged to increase throughput and better utilize underlying hardware, that is what *partitioned step* brings. A serially processed step can be break it into *partitions* that will run on different threads. Once we have defined the partition strategy, the batch runtime will manage the threads and will handle all aspects of checkpoints.
+
+
+=== Set the stage
+
+We will start from an usual payroll batch job and will enhance it to support partition. Open Lab 5 and run the `PartitionedJobSubmitterServlet.java` servlet. In this application, you can select for which month the payroll should be calculated. Don't run a batch job at this stage, as it will fails.
+
+If you look at the Chunk's reader (`SimpleItemReader.java`), you will notice that the `open()` method is slightly different. Based on the execution ID of the current job, it gets, via the Batch Runtime and the job context, some properties such as the selected month, the partition index, the start and the end employee ID. Those information are used to return of subset of the available data.
+
+[source, java]
+----
+  public void open(Serializable e) throws Exception {
+        
+    Properties jobParameters = BatchRuntime.getJobOperator().getParameters(jobContext.getExecutionId());
+    String monthYear = (String) jobParameters.get("monthYear");
+    Integer partitionNumber = (Integer) jobParameters.get("partitionNumber");
+    Integer fromKey = (Integer) jobParameters.get("startEmpID");
+    Integer toKey = (Integer) jobParameters.get("endEmpID");
+
+    System.out.println("SimpleItemReader[partition #" + partitionNumber + " will process "
+    + " from employeeId: " + fromKey + " to " + toKey
+    + " for the month of " + monthYear);
+
+    payrollInputRecords = dataBean.getPayrollInputRecords(monthYear, fromKey, toKey);
+
+  }
+----
+
+=== Define the partition strategy
+
+
+A partition mapper is a java class the implements the `javax.batch.api.partition.PartitionMapper` interface.
+So create a java classes called "PayrollPartitionMapper", implements the PartitionMapper interface. And as usual, decorate the class with the `@Named("PayrollPartitionMapper)` annotation, resolve any missing imports and implements the abstract methods imposed by the interface.
+
+
+Inject the JobConext and the SampleDataHolderBean as we will need them.
+
+[source, java]
+----
+   @Inject
+   private JobContext jobContext;
+
+   @EJB
+   private SampleDataHolderBean bean;
+----
+
+
+The `mapPartitions()` method return a `PartitionPlan` object, so let's modify the body of the method as follow : 
+[source, java]
+----
+   @Override
+   public PartitionPlan mapPartitions() throws Exception {
+
+      return new PartitionPlanImpl() {
+          @Override
+          public int getPartitions() {
+              return 5;
+          }
+
+          @Override
+          public Properties[] getPartitionProperties() {
+              Properties jobParameters = BatchRuntime.getJobOperator().getParameters(jobContext.getExecutionId());
+
+              String monthYear = (String) jobParameters.get("monthYear");
+              int partitionSize = bean.getMaxEmployees() / getPartitions();
+                                
+              System.out.println("**[PayrollPartitionMapper] jobParameters: " + jobParameters
+              + "; executionId: " + jobContext.getExecutionId() + "; partitionSize = " + partitionSize);
+
+              Properties[] props = new Properties[getPartitions()];
+              for (int i=0; i<getPartitions(); i++) {
+                Properties partProps = new Properties();
+                partProps.put("monthYear", monthYear);
+                partProps.put("partitionNumber", i);
+                partProps.put("startEmpID", i * partitionSize);
+                partProps.put("endEmpID", (i + 1) * partitionSize);
+
+                props[i] = partProps;
+                System.out.println("**[PayrollPartitionMapper[" + i + "/" + getPartitions() + "] : " + partProps);
+                }
+
+                return props;
+            }
+        };
+----
+
+We should now update the JSL to link the partition mapper to the chunk step.
+[source, java]
+----
+<job id="partitioned-payroll" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+    <step id="process">
+        <chunk item-count="3">
+            <reader ref="SimpleItemReader"></reader> 
+            <processor ref="SimpleItemProcessor"></processor>
+            <writer ref="SimpleItemWriter"></writer> 
+        </chunk>
+        <partition>
+            <mapper ref="PayrollPartitionMapper"/>
+        </partition>
+    </step>
+</job>
+----
+
+=== Test the partitioned execution
+
+If you now run the job for a particular month, you will see in the GlassFish logs that data are spread across 5 threads as defined by the `getPartitions()` method of the partition mapper.
+[source]
+----
+Info: ** JobSubmitterServlet: JAN-2013
+Info: **[PayrollPartitionMapper] jobParameters: {monthYear=JAN-2013}; executionId: 79; partitionSize = 6
+Info: **[PayrollPartitionMapper[0/5] : {endEmpID=6, partitionNumber=0, startEmpID=0, monthYear=JAN-2013}
+Info: **[PayrollPartitionMapper[1/5] : {endEmpID=12, partitionNumber=1, startEmpID=6, monthYear=JAN-2013}
+Info: **[PayrollPartitionMapper[2/5] : {endEmpID=18, partitionNumber=2, startEmpID=12, monthYear=JAN-2013}
+Info: **[PayrollPartitionMapper[3/5] : {endEmpID=24, partitionNumber=3, startEmpID=18, monthYear=JAN-2013}
+Info: **[PayrollPartitionMapper[4/5] : {endEmpID=30, partitionNumber=4, startEmpID=24, monthYear=JAN-2013}
+Info: SimpleItemReader[partition #2 will process from employeeId: 12 to 18 for the month of JAN-2013
+Info: SimpleItemReader[partition #0 will process from employeeId: 0 to 6 for the month of JAN-2013
+Info: SimpleItemReader[partition #1 will process from employeeId: 6 to 12 for the month of JAN-2013
+Info: SimpleItemReader[partition #4 will process from employeeId: 24 to 30 for the month of JAN-2013
+Info: SimpleItemReader[partition #3 will process from employeeId: 18 to 24 for the month of JAN-2013
+----
+
+
+
+
+
+=== Summary
+
+In this Lab, we learnt 
+
+*TO DO*
+
+////////////////////////////

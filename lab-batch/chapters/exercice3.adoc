@@ -1,0 +1,111 @@
+:imagesdir: ../pic
+
+== Lab: Checkpoints and the JobOperator interface
+
+This exercise is focusing on two additional JSR 352 aspects: checkpoint and the JobOperator interface.
+
+*JobOperator* provides an interface to manage all aspects of job processing, including operational commands, such as start, restart, and stop, as well as job repository commands. We have already used it in previous exercises to start jobs and also to get their execution status. In this exercise, we will see how we can resume the execution of a failed job.
+
+To avoid having to restart a failed job from the beginning, JSR 352 support the concept of checkpoint. A *checkpoint* allows a step to periodically bookmark its current progress to enable restart from the last point of consistency should this job be stopped (intentionally or unintentionally).
+
+
+=== Set the stage
+
+Open and run the "Lab 3" project. This PayRoll application is again very similar. It has a single Chunk step. The only real difference is that this application let you update, delete and add Input Records. We will use this feature to intentionally introduce corrupt data to force our job to fail. We will finally use the JobOperator interface to resume the job execution where it has failed.
+
+
+The GlassFish console is a useful tool to understand what is going on. Go in the "Services" tab and locate the GlassFish instance (it's probably called "GlassFish 4.1" or "GlassFish Server"). Right click on it and select "View Domain Server Log", this action will open the GlassFish Logs in the NetBeans "Output" window.
+
+.GlassFish Server Log
+image::E2.2.jpg[]
+
+=== Start a job
+
+Locate the `displayPayrollForm()` method in the `BatchJobSubmitter` servlet. This method uses a `switch` to handle the different commands: start a job to calculate a payroll, add, update and delete input records.
+
+If you look at the `submitJobFromXML()` method that is invoked via the "calculatePayroll" command, you will notice that starting a job is easy.
+[source, java]
+----
+  JobOperator jobOperator = BatchRuntime.getJobOperator(); // get a jobOperator instance
+  Properties props = new Properties(); // set some properties
+  id = jobOperator.start(jobName, props); // and start to job
+----
+
+ 
+A `jobOperator` instance is used to interact with the batch runtime. Once you have that instance, all you have to do is to invoke its `start()` method and pass it the jobNanme and eventually some properties (see  http://docs.oracle.com/javaee/7/api/javax/batch/operations/JobOperator.html#start[javadoc]). Note that the jobName parameter is the actual name of the JSL file describing the job (without the XML extension). The 'start()' method will return an execution ID that we can use to continue to interact with the job via the batch runtime (e.g. stop the job, query the status of the job, etc.).
+
+--
+TIP: The location of JSL files is implementation dependant. GlassFish uses " META-INF/batch-jobs" by default.  
+--
+
+
+=== Break the job!
+
+We will now introduce some corrupt data to force our job to fail. For example, you can update the 5th record by removing the "," and click "update". You can now start the job and "if everything goes well", your job will fail with an "Exit status: FAILED". A "restart" button should also appear on the right side of the last failed job.
+
+.Break the job
+image::E3.1.jpg[]
+
+In the log, we can see that the Job fails at the fifth record and that there is a checkpoint every *2* records. This is defined in the Chunk step element in the JSL file.
+The "item-count" attribue (the size) of the "chunk" element specify the number of items to process per chunk (10 per default). At the end, a checkpoint will be performed since this is an obvious place for such action. 
+
+[source]
+----
+...
+...[INFO]...[ ** Calculating net pay for empId: 1 ]
+...[INFO]...[ ** Calculating net pay for empId: 2 ]
+...[INFO]...[ PayrollInputRecordReader: Checkpointing reader position: 2 ]
+...[INFO]...[ ** Calculating net pay for empId: 3 ]
+...[INFO]...[ ** Calculating net pay for empId: 4 ]
+...[INFO]...[ PayrollInputRecordReader: Checkpointing reader position: 4 ]
+...[SEVERE]...[[ Failure in Read-Process-Write Loop com.ibm.jbatch.container.exception.BatchContainerRuntimeException: java.util.NoSuchElementException]]
+...
+----
+
+.Defining the size of the chunk step
+image::E3.2.jpg[]
+
+--
+TIP: Any real application would obviously implement more severe validation strategies. We haven't because it's not the purpose of this exercise and we are also using that weaknesses to demonstrate some of the JSR5352 features. 
+--
+
+
+=== Resume a failed job
+
+We will now update the  `displayPayrollForm()` method to also handle the "restart" command. In `switch' construction, add an extra `case` with the following logic to handle the "restart" command with the following logic.
+
+[source, java]
+----
+   case "restart":
+      executionId = restartJob(executionId);
+      session.setAttribute("executionId", executionId);
+      break;
+----
+Restarting a failed job is also done via the jobOperator interface and more particularly via its `restart()` method. We pass, to this method, the execution ID of the failed job and we get in return a new execution ID.
+
+If you fix and update the wrong input record and "restart" the job, the job should now exit with a "COMPLETED" status.
+
+If you check the GlassFish log, you will notice that job is restarted from the last known checkpint (i.e. 4) so it read and process the next item (5 in this case). A final checkpoint is performed after the last record. 
+
+[source]
+----
+...[INFO]...[ PayrollInputRecordReader: resuming from: 4 ]
+...[INFO]...[ ** Calculating net pay for empId: 5 ]
+...[INFO]...[ PayrollInputRecordReader: Checkpointing reader position: 5 ]
+----
+
+
+
+=== Summary
+
+In this Lab, we learnt
+
+* about checkpointing
+* how item-count attribute can be used to control the check size
+* how to write Item{Reader, Processor, Writer} for a Step that checkpoint their state
+* how to use JobOperator.restart() to resume a failed job
+
+
+
+
+

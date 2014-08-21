@@ -1,0 +1,834 @@
+//////////////////////////////////////////
+Author : David Delabassee
+License : 
+//////////////////////////////////////////
+
+
+:imagesdir: ../pic
+
+== Lab: JSR 352 introduction
+
+This exercise will introduce you the main concepts of JSR 352 : Step, Job, Job Specification Language, batch runtime, etc. You will build a complete application that will run a simple batch job performing some hypothetical salary calculations. The application has been intentionally kept quite simple in order to focus on the key concepts of JSR 352.
+
+
+=== Set the stage
+
+By nature Batch Job are long-lived and doesn't require human intervention. Nevertheless in our exercise, we will use a Servlet to interact with the Batch API (e.g. start the Job, get the status of the Job, etc.).
+
+
+==== Create the project
+
+In the NetBeans Projects window, right click and select "New Project...".
+
+.NetBeans Project Windows
+image::E1.1.jpg[]
+
+==== Create the Web Application
+
+We will now create a Web Application so select "Web Application" in the "Java Web" category. Note that a Web Application in NetBeans parlance is just the project structure of a typical Web Application.
+--
+TIP: You can use the filter option at the top of the "New Project" window to filter out options from NetBeans, e.g. type "web" to easily find the "Web Application" project type.
+--
+
+.Create a Project & NetBeans Filter
+image::E1.2.jpg[]
+
+
+Click "Next" and give your project a relevant name (e.g. "Lab1"). You can leave the other suggested values (Location & Folder) as they are. Click "Finish" and you should now have an empty Web Application (project structure and a single JSP page).
+
+.TO CHECK
+image::E1.3.jpg[]
+
+==== Create the Package
+
+You should now create the package to host the application code. Right click in your project, select "New" and "Java Package" and name your package "org.glassfish.batch.lab1". All our codes will reside in this package.
+
+.Create a New Package
+image::E1.4.jpg[]
+--
+TIP: It is possible that your menu is slightly different. If you don't find the "Java Package..." option, just select "Other..." at the bottom of the menu and use the filter.
+--
+
+==== Create the Servlet
+
+We will now create the Servlet itself. As usual, use NetBeans "New" menu and select "Servlet" from the "Web" category. Click "Next" and make sure to select, using the drop-down list, the package we have defined in the previous step (see Figure 6). You can click "Finish" as we are, for the rest, using the default values.
+
+
+.Create the Servlet
+image::E1.6.jpg[]
+
+.Select the right package for your Servlet
+image::E1.7.jpg[]
+
+--
+TIP: You can now right click on your Servlet class and select "Run File". If everything goes well, your Servlet will be compiled and deployed to GlassFish. NetBeans will then invoke your web browser to connect to your Servlet.
+--
+
+
+=== Data and Data Store
+
+A typical enterprise application needs some data to consume. In real life, those data are  high likely stored in a database, received over the network (eg. through a REST endpoint) or via a JMS Queue, etc. 
+
+Our exercise also needs some data but for the sake of simplicity, we will mock a data producer behind a simple Singleton EJB as the focus of the Lab is really on the Batch API and not so much on other APIs such as JPA or JAX-RS.
+
+==== Create the the Input Record
+
+Let's now create a simple class that will be used as input record for the  application.
+This class is very simple, it holds an employee Id and some simple methods (e.g. get and set the employee salary).
+
+In the Project Window, select "New", "Java Class" from the "Java" category and click "Next". Name the class "PayrollInputRecord" and make sure it's in the correct package ("org.glassfish.batch.lab1"). Click "Finish" to actually create the class.
+
+.Create a new Java class
+image::E1.8.jpg[]
+
+Add the following code to the body of the class :
+[source, java]
+----
+    private final int id;
+
+    private String salary;
+
+    public PayrollInputRecord(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+    
+    public String getSalary() {
+        return salary;
+    }
+
+    public void setSalary(String salary) {
+        this.salary = salary;
+    }
+    
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object instanceof PayrollInputRecord)) {
+            return false;
+        }
+        PayrollInputRecord other = (PayrollInputRecord) object;
+        return this.id == other.id;
+    }
+
+    @Override
+    public String toString() {
+        return "PayrollInputRecord[ id=" + id + " ]";
+    }
+----
+
+--
+TIP: When you save a class, NetBeans will try to recompile it. If it can't, you will easily then see where the errors are.
+--
+
+==== Create the the Output Record
+
+Similarly, we will now create a simple class that will be used as output record.
+This class adds some capabilities (set and get the employee social security number, his/her bonus, etc.)
+
+In the Project Window, select "New", "Java Class" from the "Java" category and click "Next". Name the class "PayrollOutputRecord", check the package ("org.glassfish.batch.lab1") and click "Finish".
+
+Add this code to the class :
+[source, java]
+----
+    private final int empId;
+
+    private float salary;
+    
+    private float socialSecurityTax;
+    
+    private float bonus = 0;
+    
+    private float net;
+    
+    public PayrollOutputRecord(int empID) {
+        this.empId = empID;
+    }
+
+    public int getEmpId() {
+        return empId;
+    }
+    
+    public float getSalary() {
+        return salary;
+    }
+
+    public void setSalary(float base) {
+        this.salary = base;
+    }
+
+    public float getSocialSecurityTax() {
+        return socialSecurityTax;
+    }
+
+    public void setSocialSecurityTax(float socialSecurityTax) {
+        this.socialSecurityTax = socialSecurityTax;
+    }
+
+    public float getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(float bonus) {
+        this.bonus = bonus;
+    }
+
+    public float getNet() {
+        return net;
+    }
+
+    public void setNet(float net) {
+        this.net = net;
+    }
+    
+    @Override
+    public int hashCode() {
+        return getEmpId();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || !(object instanceof PayrollOutputRecord)) {
+            return false;
+        }
+        PayrollOutputRecord other = (PayrollOutputRecord) object;
+        return getEmpId() == other.getEmpId();
+    }
+
+    @Override
+    public String toString() {
+        return "PayrollOutputRecord[ id= [" + getEmpId() + "]";
+    }
+----
+
+
+==== Create the EJB
+
+We will create a simple Java class. We will then use some annotations to turn this POJO (Plain Old Java Object) into the Enterprise Java Beans we need. 
+
+In the Project Window, select "New", "Java Class" from the "Java" category and click "Next". Name the class "PayrollDataHolderBean" and make sure it's in the correct package ("org.glassfish.batch.lab1")
+
+.Create a java class
+image::E1.5.jpg[]
+
+Add the following 2 annotations at the class level : `@Singleton` & `@Startup` :
+
+* `@Singleton` is used to specify that this class will be implements a singleton session bean. You will have to import `javax.ejb.Singleton`.
+* `@Startup` is used to specify that this EJB will use eager initialization, i.e. the EJB container will initialise it upon application startup, before it can get any requests. This is useful, for example, to perform application startup tasks.
+...
+
+.Notice the yellow light bulb on the left and the red waved underlined line of code.
+image::E1.9.jpg[]
+
+--
+TIP: A waved red underlined line of code means that NetBeans is unable to compile that particular line. A light bulb on the left side of the code means that NetBeans has suggestions that could fix the issue. Right click on the magnifier to see and eventually select one of the proposed fix. 
+--
+
+Right click on the light bulb to fix the imports. Check to top of the class file and you should now see the that the classes corresponding to the 2 annotations have been added.
+
+[source, java]
+----
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+----
+
+
+
+
+Add the following code to the body of the class :
+[source, java]
+----
+    private List<String> payrollInputRecords = new ArrayList<>();
+
+    private Set<PayrollOutputRecord> payrollOutputRecords = new HashSet<>();
+    
+    public PayrollDataHolderBean() {
+        
+    }
+    
+    @PostConstruct
+    public void onApplicationStartup() {
+        for (int empID=1; empID<6; empID++) {
+            payrollInputRecords.add("" + empID + ", " + (80000 + empID*10000));
+        }
+    }
+
+    public List<String> getPayrollInputData() {
+        return Collections.unmodifiableList(payrollInputRecords);
+    }
+
+    public void addPayrollOutputRecord(PayrollOutputRecord data) {
+        payrollOutputRecords.add(data);
+    }
+
+    public Set<PayrollOutputRecord> getPayrollOutputRecords() {
+        return payrollOutputRecords;
+    }
+----
+
+In this code, we define a `payrollInputRecords` list of strings. We use the `@PostConstruct` annotation to specify to the Application Server that the `onApplicationStartup()` method should be invoked very early, i.e. before the EJB can handle client requests. This method basically fills the `payrollInputRecords` list with dummy employees data (an employee ID and numeric value, stored in a simple string).
+We also define a `PayrollOutputRecord` collection and some related methods (add an element, get the collection).
+
+Make sure to resolve any missing imports. The class `PayrollDataHolderBean.java` should now compile and looks like this. 
+[source, java]
+----
+package org.glassfish.batch.lab1;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.annotation.PostConstruct;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+
+@Singleton
+@Startup
+public class PayrollDataHolderBean {
+ private List<String> payrollInputRecords = new ArrayList<>();
+
+    private Set<PayrollOutputRecord> payrollOutputRecords = new HashSet<>();
+
+    public PayrollDataHolderBean() {
+
+    }
+
+    @PostConstruct
+    public void onApplicationStartup() {
+        for (int empID=1; empID<6; empID++) {
+            payrollInputRecords.add("" + empID + ", " + (80000 + empID*10000));
+        }
+    }
+
+    public List<String> getPayrollInputData() {
+        return Collections.unmodifiableList(payrollInputRecords);
+    }
+
+    public void addPayrollOutputRecord(PayrollOutputRecord data) {
+        payrollOutputRecords.add(data);
+    }
+
+    public Set<PayrollOutputRecord> getPayrollOutputRecords() {
+        return payrollOutputRecords;
+    }
+    
+}
+----
+
+
+=== PayRoll Job : the Reader, the Processor, the Writer
+
+Now that we have everything set in place, we can tackle the main part of the exercise, i.e. create the batch job!
+
+A batch job uses a simple 'Read - Process - Write' pattern. A *Reader* is used to retrieve the input data, a *Processor* will then do some processing on those data and finally, a *Writer* will save the results somewhere. How the data are actually read (e.g. from a filesystem, from a database, from memory, etc.) is not specified so we are free to use, in a Reader, the mechanism we want. In our exercise, we will just read some data stored in an EJB.
+
+
+The same is true for the output, for the Writer. The specification doesn't say how the output should be saved so we can use different approaches (e.g. send a mail, post to a JMS queue, update a Database via JPA or JBDC, etc.)
+
+--
+TIP: The fundamental unit of a *Job* is a *Step*. A job is made of one or more steps. JSR 352 defines 2 types of steps: *Chunk* step used to work on data using the Read-Process-Write pattern and *Batchlet* step used to perform task(s) within a job (e.g. send via FTP the final result of a Job).
+--
+
+To implement a batch Job, we will have implement at least one Chunked step. Implementing a Chunked step means developing in Java :
+* a Reader
+* a Processor 
+* a Writer
+
+--
+TIP: JSR 352 also defines a XML based language called *JSL* (Job Specification Language). JSL is used to assemble together different steps to form a job, defines the flow between the different steps and also configure the behaviour of the Job itself (e.g. what to do in case of error).
+--
+That exactly what will do in the next few sections, we will develop a Reader, a Writer and a Processor. We will then define the Job itself using JSL. :
+
+
+==== Reader
+
+A Reader is class that extends the abstract `javax.batch.api.chunk.AbstractItemReader` class defined in JSR 352.
+
+Create, in the right package, a new class called PayrollInputRecordReader and in the class declaration, specify that this class should extends the `AbstractItemReader` class.
+
+.extends the `AbstractItemReader` class 
+image::E1.11.jpg[]
+
+Make sure to fix the import for the `AbstractItemReader` class.
+You can see that NetBeans is still unable to compile the code, this is because the class we are extending is abstract. To fix this, just make sure to implements all the abstract methods (one in this case, the `readItem()` method).
+
+.Using NetBeans to implements the abstract methods
+image::E1.12.jpg[]
+
+The exercise data will be coming from the singleton EJB we have defined previously, so you can inject this EJB by adding the following declaration:
+
+[source, java]
+----
+    @EJB
+    PayrollDataHolderBean payrollDataHolderBean;
+----
+
+Let's create the `payrollInputRecordsIterator` Iterator
+
+[source, java]
+----
+    Iterator<String> payrollInputRecordsIterator;
+----
+
+Now we should initialize it with the data contained in the EJB.  We will do this in the `open()` method defined in the `AbstractItemReader` class. As its name implies, this method is invoked by the Batch runtime to open ressources required by the Reader. 
+[source, java]
+----
+    public void open(Serializable e) throws Exception {        
+        payrollInputRecordsIterator = payrollDataHolderBean.getPayrollInputData().iterator();
+    }
+----
+
+We will now rewrite the `readItem()` method as follow :
+[source, java]
+----
+    public Object readItem() throws Exception {
+        String line = payrollInputRecordsIterator.hasNext() ? payrollInputRecordsIterator.next() : null;
+        PayrollInputRecord record = null;
+        if (line != null) {
+            StringTokenizer tokenizer = new StringTokenizer(line, ", ");
+            String empId = tokenizer.nextToken();
+            String salary = tokenizer.nextToken();
+            if (tokenizer.hasMoreTokens())
+                throw new IllegalArgumentException("Extra characters in input data: " + line);
+            record = new PayrollInputRecord(Integer.valueOf(empId));
+            record.setSalary(salary);
+        }
+        
+        return record;
+    }
+----
+
+The `readItem()` method is invoked by the Batch runtime, the method will then return the next item. If there is no more item, it will return `null` instead.
+The code is fairly easy to understand, it iterates over all the employees and for each of them, it creates a `PayrollInputRecord` object with his/her details, object which is then returned by the `readItem()` method.
+
+We should also decorate the class with the `@Named` annotation and resolve the missing import.
+
+Your `PayrollInputRecordReader.java` class should look similar to this:
+[source, java]
+----
+package org.glassfish.batch.lab1;
+
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+import javax.batch.api.chunk.AbstractItemReader;
+import javax.ejb.EJB;
+import javax.inject.Named;
+
+@Named
+public class PayrollInputRecordReader extends AbstractItemReader {
+
+    @EJB
+    PayrollDataHolderBean payrollDataHolderBean;    
+    
+    Iterator<String> payrollInputRecordsIterator;
+    
+    public Object readItem() throws Exception {
+        String line = payrollInputRecordsIterator.hasNext() ? payrollInputRecordsIterator.next() : null;
+        PayrollInputRecord record = null;
+        if (line != null) {
+            StringTokenizer tokenizer = new StringTokenizer(line, ", ");
+            String empId = tokenizer.nextToken();
+            String salary = tokenizer.nextToken();
+            if (tokenizer.hasMoreTokens())
+                throw new IllegalArgumentException("Extra characters in input data: " + line);
+            record = new PayrollInputRecord(Integer.valueOf(empId));
+            record.setSalary(salary);
+        }
+
+        return record;
+    }
+
+    public void open(Serializable e) throws Exception {
+        payrollInputRecordsIterator = payrollDataHolderBean.getPayrollInputData().iterator();
+    }   
+    
+}
+----
+==== Processor
+
+As its name implies, a Processor will handle, within a batch step, the actual data processing, data that is provided by the Reader. Technically, a Processor is a class that implements the `javax.batch.api.chunk.ItemProcessor` interface defined in the JSR 352 specification and has a `processItem()` method. This method gets an object as a parameter (an item) and it returns another object.
+
+So, create a new class called `NetPayProcessor` and specify that it implements the  `ItemProcessor` interface. Decorate the class with the `@Named` annotation, resolve the missing imports and ask NetBeans to implement the abstract method. 
+
+We should now change the `processItem()` method to perform the actual data processing, so change this method as follow:
+[source, java]
+----
+    public Object processItem(Object obj) throws Exception {
+        PayrollInputRecord inputRecord = (PayrollInputRecord) obj;
+        float salary = Integer.valueOf(inputRecord.getSalary());
+        float socialSecurityTax = 
+                salary > 117000 ? 117000 * 6.2f / 100 : salary * 6.2f / 100;
+
+        PayrollOutputRecord outputRecord = new PayrollOutputRecord(inputRecord.getId());
+        outputRecord.setSalary(salary / 24.0f);
+        outputRecord.setSocialSecurityTax(socialSecurityTax / 24.0f);
+        outputRecord.setNet(outputRecord.getSalary() - outputRecord.getSocialSecurityTax());
+        
+        return outputRecord;
+    }
+----
+
+This method casts the received object to a `PayrollInputRecord`. It does some computations and then creates and initializes a `PayrollOutputRecord` object, compute and set a net salary. That `PayrollOutputRecord` object is then returned to the calling method.
+
+We can use the `open()` method to initialize any ressources that is required by the Reader. In our case, the initialisation is limited to copy the `payrollDataHolderBean` data to to the `payrollInputRecordsIterator`.
+[source, java]
+----
+    public void open(Serializable e) throws Exception {        
+        payrollInputRecordsIterator = payrollDataHolderBean.getPayrollInputData().iterator();
+    }
+----
+
+--
+TIP: You should now know how to detect any missing import and how to solve this.
+--
+
+
+Your `NetPayProcessor.java` class should now look similar to this:
+[source, java]
+----
+package org.glassfish.javaee7.batch.lab1;
+
+import javax.batch.api.chunk.ItemProcessor;
+import javax.batch.runtime.context.JobContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+@Named
+public class NetPayProcessor
+    implements ItemProcessor {
+
+    @Inject
+    private JobContext jobContext;
+    
+    public Object processItem(Object obj) throws Exception {
+        PayrollInputRecord inputRecord = (PayrollInputRecord) obj;
+        float salary = Integer.valueOf(inputRecord.getSalary());
+        float socialSecurityTax = 
+                salary > 117000 ? 117000 * 6.2f / 100 : salary * 6.2f / 100;
+
+        PayrollOutputRecord outputRecord = new PayrollOutputRecord(inputRecord.getId());
+        outputRecord.setSalary(salary / 24.0f);
+        outputRecord.setSocialSecurityTax(socialSecurityTax / 24.0f);
+        outputRecord.setNet(outputRecord.getSalary() - outputRecord.getSocialSecurityTax());
+        
+        return outputRecord;
+    }
+    
+}
+----
+
+==== Writer
+
+
+After the Reader and the Processor, we now need to develop the Writer to save our results. A Writer is a class that extends the `javax.batch.api.chunk.AbstractItemWriter` interface and implements the `writeItems()` method.
+
+As usual, create a class named `PayrollOutputRecordWriter` in the right package. Resolve the import and ask NetBeans to implement the abstract method.
+
+Remember that for the sake of simplicity, we will save the results in the Bean we have created earlier, so you need to inject that bean with the following code.
+
+We should also decorate the class with the `@Named` annotation and resolve the missing import.
+
+[source, java]
+----
+    @EJB
+    private PayrollDataHolderBean bean;
+----
+
+Now, we will change the `writeItems()` method to save the results, that is, to add the results to our bean. 
+[source, java]
+----
+    public void writeItems(List list) throws Exception {
+        for (Object obj : list) {
+            bean.addPayrollOutputRecord((PayrollOutputRecord) obj);
+        }
+    }
+----
+
+Your `PayrollOutputRecordWriter.java` class should now look similar to this:
+[source, java]
+----
+package org.glassfish.batch.lab1;
+
+import java.util.List;
+import javax.batch.api.chunk.AbstractItemWriter;
+import javax.ejb.EJB;
+import javax.inject.Named;
+
+@Named
+public class PayrollOutputRecordWriter extends AbstractItemWriter {
+    @EJB
+    private PayrollDataHolderBean bean;
+    
+    public void writeItems(List list) throws Exception {
+        for (Object obj : list) {
+            bean.addPayrollOutputRecord((PayrollOutputRecord) obj);
+        }
+   }
+
+}
+----
+
+=== Putting all the pieces together : JSL
+
+In the previous section, we have defined a Chunk step with a Reader, a Processor and a Writer. Now, we need to wire together those elements to actually form a Job that will be executable by the JSR 352 runtime. For that, we will use a XML based language defined  by the JSR 352 specification : the *Job Specification Language (JSL)*.
+
+
+Go to Files tab (usually, it is next to the Project tab). Expand your project "WEB-INF" directory ("web/WEB-INF") and with the NetBeans wizard (New "Folder" in the "Other" Category) create the following directory hierarchy : "classes/META-INF/batch-jobs" 
+
+In the "batch-jobs" directory, create a XML file named `PayrollJob.xml` (New "XML Document" from the "XML" category). 
+
+.Create the JSL file
+image::E1.14.jpg[]
+
+--
+TIP:  This XML file will be the JSL that will describe our Job. It will be needed to control the Batch itself in the next step so make sure to note its name.
+--
+
+Edit the `PayrollJob.xml` as follow :
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<job id="PayrollJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+    <step id="process">
+        <chunk item-count="3">
+            <reader ref="payrollInputRecordReader"></reader> 
+            <processor ref="netPayProcessor"></processor>
+            <writer ref="payrollOutputRecordWriter"></writer> 
+        </chunk>
+    </step>
+</job>
+----
+
+We are defining a Job called "PayrollJob" made of a single chunk step called "process".
+We then define the Reader, the Processor and the Writer of the "process" step.
+
+=== Executing the Job
+
+In the previous section, we have defined the implementations of our Step (Reader, Processor and Writer). Using JSL, we have then referenced those implementations to define the batch job. The last thing we need to do is to interact with the batch job (e.g. submit the job for execution, get the execution results, etc.). 
+
+--
+TIP: JSR 352 defines the `javax.batch.operations.JobOperator` interface to control jobs. Via this interface, it is possible to start, stop, and restart jobs. It is also possible to inspect job history, to discover what jobs are currently running, what jobs have previously run, etc. For more details, check the http://docs.oracle.com/javaee/7/api/javax/batch/operations/JobOperator.html[javadoc].
+
+--
+
+==== Submitting the job for execution 
+Edit the the `BatchJobSubmitter.java` servlet we have defined earlier, insert the following method:
+[source, java]
+----
+    private long submitJobFromXML(String jobName) throws Exception {
+        JobOperator jobOperator = BatchRuntime.getJobOperator();
+        Properties props = new Properties();
+        return jobOperator.start(jobName, props);
+    }
+----
+This method gets a `jobOperator` instance using the `BatchRuntime.getJobOperator()` method. It then invokes the `jobOperator.start()` method to start the job.
+
+==== Get the job details 
+
+We will again leverage the `jobOperator` interface to get runtime details of job. We will write a few utility methods to gather data and display the results. First, add the following method to the servlet:
+
+[source, java]
+----
+   private void displayJobDetails(PrintWriter pw, long executionId) {
+      pw.println("<table>");
+      pw.println("<tr><td>Status of Submitted Jobs</td></tr>");
+      pw.println("<table border=\"yes\">");
+      pw.println("<tr><td>Job Name</td><td>Instance Id</td><td>ExecutionID</td>"
+          + "<td>Batch Status</td><td>Exit Status</td>"
+          + "<td>Start Time Status</td><td>End Time</td>"
+          + "</tr>");
+
+      JobOperator jobOperator = BatchRuntime.getJobOperator();
+        try {
+            for (JobInstance jobInstance : jobOperator.getJobInstances("PayrollJob", 0, Integer.MAX_VALUE-1)) {
+                for (JobExecution jobExecution : jobOperator.getJobExecutions(jobInstance)) {
+                   StringBuilder sb = new StringBuilder();
+                    if (executionId == jobExecution.getExecutionId()) {
+                        sb.append("<tr style=\"background-color: green;\">");
+                    } else {
+                        sb.append("<tr>");
+                    }
+                    sb.append("<td>").append(jobExecution.getJobName()).append("</td>");
+                    sb.append("<td>").append(jobInstance.getInstanceId()).append("</td>");
+                    sb.append("<td>").append(jobExecution.getExecutionId()).append("</td>");
+                    sb.append("<td>").append(jobExecution.getBatchStatus()).append("</td>");
+                    sb.append("<td>").append(jobExecution.getExitStatus()).append("</td>");
+                    sb.append("<td>").append(jobExecution.getStartTime()).append("</td>");
+                    sb.append("<td>").append(jobExecution.getEndTime()).append("</td></tr>");
+                    pw.println(sb.toString());
+                }
+            }
+        } catch (Exception ex) {
+            pw.println(ex.toString());
+        }
+        pw.println("</table>");
+        pw.println("</table>");
+   }
+----
+
+
+We use the `BatchRuntime.getJobOperator()` method to get a `JobOperator` instance.
+We then invoke the `getJobInstances()` method on this `JobOperator` instance to get the different job instances.
+And for all the job instances, we pass each instances to the `jobOperator.getJobExecutions()` method and get in return a `JobExecution` object. Once we have that object, we can query the different values we need (e.g. start time, etc.).
+The rest (and bulk) of this method generate HTML.
+
+
+--
+IMPORTANT: Hard coding HTML directly in a servlet is not recommended for any serious application.
+--
+
+You can also add the following method to display the input data used by the job:
+[source, java]
+----
+    private void displayPayrollForm(PrintWriter pw)
+        throws Exception {
+        
+        pw.println("<table border = \"yes\"><tr><td>Payroll Input Records (Comma Separated Values)</td></tr>");
+        for (String line : payrollDataHolderBean.getPayrollInputData()) {
+                pw.println("<tr><td>" + line + "</td></tr>");    
+        }
+        pw.println("</table>");
+    }
+----
+
+NetBeans will complain about `payrollDataHolderBean` bean that is supposed to hold the data, so you should inject it:
+
+[source, java]
+----
+    @EJB
+    PayrollDataHolderBean payrollDataHolderBean;
+----
+
+You can now add the `displayProcessedPayrollRecords()` method:
+[source, java]
+----
+   private void displayProcessedPayrollRecords(PrintWriter pw, long executionId) throws Exception {
+      pw.println("<form>");
+      pw.println("Processed Payroll Records");
+      pw.println("<table border = \"yes\"><tr><td>Employee ID</td><td>Salary</td>"
+          + "<td>Social Security</td><td>Net</td></tr>");
+      for (PayrollOutputRecord record : payrollDataHolderBean.getPayrollOutputRecords()) {
+             pw.println("<tr><td>" + record.getEmpId()+ "</td>"
+                + "<td>" + record.getSalary() + "</td>"
+                + "<td>" + record.getSocialSecurityTax()+ "</td>"
+                + "<td>" + record.getNet()+ "</td></tr>");
+      }
+      pw.println("<td><input type=\"hidden\" name=\"executionId\" value=\"" + executionId + "\"/></td>");
+      pw.println("<td><input type=\"submit\" name=\"calculatePayroll\" value=\"Calculate Payroll\"/></td>");
+      pw.println("<td><input type=\"submit\" name=\"refresh\" value=\"refresh\"/></td></tr>");
+      pw.println("</table>");
+      pw.println("</form>");
+    }
+----
+
+This method displays, in a HTML form, a table containing the job results using the `payrollDataHolderBean` bean. Towards the end, you can also see that the method print raw HTML with the 2 buttons that the end user will use to control the application (e.g. "Caluclate Payroll" & "Refresh").
+
+
+Finally, we will rewrite the existing `processRequest()` servlet method to use those utilities methods:
+[source, java]
+----
+   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+         throws ServletException, IOException {
+      response.setContentType("text/html;charset=UTF-8");
+      try (PrintWriter pw = response.getWriter()) {
+          pw.println("<!DOCTYPE html><html><head>");
+          pw.println("<title>Servlet BatchJobSubmitter</title></head><body>");
+            
+          long executionId = -1;
+          if (request.getParameter("executionId") != null) {
+              executionId = Long.valueOf(request.getParameter("executionId"));
+          }
+            
+          try {
+             if (request.getParameter("calculatePayroll") != null) {
+                 executionId = submitJobFromXML("PayrollJob");
+             }
+             pw.println("<table>");
+             pw.println("<tr><td>");
+             displayPayrollForm(pw);
+             pw.println("</td><td>");
+             displayProcessedPayrollRecords(pw, executionId);
+             pw.println("</td></tr>");
+             pw.println("</table>");                
+             displayJobDetails(pw, executionId);
+         } catch (Exception ex) {
+             throw new ServletException(ex);
+         }
+         pw.println("</body>");
+         pw.println("</html>");
+      }
+   }
+----
+
+--
+TIP: Make sure the string parameter you pass to the `submitJobFromXML()` method corresponds to the name of the JSL file describing your Job (without the .xml extension)!
+--
+
+In this case, we are working with Explicit CDI Beans Archive so we need to create a bean.xml. For a Web Application, this beans.xml has to be in the WEB-INF directory so right click on the WEB-INF directory and create an empty file called "beans.xml".
+
+--
+TIP: The CDI container is looking for a "beans.xml" file in the WEB-INF directory. If it's not there or present under a different name, the application will not work as it rely on some CDI features.
+--
+
+
+
+=== Testing the Payroll application
+
+To test the application, right click on the `BatchJobSubmitter.java` servlet in the "Project" tab and select "Run". This action will compile and deploy the application and invoke your local browser with the Servlet URL. The first time, you should will see the following screen.
+
+.Initial screen : no job submitted yet
+image::E1.15.jpg[]
+
+Now click on the "Calculate Payroll" button to submit a job for execution to the batch runtime. You can see that a job has been started but not yet completed (e.g. it has no end time). You can also see that the right column is empty at this stage. 
+ 
+.A job has been started
+image::E1.16.jpg[]
+
+Finally, if you click on "refresh" the job will have had enough time to run completely. The results are displayed in the right column. You can also notice the end time of the job execution.
+Since the data set is minimal and the processing trivial, the batch execution is almost instantaneous.
+
+.The job is now completed
+image::E1.17.jpg[]
+
+=== Summary
+
+In this Lab, we learnt 
+
+* the main concepts of JSR 352 (JSL, steps, etc.)
+
+* how Chunk step works
+
+* how to write a simple batch Job
+
+* how to submit it for execution
+
+//////////////////////////////////////////
+
+icon:tags[role="black"] Test
+
+icon:taxi[role="black"] Taxi
+
+icon:star[role="black"] Star
+
+icon:comment[role="black"] Comment
+
+tip - icon-pushpin (or icon-star or icon-plus)
+note - icon-info-sign
+warning - icon-warning-sign
+important - icon-exclamation-sign
+caution - icon-bolt (or icon-minus)
+
+
+//////////////////////////////////////////
+
+
+

@@ -1,0 +1,75 @@
+:imagesdir: ../pic
+
+== Introduction
+
+Batch processing is used in many industries for tasks ranging from payroll processing; statement generation; end-of-day jobs such as interest calculation, ETL (extract, load, and transform) in a data warehouse; and many more. Typically, batch processing is bulk-oriented, non-interactive, and long running and might be data or computation-intensive. Batch jobs can be run on schedule or initiated on demand. Also, since batch jobs are typically long-running jobs, check-pointing and restarting are common features found in batch jobs.
+
+JSR 352 (Batch Processing for Java Platform), part of the Java EE 7 platform, defines the programming model for batch applications and the runtime to run and manage batch jobs. This Hands-on Lab will take you through the key concepts of JSR352.
+
+=== Software Requirements
+
+The following software are needed for this Lab.
+
+--
+TIP: JavaOne attendees, everything has been installed and pre-configured. *XXAny additional J1 VM instructions*.
+--
+
+* *Java SE*: JDK 7 or JDK 8 is required. The JDK can be downloaded from
+http://www.oracle.com/technetwork/java/javase/downloads/index.html[http://www.oracle.com/technetwork/java/javase/downloads/index.html].
+* *Java EE 7 Application Server*: This Lab uses the latest release of GlassFish, i.e. GlassFish Server Open Source Edition 4.1 (GF 4.0 should also work). Any other Java EE 7 (Full Platform) Application Server should work as well. Since JSR 352 is part of the Full Platform, this lab will not run on a Java EE 7 Web Profile Application Server.
+
+* *IDE*: This Lab uses NetBeans 8.0 but any IDE supporting Java EE 7 should work. 
+
+
+=== Lab Overview
+
+This Lab is divided in 5 exercises :
+
+* *Lab 1* will introduce you the main concepts of JSR 352 such as Step, Job, JSL, etc. In this exercise, you will be guided to build from scratch a complete application that will run a simple batch job to perform some hypothetical payroll calculations.
+
+* *Lab 2* will enhance the first exercise and introduce mutli-steps jobs combining Chunk step with a Batchlet step..
+
+* *Lab 3* will cover checkpoint and the JobOperator interface which can be used to resume failed job.
+
+* *Lab 4* will build introduce you to listeners, a mechanism that can be used to intervene within the life-cycle of a batch job (e.g. to catch errors).
+
+* *Lab 5* will introduce the concept of Job Partitioning, a more advanced feature of JSR 352.
+
+Unless you are already familiar with the Batch API, it is recommended to follow the suggested exercises order.
+
+
+=== Where to get help
+
+Here are some advices if you are stuck during the Lab...
+
+* Check that your imports are correct, e.g. a `java.util.list` is not really a `java.awt.list` !
+
+* Make sure that the code you have copy/pasted is correct and complete.
+
+* If your code doesn't compile, NetBeans will show where the error is and will also provide some suggestions on how it could be fixed. 
+
+* It is sometime useful to re-read a section from the beginning.
+
+* The solutions should be used as a final resort to to pinpoints hard to find issues.
+
+
+At any time, feel free to ask a JavaOne Proctor, they are here to help you!
+
+=== Important note
+
+WARNING: The sample applications and the code may not always be following best practices (e.g. data validation, correct error handling, etc.). This is intentional such as to stay focused on explaining JSR 352. It is highly recommended to make sure that the code copied from this lab is updated to meet the requirements of any production application.
+
+
+=== TO DO
+
+* lab 2 : If-then-else changed to switch -> update doc to reflect this (3 is ok)
+* Copyright / License to use?
+* How to start GF
+* Add a key map in the Help (Fix import, Reformat, ...)
+* Add 'INFO' in addition to 'TIP', cf. XX_INFO
+* Add info about expected audience, assumptions and timing
+* Check 3.3.2, why do we inject @inject private JobContext jobContext; it's not used
+* Check 3.3.2, @named
+* Check 3.3.3, why implement an empty open(Serializable checkpoint) ?
+* 3.5 explain Properties props = new Properties();
+

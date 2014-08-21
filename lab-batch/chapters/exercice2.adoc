@@ -1,0 +1,127 @@
+:imagesdir: ../pic
+
+== Lab: Batchlet and Multi-steps Job
+
+In the first exercise, we have developed a simple job made of a single step, a Chunk step. This exercise will introduce you to *Batchlet*, the second type of step supported by JSR 352. Chunk step are used to work on data while Batchlet are used to perform tasks within a job. To illustrate this, we will define a multi-steps job that combine 2 steps: a Chunk step and  a Batchlet step. 
+
+=== Set the stage
+
+Open the "lab2" project in NetBeans ("File" , "Open Project" and select the "lab2" directory). If you run the project and access the "BatchJobSubmitter" servlet, you will see that it is very similar to  what we have done in the previous exercise.
+
+It is a simple batch job made of a single Chunk step, the "prepare" step (check the JSL file describing the batch job).
+
+=== Implement the Batchlet step
+
+A Batchlet is a class that extends and implements the `javax.batch.api.AbstractBatchlet` interface. So create, in the source package, a new Java class called "SummaryProcessor" that extends the `AbstractBatchlet` interface. Use NetBeans to resolve the missing import and implement the abstract `process()` method.
+
+Decorate the class with the `@Named` annotation and inject the `PayrollDataHolderBean` bean as follow : 
+
+[source, java]
+----
+    @EJB
+    PayrollDataHolderBean payrollDataHolderBean; 
+----
+
+The `process()` method is doing the work of the Batchlet is supposed to do so let's re-write it as follow :
+
+[source, java]
+----
+  public String process() throws Exception {
+     SummaryRecord summaryRecord = new SummaryRecord();
+
+     try {
+         for (PayrollOutputRecord outputRecord : payrollDataHolderBean.getPayrollOutputRecords()) {
+            summaryRecord.addBonus(outputRecord.getBonus());
+            summaryRecord.addNet(outputRecord.getNet());
+            summaryRecord.addSalary(outputRecord.getSalary());
+            summaryRecord.addSocialSecurityTax(outputRecord.getSocialSecurityTax());
+         }
+     } catch (Exception ex) {
+         return "FAILED";
+     }
+        
+     payrollDataHolderBean.setSummaryRecord(summaryRecord);
+     return "COMPLETED";
+  }
+----
+
+This Batchlet computes the total net, total salary and total socialsecurity of all the payroll records processed by first step. Once the imports have been fixed, the final `SummaryProcessor` Batchlet should looks like this:
+[source, java]
+----
+package org.glassfish.javaee7.batch.lab2;
+// imports omitted !
+
+@Named
+public class SummaryProcessor extends AbstractBatchlet {
+
+    @EJB
+    PayrollDataHolderBean payrollDataHolderBean; 
+
+    public String process() throws Exception {
+       SummaryRecord summaryRecord = new SummaryRecord();
+
+       try {
+           for (PayrollOutputRecord outputRecord : payrollDataHolderBean.getPayrollOutputRecords()) {
+              summaryRecord.addBonus(outputRecord.getBonus());
+              summaryRecord.addNet(outputRecord.getNet());
+              summaryRecord.addSalary(outputRecord.getSalary());
+              summaryRecord.addSocialSecurityTax(outputRecord.getSocialSecurityTax());
+           }
+       } catch (Exception ex) {
+           return "FAILED";
+       }
+
+       payrollDataHolderBean.setSummaryRecord(summaryRecord);
+       return "COMPLETED";
+    }
+    
+}
+----
+
+--
+TIP: The return type of the `process()` method is String, that's the execution status of the step : "FAILED" or "COMPLETED". 
+--
+
+
+=== Update the JSL
+
+We now need to update the JSL file to make sure the Batchlet is part of the job. Open "PayRollJob.xml" (in "web/WEB-INF/classes/META-INF/batch-jobs") and add the Batch "summary" step to the job as follow:
+[source, xml]
+----
+<job id="PayrollJob" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
+        
+     <step id="prepare" next="summary">
+        <chunk item-count="3">
+            <reader ref="payrollInputRecordReader"></reader> 
+            <processor ref="netPayProcessor"></processor>
+            <writer ref="payrollOutputRecordWriter"></writer>
+        </chunk>
+    </step>
+
+    <step id="summary">
+        <batchlet ref="summaryProcessor"/>
+    </step>
+
+</job>
+----
+
+--
+TIP: Make sure to also update the "prepare" step to specify that the next step to invoke is the "summary" (if the step completes successfully!). You do this by adding `next="summary"` to the "summary" step definition. If the "prepare" step completes successfully, the next step "summary" will be executed.
+--
+
+=== Testing the Payroll application
+
+If you run the job again, you should now see an additional "TOTAL" line in the right table. Those data are computed in in the Batchlet and displayed by the `displayProcessedPayrollRecords()` method when `summaryRecord` is not null.
+
+.Total values computed by the Batchlet step
+image::E2.3.jpg[]
+
+
+=== Summary
+
+In this Lab, we learnt
+
+* how to write a Batchlet step
+* how to combine multiple steps within a single Job
+
+
