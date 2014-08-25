@@ -2,7 +2,11 @@
 
 == Lab: Batchlet and Multi-steps Job
 
-In the first exercise, we have developed a simple job made of a single step, a Chunk step. This exercise will introduce you to *Batchlet*, the second type of step supported by JSR 352. Chunk step are used to work on data while Batchlet are used to perform tasks within a job. To illustrate this, we will define a multi-steps job that combine 2 steps: a Chunk step and  a Batchlet step. 
+In the first exercise, we have developed a simple job made of a single step, a Chunk step. This exercise will introduce you to *Batchlet*, the second type of step supported by JSR 352. Chunk step are used to work on data while Batchlets are useful for performing a variety of tasks that are not item-oriented, such as executing a command or performing a task (like copying files, preparing reports etc.).
+
+To illustrate this, we will define a multi-steps job that combine 2 steps: a Chunk step and a Batchlet step.
+
+
 
 === Set the stage
 
@@ -79,7 +83,7 @@ public class SummaryProcessor extends AbstractBatchlet {
 ----
 
 --
-TIP: The return type of the `process()` method is String, that's the execution status of the step : "FAILED" or "COMPLETED". 
+TIP: The return type of the `process()` method of a batchlet is the exit status of the Batchlet. 
 --
 
 
@@ -105,8 +109,9 @@ We now need to update the JSL file to make sure the Batchlet is part of the job.
 </job>
 ----
 
+As mentioned before, the execution commences by executing the first step listed in the job xml. If the step completes normally, then the step specified in the "next" attrinute will be executed. 
 --
-TIP: Make sure to also update the "prepare" step to specify that the next step to invoke is the "summary" (if the step completes successfully!). You do this by adding `next="summary"` to the "summary" step definition. If the "prepare" step completes successfully, the next step "summary" will be executed.
+TIP: Be aware that if you don't specify the next attribute, the execution stops after the first step!
 --
 
 === Testing the Payroll application

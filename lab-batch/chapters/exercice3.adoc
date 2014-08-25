@@ -35,13 +35,13 @@ If you look at the `submitJobFromXML()` method that is invoked via the "calculat
 A `jobOperator` instance is used to interact with the batch runtime. Once you have that instance, all you have to do is to invoke its `start()` method and pass it the jobNanme and eventually some properties (see  http://docs.oracle.com/javaee/7/api/javax/batch/operations/JobOperator.html#start[javadoc]). Note that the jobName parameter is the actual name of the JSL file describing the job (without the XML extension). The 'start()' method will return an execution ID that we can use to continue to interact with the job via the batch runtime (e.g. stop the job, query the status of the job, etc.).
 
 --
-TIP: The location of JSL files is implementation dependant. GlassFish uses " META-INF/batch-jobs" by default.  
+TIP: The location of the job xml is spec defined. It must be defined under "WEB-INF/classes/META-INF/batch-jobs" (for war files) or under "META-INF/batch-jobs" (for ejb jar files).
 --
 
 
 === Break the job!
 
-We will now introduce some corrupt data to force our job to fail. For example, you can update the 5th record by removing the "," and click "update". You can now start the job and "if everything goes well", your job will fail with an "Exit status: FAILED". A "restart" button should also appear on the right side of the last failed job.
+We will now introduce some corrupt data to force our job to fail. For example, you can update the 5th record by replacing the "," with a space and click "update". You can now start the job and "if everything goes well", your job will fail with an "Exit status: FAILED". A "restart" button should also appear on the right side of the last failed job.
 
 .Break the job
 image::E3.1.jpg[]
@@ -83,6 +83,10 @@ We will now update the  `displayPayrollForm()` method to also handle the "restar
 ----
 Restarting a failed job is also done via the jobOperator interface and more particularly via its `restart()` method. We pass, to this method, the execution ID of the failed job and we get in return a new execution ID.
 
+--
+TIP: JSR 352 allows only the most recent execution id to the restart method. Thats why our application attaches the restart button to the most recent job! 
+--
+
 If you fix and update the wrong input record and "restart" the job, the job should now exit with a "COMPLETED" status.
 
 If you check the GlassFish log, you will notice that job is restarted from the last known checkpint (i.e. 4) so it read and process the next item (5 in this case). A final checkpoint is performed after the last record. 
@@ -98,13 +102,9 @@ If you check the GlassFish log, you will notice that job is restarted from the l
 
 === Summary
 
-In this Lab, we learnt
-
-* about checkpointing
-* how item-count attribute can be used to control the check size
-* how to write Item{Reader, Processor, Writer} for a Step that checkpoint their state
-* how to use JobOperator.restart() to resume a failed job
-
+Job restarts (resumption of jobs rather) is possible due to the checkpointing mechanism. Execution of a check style step commences by the batch runtime calling the ItemReader's `open()` method. If the step is not due to a re-start (meaning a the job is being executed using `jobOperator.start()`) then a `null` value is passed to the `open()` method (else the previous checkpointed data is passed).
+Once every "item-count" (chunk size) number of items have been written out by the ItemWriter, the Batch runtime calls the `checkpointInfo()` method on the ItemReader. The item reader can return any Serializable data that captures its current state (like number of items read etc.). This Serializable data will be saved by the batch runtime in the JobRepository and allows the batch runtime to track the last known checkpointed state.
+If the job were to fail now (or before the next checkpoint), the Job can be resumed by calling the `JobOperator.restart()` method. Job restart processing begins by the batch runtime calling the ItemReader's `open()` method with the previous run's checkpointed data. This allows the ItemReader to resume reading from the previous successful point and thus allows the Job to resume rather than start from the beginning.
 
 
 

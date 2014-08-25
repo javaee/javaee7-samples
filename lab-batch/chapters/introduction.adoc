@@ -11,7 +11,7 @@ JSR 352 (Batch Processing for Java Platform), part of the Java EE 7 platform, de
 The following software are needed for this Lab.
 
 --
-TIP: JavaOne attendees, everything has been installed and pre-configured. *XXAny additional J1 VM instructions*.
+TIP: JavaOne attendees, everything has been installed and pre-configured for you!
 --
 
 * *Java SE*: JDK 7 or JDK 8 is required. The JDK can be downloaded from
@@ -62,14 +62,8 @@ WARNING: The sample applications and the code may not always be following best p
 
 === TO DO
 
-* lab 2 : If-then-else changed to switch -> update doc to reflect this (3 is ok)
 * Copyright / License to use?
 * How to start GF
 * Add a key map in the Help (Fix import, Reformat, ...)
-* Add 'INFO' in addition to 'TIP', cf. XX_INFO
 * Add info about expected audience, assumptions and timing
-* Check 3.3.2, why do we inject @inject private JobContext jobContext; it's not used
-* Check 3.3.2, @named
-* Check 3.3.3, why implement an empty open(Serializable checkpoint) ?
-* 3.5 explain Properties props = new Properties();
 

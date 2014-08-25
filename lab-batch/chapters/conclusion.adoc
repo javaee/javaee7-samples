@@ -1,4 +1,0 @@
-:imagesdir: ../pic
-
-== Conclusions
-

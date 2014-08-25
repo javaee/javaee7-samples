@@ -2,38 +2,19 @@
 
 == Lab: Job Partitioning
 
-By default, all steps in a job run on the same thread.  Multi-threading can be leveraged to increase throughput and better utilize underlying hardware, that is what *partitioned step* brings. A serially processed step can be break it into *partitions* that will run on different threads. Once we have defined the partition strategy, the batch runtime will manage the threads and will handle all aspects of checkpoints.
+By default, all steps in a job run on the same thread.  Multi-threading can be leveraged to increase throughput and better utilize underlying hardware, that is what *partitioned step* brings. A serially processed step can be broken it into *partitions* that will run on different threads. Once we have defined the partition strategy, the batch runtime will manage the threads and will handle all aspects of checkpoints.
 
 
 === Set the stage
 
-We will start from an usual payroll batch job and will enhance it to support partition. Open Lab 5 and run the `PartitionedJobSubmitterServlet.java` servlet. In this application, you can select for which month the payroll should be calculated. Don't run a batch job at this stage, as it will fails.
+We will start from an usual payroll batch job and will enhance it to support partition. Open Lab 5 and launch the `PartitionedJobSubmitterServlet.java` servlet. In this application, you can select for which month the payroll should be calculated. Don't run a batch job at this stage, as it will fails.
 
-If you look at the Chunk's reader (`SimpleItemReader.java`), you will notice that the `open()` method is slightly different. Based on the execution ID of the current job, it gets, via the Batch Runtime and the job context, some properties such as the selected month, the partition index, the start and the end employee ID. Those information are used to return of subset of the available data.
 
-[source, java]
-----
-  public void open(Serializable e) throws Exception {
-        
-    Properties jobParameters = BatchRuntime.getJobOperator().getParameters(jobContext.getExecutionId());
-    String monthYear = (String) jobParameters.get("monthYear");
-    Integer partitionNumber = (Integer) jobParameters.get("partitionNumber");
-    Integer fromKey = (Integer) jobParameters.get("startEmpID");
-    Integer toKey = (Integer) jobParameters.get("endEmpID");
-
-    System.out.println("SimpleItemReader[partition #" + partitionNumber + " will process "
-    + " from employeeId: " + fromKey + " to " + toKey
-    + " for the month of " + monthYear);
-
-    payrollInputRecords = dataBean.getPayrollInputRecords(monthYear, fromKey, toKey);
-
-  }
-----
 
 === Define the partition strategy
 
+JSR 352 defines an interface called `PartitionMapper` (http://docs.oracle.com/javaee/7/api/javax/batch/api/partition/PartitionMapper.html[javadoc]) that provides a programmatic means for calculating the number of partitions and threads for a partitioned step.
 
-A partition mapper is a java class the implements the `javax.batch.api.partition.PartitionMapper` interface.
 So create a java classes called "PayrollPartitionMapper", implements the PartitionMapper interface. And as usual, decorate the class with the `@Named("PayrollPartitionMapper)` annotation, resolve any missing imports and implements the abstract methods imposed by the interface.
 
 
@@ -88,7 +69,47 @@ The `mapPartitions()` method return a `PartitionPlan` object, so let's modify th
         };
 ----
 
-We should now update the JSL to link the partition mapper to the chunk step.
+In the partitioned model, a step is configured to run as multiple instances across multiple threads. Each thread runs the same step. This model can be used in situations where each partition processes a different range of the input items.
+
+A partition mapper receives control at the start of a partitioned execution. The partition mapper is responsible to provide unique batch properties for each partition.
+
+Our PartitionMapper implementation implements the `ParitionMapper` interface and returns a PartitionPlan. The PartitionPlan specifies the number of partitions and also returns a `java.util.Properties` object for each Partition. Each of these Properties object must carry appropriate data that specifies the range of the input items.
+
+Our PartionMapper indicates that 5 partitions will be used to do the payroll processing. It then creaes a separate Properties object for each partition and then populates each Properties object with keys "startempID" and "endEmpID" keys that indicate the range of employee IDs that each partition will operate on.
+
+=== Partition aware reader
+
+If you look at the Chunk's reader (`SimpleItemReader.java`), you will notice that the `open()` method is slightly different. 
+
+We have see, how the PartitionMapper creates separate Properties object for each Partition. We also saw that each of these Properties object contains data that specifies the range of data each each partitioned step will operate on.
+
+The ItemReader can obtain the partition specific data by calling `JobOperator.getParameters(executionId)`. The current `executionId` is obtained by calling `jobcontext.getExecutionId()` on the injected `JobContext`. JobContext provides information about the *current* job execution.
+
+Once the ItemReader obtains the Properties object containing partition specific data, it finds out the starting and ending employee ID that it should read. It then obtains those `PayrollInputRecords` from the EJB Singleton bean.
+
+The ItemProcessor and ItemWriter thus processes and writes only those payroll records pertaining to the current partition.
+
+
+[source, java]
+----
+  public void open(Serializable e) throws Exception {
+        
+    Properties jobParameters = BatchRuntime.getJobOperator().getParameters(jobContext.getExecutionId());
+    String monthYear = (String) jobParameters.get("monthYear");
+    Integer partitionNumber = (Integer) jobParameters.get("partitionNumber");
+    Integer fromKey = (Integer) jobParameters.get("startEmpID");
+    Integer toKey = (Integer) jobParameters.get("endEmpID");
+
+    System.out.println("SimpleItemReader[partition #" + partitionNumber + " will process "
+    + " from employeeId: " + fromKey + " to " + toKey
+    + " for the month of " + monthYear);
+
+    payrollInputRecords = dataBean.getPayrollInputRecords(monthYear, fromKey, toKey);
+
+  }
+----
+
+We should also update the JSL to link the partition mapper to the chunk step.
 [source, java]
 ----
 <job id="partitioned-payroll" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0">
@@ -105,9 +126,12 @@ We should now update the JSL to link the partition mapper to the chunk step.
 </job>
 ----
 
+
+
 === Test the partitioned execution
 
-If you now run the job for a particular month, you will see in the GlassFish logs that data are spread across 5 threads as defined by the `getPartitions()` method of the partition mapper.
+If you now run the job for a particular month, you will see in the GlassFish logs that data are spread across 5 threads as defined by the `getPartitions()` method of the partition mapper. You can also see the data range that each partition is assigned.
+
 [source]
 ----
 Info: ** JobSubmitterServlet: JAN-2013
@@ -130,8 +154,7 @@ Info: SimpleItemReader[partition #3 will process from employeeId: 18 to 24 for t
 
 === Summary
 
-In this Lab, we learnt 
+In this Lab, we learnt how to use Partition Mapper to distribute batch processing on different threads.
 
-*TO DO*
 
 ////////////////////////////

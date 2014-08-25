@@ -455,15 +455,15 @@ span.line-numbers { border-right: 1px solid #E5E5E5; color: #999; display: inlin
 <h1>Introduction to the Batch API (JSR 352)</h1>
 <span id="author" class="author">David Delabassee</span><br>
 <span id="email" class="email"><a href="https://twitter.com/delabassee">@delabassee</a></span><br>
-<span id="revnumber">version 0.1,</span>
-<span id="revdate">Aug 12, 2014</span>
+<span id="revnumber">version 0.9,</span>
+<span id="revdate">Aug 25, 2014</span>
 </div>
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="pic/cover.png" alt="cover">
+<img src="pic/cover.jpg" alt="cover">
 </div>
 </div>
 </div>
@@ -527,8 +527,9 @@ span.line-numbers { border-right: 1px solid #E5E5E5; color: #999; display: inlin
 <ul class="sectlevel2">
 <li><a href="#_set_the_stage_5">5.1. Set the stage</a></li>
 <li><a href="#_define_the_partition_strategy">5.2. Define the partition strategy</a></li>
-<li><a href="#_test_the_partitioned_execution">5.3. Test the partitioned execution</a></li>
-<li><a href="#_summary_5">5.4. Summary</a></li>
+<li><a href="#_partition_aware_reader">5.3. Partition aware reader</a></li>
+<li><a href="#_test_the_partitioned_execution">5.4. Test the partitioned execution</a></li>
+<li><a href="#_summary_5">5.5. Summary</a></li>
 </ul>
 </li>
 </ul>
@@ -557,7 +558,7 @@ span.line-numbers { border-right: 1px solid #E5E5E5; color: #999; display: inlin
 <i class="icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-JavaOne attendees, everything has been installed and pre-configured. <strong>XXAny additional J1 VM instructions</strong>.
+JavaOne attendees, everything has been installed and pre-configured for you!
 </td>
 </tr>
 </table>
@@ -655,9 +656,6 @@ The sample applications and the code may not always be following best practices 
 <div class="ulist">
 <ul>
 <li>
-<p>lab 2 : If-then-else changed to switch &#8594; update doc to reflect this (3 is ok)</p>
-</li>
-<li>
 <p>Copyright / License to use?</p>
 </li>
 <li>
@@ -667,25 +665,7 @@ The sample applications and the code may not always be following best practices 
 <p>Add a key map in the Help (Fix import, Reformat, &#8230;)</p>
 </li>
 <li>
-<p>Add <em>INFO</em> in addition to <em>TIP</em>, cf. XX_INFO</p>
-</li>
-<li>
 <p>Add info about expected audience, assumptions and timing</p>
-</li>
-<li>
-<p>Check 3.3.2, why do we inject @inject private JobContext jobContext; it&#8217;s not used</p>
-</li>
-<li>
-<p>Check 3.3.2, @named</p>
-</li>
-<li>
-<p>Check 3.3.3, why implement an empty open(Serializable checkpoint) ?</p>
-</li>
-<li>
-<p>bean.xml</p>
-</li>
-<li>
-<p>3.5 explain Properties props = new Properties();</p>
 </li>
 </ul>
 </div>
@@ -755,7 +735,7 @@ You can use the filter option at the top of the "New Project" window to filter o
 <div class="sect3">
 <h4 id="_create_the_package">1.1.3. Create the Package</h4>
 <div class="paragraph">
-<p>You should now create the package to host the application code. Right click in your project, select "New" and "Java Package" and name your package "org.glassfish.batch". All our codes will reside in this package.</p>
+<p>You should now create the package to host the application code. Right click in your project, select "New" and "Java Package" and name your package "org.glassfish.batch.lab1". All our codes will reside in this package.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -834,7 +814,7 @@ This class is very simple, it holds an employee Id and some simple methods (e.g.
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="pic/E1.7.jpg" alt="E1.7">
+<img src="pic/E1.8.jpg" alt="E1.8">
 </div>
 <div class="title">Figure 7. Create a new Java class</div>
 </div>
@@ -1005,7 +985,7 @@ This class adds some capabilities (set and get the employee social security numb
 <div class="ulist">
 <ul>
 <li>
-<p><code>@Singleton</code> is used to specify that this class will be implements a singleton session bean.</p>
+<p><code>@Singleton</code> is used to specify that this class will be implements a singleton session bean. You will have to import <code>javax.ejb.Singleton</code>.</p>
 </li>
 <li>
 <p><code>@Startup</code> is used to specify that this EJB will use eager initialization, i.e. the EJB container will initialise it upon application startup, before it can get any requests. This is useful, for example, to perform application startup tasks.
@@ -1078,7 +1058,7 @@ A waved red underlined line of code means that NetBeans is unable to compile tha
 </div>
 </div>
 <div class="paragraph">
-<p>In this code, we define a <code>payrollInputRecords</code> list of strings. We use the <code>@PostConstruct</code> annotation to specify to the Application Server that the <code>onApplicationStartup()</code> method should be invoked very early, i.e. before the EJB can handle client requests. This method basically fills the <code>payrollInputRecords</code> list with dummy employees data (an employee ID and numeric value, stored in a simple string).
+<p>In this code, we define a <code>payrollInputRecords</code> list of strings. We use the <code>@PostConstruct</code> annotation to specify to the Application Server that the <code>onApplicationStartup()</code> method should be invoked after all injection has occurred and after all initializers have been called, i.e. before the EJB can handle client requests. This method basically fills the <code>payrollInputRecords</code> list with dummy employees data (an employee ID and numeric value, stored in a simple string).
 We also define a <code>PayrollOutputRecord</code> collection and some related methods (add an element, get the collection).</p>
 </div>
 <div class="paragraph">
@@ -1138,7 +1118,7 @@ We also define a <code>PayrollOutputRecord</code> collection and some related me
 <p>Now that we have everything set in place, we can tackle the main part of the exercise, i.e. create the batch job!</p>
 </div>
 <div class="paragraph">
-<p>A batch job uses a simple <em>Read - Process - Write</em> pattern. A <strong>Reader</strong> is used to retrieve the input data, a <strong>Processor</strong> will then do some processing on those data and finally, a <strong>Writer</strong> will save the results somewhere. How the data are actually read (e.g. from a filesystem, from a database, from memory, etc.) is not specified so we are free to use, in a Reader, the mechanism we want. In our exercise, we will just read some data stored in an EJB.</p>
+<p>A batch job uses a simple <em>Read - Process - Write</em> pattern. A <strong>Reader</strong> is used to retrieve the input data, a <strong>Processor</strong> will then do some processing on those data and finally, a <strong>Writer</strong> will save the results somewhere. How the data are actually read (e.g. from a filesystem, from a database, from memory, etc.) is not specified so we are free to use, in a Reader, the mechanism we want. In our exercise, we will just read some data stored in an singleton EJB.</p>
 </div>
 <div class="paragraph">
 <p>The same is true for the output, for the Writer. The specification doesn&#8217;t say how the output should be saved so we can use different approaches (e.g. send a mail, post to a JMS queue, update a Database via JPA or JBDC, etc.)</p>
@@ -1160,10 +1140,7 @@ The fundamental unit of a <strong>Job</strong> is a <strong>Step</strong>. A job
 </div>
 </div>
 <div class="paragraph">
-<p>To implement a batch Job, we will have implement at least one Chunked step. Implementing a Chunked step means developing in Java :
-* a Reader
-* a Processor
-* a Writer</p>
+<p>A <strong>chunk-style step</strong> contains exactly one <strong>ItemReader</strong>, one <strong>ItemProcessor</strong>, and one <strong>ItemWriter</strong>. In this pattern, items are processed "chunk-size" at a time. The "chunk-size" is specified in the Job xml.</p>
 </div>
 <div class="openblock">
 <div class="content">
@@ -1182,7 +1159,10 @@ JSR 352 also defines a XML based language called <strong>JSL</strong> (Job Speci
 </div>
 </div>
 <div class="paragraph">
-<p>That exactly what will do in the next few sections, we will develop a Reader, a Writer and a Processor. We will then define the Job itself using JSL. :</p>
+<p>A chunk is processed as follows: The batch runtime starts a transaction and calls the ItemReader to read one item at a time. The batch runtime then passes this item to the ItemProcessor that processes the item based upon the business logic (such as "calculate net pay"), and returns the processed item to the batch runtime for aggregation. Once the "chunk-size" number of items are read and processed, they are given to an ItemWriter, which writes the data (for example, to a database table or a flat file). The transaction is then committed. The process repeats till the ItemReader finishes reading all items.</p>
+</div>
+<div class="paragraph">
+<p>To implement a batch Job, we will have implement at least one Chunked step. Implementing a Chunked step means developing in Java : a Reader, a Processor and a Writer. That is exactly what will do in the next few sections, we will develop a Reader, a Writer and a Processor. We will then define the Job itself using JSL.</p>
 </div>
 <div class="sect3">
 <h4 id="_reader">1.3.1. Reader</h4>
@@ -1262,10 +1242,52 @@ You can see that NetBeans is still unable to compile the code, this is because t
 The code is fairly easy to understand, it iterates over all the employees and for each of them, it creates a <code>PayrollInputRecord</code> object with his/her details, object which is then returned by the <code>readItem()</code> method.</p>
 </div>
 <div class="paragraph">
-<p>We should also decorate the class with the <code>@Named</code> annotation and resolve the missing import.</p>
+<p>We can use the <code>open()</code> method to initialize any ressources that is required by the Reader. In our case, the initialisation is limited to copy the <code>payrollDataHolderBean</code> data to the <code>payrollInputRecordsIterator</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">    <span class="directive">public</span> <span class="type">void</span> open(<span class="predefined-type">Serializable</span> e) <span class="directive">throws</span> <span class="exception">Exception</span> {
+        payrollInputRecordsIterator = payrollDataHolderBean.getPayrollInputData().iterator();
+    }</code></pre>
+</div>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You should now know how to detect any missing import and how to solve this.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 <div class="paragraph">
-<p>Your <code>PayrollInputRecordReader.java</code> class should look similar to this:</p>
+<p>We should also decorate the class with the <code>@Named</code> annotation.</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+When running in Java EE environment, the Batch runtime uses CDI (Context and Dependency Injection) to instantiate Job artifacts (like Item{Reader, Writer, Procesor} etc.).  The <code>@Named</code> annotation allows us to access a bean by using its bean name (with the first letter in lowercase). So annotating the ItemReader with <code>@Named</code> will allow us to reference the Reader in our Job XML just by using its bean name.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you have resolved the missing imports, your <code>PayrollInputRecordReader.java</code> class should look similar to this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1313,10 +1335,13 @@ The code is fairly easy to understand, it iterates over all the employees and fo
 <div class="sect3">
 <h4 id="_processor">1.3.2. Processor</h4>
 <div class="paragraph">
-<p>As its name implies, a Processor will handle, within a batch step, the actual data processing, data that is provided by the Reader. Technically, a Processor is a class that implements the <code>javax.batch.api.chunk.ItemProcessor</code> interface defined in the JSR 352 specification and has a <code>processItem()</code> method. This method gets an object as a parameter (an item) and it returns another object.</p>
+<p>As its name implies, a Processor will handle, within a batch step, the actual data processing, data that is provided by the Reader. Technically, a Processor is a class that implements the <code>javax.batch.api.chunk.ItemProcessor</code> interface defined in the JSR 352 specification and has a <code>processItem()</code> method. The argument to this method is the item that was read by the ItemReader. The method must return a processed item. The processed item need not be the same type as the item read by the ItemReader.</p>
 </div>
 <div class="paragraph">
-<p>So, create a new class called <code>NetPayProcessor</code> and specify that it implements the  <code>ItemProcessor</code> interface. Resolve the missing import and ask NetBeans to implement the abstract method. We should now change the <code>processItem()</code> method to perform the actual data processing, so change this method as follow:</p>
+<p>So, create a new class called <code>NetPayProcessor</code> and specify that it implements the  <code>ItemProcessor</code> interface. Decorate the class with the <code>@Named</code> annotation, resolve the missing imports and ask NetBeans to implement the abstract method.</p>
+</div>
+<div class="paragraph">
+<p>We should now change the <code>processItem()</code> method to perform the actual data processing, so change this method as follow:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1339,36 +1364,46 @@ The code is fairly easy to understand, it iterates over all the employees and fo
 <p>This method casts the received object to a <code>PayrollInputRecord</code>. It does some computations and then creates and initializes a <code>PayrollOutputRecord</code> object, compute and set a net salary. That <code>PayrollOutputRecord</code> object is then returned to the calling method.</p>
 </div>
 <div class="paragraph">
-<p>We can use the open() method to initialize any ressources that is required by the Reader. In our case, the initialisation is limited to copy the <code>payrollDataHolderBean</code> data to to the <code>payrollInputRecordsIterator</code>.</p>
+<p>Your <code>NetPayProcessor.java</code> class should now look similar to this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay"><code class="java language-java">    <span class="directive">public</span> <span class="type">void</span> open(<span class="predefined-type">Serializable</span> e) <span class="directive">throws</span> <span class="exception">Exception</span> {
-        payrollInputRecordsIterator = payrollDataHolderBean.getPayrollInputData().iterator();
-    }</code></pre>
-</div>
-</div>
-<div class="openblock">
-<div class="content">
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-You should now know how to detect any missing import and how to solve this.
-</td>
-</tr>
-</table>
-</div>
+<pre class="CodeRay"><code class="java language-java"><span class="keyword">package</span> <span class="namespace">org.glassfish.javaee7.batch.lab1</span>;
+
+<span class="keyword">import</span> <span class="include">javax.batch.api.chunk.ItemProcessor</span>;
+<span class="keyword">import</span> <span class="include">javax.batch.runtime.context.JobContext</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Inject</span>;
+<span class="keyword">import</span> <span class="include">javax.inject.Named</span>;
+
+<span class="annotation">@Named</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">NetPayProcessor</span>
+    <span class="directive">implements</span> ItemProcessor {
+
+    <span class="annotation">@Inject</span>
+    <span class="directive">private</span> JobContext jobContext;
+
+    <span class="directive">public</span> <span class="predefined-type">Object</span> processItem(<span class="predefined-type">Object</span> obj) <span class="directive">throws</span> <span class="exception">Exception</span> {
+        PayrollInputRecord inputRecord = (PayrollInputRecord) obj;
+        <span class="type">float</span> salary = <span class="predefined-type">Integer</span>.valueOf(inputRecord.getSalary());
+        <span class="type">float</span> socialSecurityTax =
+                salary &gt; <span class="integer">117000</span> ? <span class="integer">117000</span> * <span class="float">6.2f</span> / <span class="integer">100</span> : salary * <span class="float">6.2f</span> / <span class="integer">100</span>;
+
+        PayrollOutputRecord outputRecord = <span class="keyword">new</span> PayrollOutputRecord(inputRecord.getId());
+        outputRecord.setSalary(salary / <span class="float">24.0f</span>);
+        outputRecord.setSocialSecurityTax(socialSecurityTax / <span class="float">24.0f</span>);
+        outputRecord.setNet(outputRecord.getSalary() - outputRecord.getSocialSecurityTax());
+
+        <span class="keyword">return</span> outputRecord;
+    }
+
+}</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_writer">1.3.3. Writer</h4>
 <div class="paragraph">
-<p>After the Reader and the Processor, we now need to develop the Writer to save our results. A Writer is a class that extends the <code>javax.batch.api.chunk.AbstractItemWriter</code> interface and implements the <code>writeItems()</code> method.</p>
+<p>After the Reader and the Processor, we now need to develop the Writer to save our results. A Writer is a class that extends the <code>javax.batch.api.chunk.AbstractItemWriter</code> interface and implements the <code>writeItems()</code> method. Do note that the ItemWriter is given a list of items processed by the ItemWriter.</p>
 </div>
 <div class="paragraph">
 <p>As usual, create a class named <code>PayrollOutputRecordWriter</code> in the right package. Resolve the import and ask NetBeans to implement the abstract method.</p>
@@ -1477,13 +1512,13 @@ This XML file will be the JSL that will describe our Job. It will be needed to c
 </div>
 <div class="paragraph">
 <p>We are defining a Job called "PayrollJob" made of a single chunk step called "process".
-We then define the Reader, the Processor and the Writer of the "process" step.</p>
+We then define the Reader, the Processor and the Writer of the "process" step. Execution of the job commences by executing the first step listed in the Job XML. Our first step is a chunk style step with "chunk size" (item-count) of 3. The step also lists an ItemReader identified by the CDI bean name <code>payRollInputRecordReader</code>. Similarly, the step lists an ItemProcessor and a ItemWriter by the beans names <code>netPayProcessor</code> and <code>payRollOutputRecordWriter</code> respectively. In order to execute the step, the Batch runtime uses CDI to instantiate the specified ItemReader, ItemProcessor and ItemWriter. It then calls the ItemReader&#8217;s <code>readItem()</code> and ItemProcessor&#8217;s <code>processItem()</code> "item-count" times (3 in our sample). These processed items are then collected and passed to the ItemWriter&#8217;s <code>writeItems()</code> method.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_executing_the_job">1.5. Executing the Job</h3>
 <div class="paragraph">
-<p>In the previous section, we have defined the implementations of our Step (Reader, Processor and Writer). Using JSL, we have then referenced those implementations to define the batch job. The last thing we need to do is to interact with the batch job (e.g. submit the job for execution, get the execution results, etc.).</p>
+<p>In the previous section, we have defined the implementations of our Step (Reader, Processor and Writer). Using JSL, we have then referenced those implementations to define the batch job. The last thing we need to do is to submit the job for execution.</p>
 </div>
 <div class="openblock">
 <div class="content">
@@ -1516,7 +1551,23 @@ JSR 352 defines the <code>javax.batch.operations.JobOperator</code> interface to
 </div>
 </div>
 <div class="paragraph">
-<p>This method gets a <code>jobOperator</code> instance using the <code>BatchRuntime.getJobOperator()</code> method. It then invokes the <code>jobOperator.start()</code> method to start the job.</p>
+<p>This method gets a <code>jobOperator</code> instance using the <code>BatchRuntime.getJobOperator()</code> method. It then invokes the <code>jobOperator.start()</code> method to start the job. The first parameter passed to the <code>jobOperator.start()</code> method is the job xml name. This xml must reside under the "WEB-INF/classes/META-INF/batch-jobs" directory.</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Putting the JSL in a wrong directory or using a different name are frequent errors when starting with JSR 352.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -1656,7 +1707,7 @@ Hard coding HTML directly in a servlet is not recommended for any serious applic
 
           <span class="keyword">try</span> {
              <span class="keyword">if</span> (request.getParameter(<span class="string"><span class="delimiter">&quot;</span><span class="content">calculatePayroll</span><span class="delimiter">&quot;</span></span>) != <span class="predefined-constant">null</span>) {
-                 executionId = submitJobFromXML(<span class="string"><span class="delimiter">&quot;</span><span class="content">PayrollJobs</span><span class="delimiter">&quot;</span></span>);
+                 executionId = submitJobFromXML(<span class="string"><span class="delimiter">&quot;</span><span class="content">PayrollJob</span><span class="delimiter">&quot;</span></span>);
              }
              pw.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;table&gt;</span><span class="delimiter">&quot;</span></span>);
              pw.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;tr&gt;&lt;td&gt;</span><span class="delimiter">&quot;</span></span>);
@@ -1673,6 +1724,41 @@ Hard coding HTML directly in a servlet is not recommended for any serious applic
          pw.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;/html&gt;</span><span class="delimiter">&quot;</span></span>);
       }
    }</code></pre>
+</div>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Make sure the string parameter you pass to the <code>submitJobFromXML()</code> method corresponds to the name of the JSL file describing your Job (without the .xml extension)!
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, we are working with Explicit CDI Beans Archive so we need to create a bean.xml. For a Web Application, this beans.xml has to be in the WEB-INF directory so right click on the WEB-INF directory and create an empty file called "beans.xml".</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The CDI container is looking for a "beans.xml" file in the WEB-INF directory. If it&#8217;s not there or present under a different name, the application will not work as it rely on some CDI features.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -1711,21 +1797,27 @@ Since the data set is minimal and the processing trivial, the batch execution is
 <div class="sect2">
 <h3 id="_summary">1.7. Summary</h3>
 <div class="paragraph">
-<p>In this Lab, we learnt</p>
+<p>In this Lab, we have learnt the core components of the batch processing architecture.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>the main concepts of JSR 352 (JSL, steps, etc.)</p>
+<p>A job encapsulates the entire batch process. A job contains one or more steps. A job is put together using a <strong>Job Specification Language</strong> (JSL) that specifies the sequence in which the steps must be executed. In JSR 352, JSL is specified in an XML file called the job XML file. In short, <strong>a job (with JSR 352) is basically a container for steps</strong>.</p>
 </li>
 <li>
-<p>how Chunk step works</p>
+<p>A <strong>step</strong> is a domain object that encapsulates an <strong>independent, sequential phase of the job</strong>. A step contains all the necessary logic and data to perform the actual processing. The batch specification deliberately leaves the definition of a step vague because the content of a step is purely application-specific and can be as complex or simple as the developer desires. There are <strong>two kinds of steps: chunk and batchlet</strong>.</p>
 </li>
 <li>
-<p>how to write a simple batch Job</p>
+<p>A <strong>chunk-style</strong> step contains exactly one <strong>ItemReader</strong>, <strong>one ItemProcessor</strong>, and <strong>one ItemWriter</strong>. In this pattern, ItemReader reads one item at a time, ItemProcessor processes the item based upon the business logic (such as "calculate account balance"), and hands it to the batch runtime for aggregation. Once the "chunk-size" number of items are read and processed, they are given to an ItemWriter, which writes the data (for example, to a database table or a flat file). The transaction is then committed.</p>
 </li>
 <li>
-<p>how to submit it for execution</p>
+<p>JSR 352 also defines a roll-your-own kind of a step called a <strong>batchlet</strong>. A batchlet is free to use anything to accomplish the step, such as sending an e-mail. Batchlet will be discussed in the next section.</p>
+</li>
+<li>
+<p><strong>JobOperator</strong> provides an interface to manage all aspects of job processing, including operational commands, such as start, restart, and stop, as well as job repository commands, such as retrieval of job and step executions. See section 10.4 of the JSR 352 specification for more details about JobOperator.</p>
+</li>
+<li>
+<p><strong>JobRepository</strong> holds information about jobs currently running and jobs that ran in the past. JobOperator provides APIs to access this repository. A JobRepository could be implemented using, say, a database or a file system.</p>
 </li>
 </ul>
 </div>
@@ -1736,12 +1828,18 @@ Since the data set is minimal and the processing trivial, the batch execution is
 <h2 id="_lab_batchlet_and_multi_steps_job">2. Lab: Batchlet and Multi-steps Job</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In the first exercise, we have developed a simple job made of a single step, a Chunk step. This exercise will introduce you to <strong>Batchlet</strong>, the second type of step supported by JSR 352. Chunk step are used to work on data while Batchlet are used to perform tasks within a job. To illustrate this, we will define a multi-steps job that combine 2 steps: a Chunk step and  a Batchlet step.</p>
+<p>In the first exercise, we have developed a simple job made of a single step, a Chunk step. This exercise will introduce you to <strong>Batchlet</strong>, the second type of step supported by JSR 352. Chunk step are used to work on data while Batchlets are useful for performing a variety of tasks that are not item-oriented, such as executing a command or performing a task (like copying files, preparing reports etc.).</p>
+</div>
+<div class="paragraph">
+<p>To illustrate this, we will define a multi-steps job that combine 2 steps: a Chunk step and a Batchlet step.</p>
 </div>
 <div class="sect2">
 <h3 id="_set_the_stage_2">2.1. Set the stage</h3>
 <div class="paragraph">
-<p>Open and run the "lab2" project in NetBeans. You can see that it is very similar to  what we have done in the previous exercise. It is a simple batch job made of a single Chunk step, the "prepare" step.</p>
+<p>Open the "lab2" project in NetBeans ("File" , "Open Project" and select the "lab2" directory). If you run the project and access the "BatchJobSubmitter" servlet, you will see that it is very similar to  what we have done in the previous exercise.</p>
+</div>
+<div class="paragraph">
+<p>It is a simple batch job made of a single Chunk step, the "prepare" step (check the JSL file describing the batch job).</p>
 </div>
 </div>
 <div class="sect2">
@@ -1826,7 +1924,7 @@ Since the data set is minimal and the processing trivial, the batch execution is
 <i class="icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The return type of the <code>process()</code> method is String, that&#8217;s the execution status of the step : "FAILED" or "COMPLETED".
+The return type of the <code>process()</code> method of a batchlet is the exit status of the Batchlet.
 </td>
 </tr>
 </table>
@@ -1858,6 +1956,9 @@ The return type of the <code>process()</code> method is String, that&#8217;s the
 <span class="tag">&lt;/job&gt;</span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>As mentioned before, the execution commences by executing the first step listed in the job xml. If the step completes normally, then the step specified in the "next" attrinute will be executed.</p>
+</div>
 <div class="openblock">
 <div class="content">
 <div class="admonitionblock tip">
@@ -1867,7 +1968,7 @@ The return type of the <code>process()</code> method is String, that&#8217;s the
 <i class="icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Make sure to also update the "prepare" step to specify that the next step to invoke is the "summary" (if the step completes successfully!). You do this by adding <code>next="summary"</code> to the "summary" step definition. If the "prepare" step completes successfully, the next step "summary" will be executed.
+Be aware that if you don&#8217;t specify the next attribute, the execution stops after the first step!
 </td>
 </tr>
 </table>
@@ -1882,7 +1983,7 @@ Make sure to also update the "prepare" step to specify that the next step to inv
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="pic/E2.3.png" alt="E2.3">
+<img src="pic/E2.3.jpg" alt="E2.3">
 </div>
 <div class="title">Figure 16. Total values computed by the Batchlet step</div>
 </div>
@@ -1920,14 +2021,14 @@ Make sure to also update the "prepare" step to specify that the next step to inv
 <div class="sect2">
 <h3 id="_set_the_stage_3">3.1. Set the stage</h3>
 <div class="paragraph">
-<p>Open and run the Lab 3 project. This PayRoll application is again very similar. It has a single Chunk step. The only real difference is that this application let you update, delete and add Input Records. We will use this feature to intentionally introduce corrupt data to force our job to fail. We will finally use the JobOperator interface to resume the job execution where it has failed.</p>
+<p>Open and run the "Lab 3" project. This PayRoll application is again very similar. It has a single Chunk step. The only real difference is that this application let you update, delete and add Input Records. We will use this feature to intentionally introduce corrupt data to force our job to fail. We will finally use the JobOperator interface to resume the job execution where it has failed.</p>
 </div>
 <div class="paragraph">
-<p>The GlassFish console is a useful tool to understand what is going on. Go in the "Services" tab and locate the GlassFish instance (it&#8217;s probably called "GlassFish 4.1"). Right click on it and select "View Domain Server Console", this action will open the GlassFish console in the NetBeans "Output" window.</p>
+<p>The GlassFish console is a useful tool to understand what is going on. Go in the "Services" tab and locate the GlassFish instance (it&#8217;s probably called "GlassFish 4.1" or "GlassFish Server"). Right click on it and select "View Domain Server Log", this action will open the GlassFish Logs in the NetBeans "Output" window.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="pic/E2.2.png" alt="E2.2">
+<img src="pic/E2.2.jpg" alt="E2.2">
 </div>
 <div class="title">Figure 17. GlassFish Server Log</div>
 </div>
@@ -1959,7 +2060,7 @@ Make sure to also update the "prepare" step to specify that the next step to inv
 <i class="icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-The location of JSL files is implementation dependant. GlassFish uses " META-INF/batch-jobs" by default.
+The location of the job xml is spec defined. It must be defined under "WEB-INF/classes/META-INF/batch-jobs" (for war files) or under "META-INF/batch-jobs" (for ejb jar files).
 </td>
 </tr>
 </table>
@@ -1970,11 +2071,11 @@ The location of JSL files is implementation dependant. GlassFish uses " META-INF
 <div class="sect2">
 <h3 id="_break_the_job">3.3. Break the job!</h3>
 <div class="paragraph">
-<p>We will now introduce some corrupt data to force our job to fail. For example, you can update the 5th record by removing the "," and click "update". You can now start the job and "if everything goes well", your job will fail with an "Exit status: FAILED". A "restart" button should also appear on the right side of the last failed job.</p>
+<p>We will now introduce some corrupt data to force our job to fail. For example, you can update the 5th record by replacing the "," with a space and click "update". You can now start the job and "if everything goes well", your job will fail with an "Exit status: FAILED". A "restart" button should also appear on the right side of the last failed job.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="pic/E3.1.png" alt="E3.1">
+<img src="pic/E3.1.jpg" alt="E3.1">
 </div>
 <div class="title">Figure 18. Break the job</div>
 </div>
@@ -1997,7 +2098,7 @@ The "item-count" attribue (the size) of the "chunk" element specify the number o
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="pic/E3.2.png" alt="E3.2">
+<img src="pic/E3.2.jpg" alt="E3.2">
 </div>
 <div class="title">Figure 19. Defining the size of the chunk step</div>
 </div>
@@ -2034,6 +2135,22 @@ Any real application would obviously implement more severe validation strategies
 <div class="paragraph">
 <p>Restarting a failed job is also done via the jobOperator interface and more particularly via its <code>restart()</code> method. We pass, to this method, the execution ID of the failed job and we get in return a new execution ID.</p>
 </div>
+<div class="openblock">
+<div class="content">
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+JSR 352 allows only the most recent execution id to the restart method. Thats why our application attaches the restart button to the most recent job!
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>If you fix and update the wrong input record and "restart" the job, the job should now exit with a "COMPLETED" status.</p>
 </div>
@@ -2051,23 +2168,9 @@ Any real application would obviously implement more severe validation strategies
 <div class="sect2">
 <h3 id="_summary_3">3.5. Summary</h3>
 <div class="paragraph">
-<p>In this Lab, we learnt</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>about checkpointing</p>
-</li>
-<li>
-<p>how item-count attribute can be used to control the check size</p>
-</li>
-<li>
-<p>how to write Item{Reader, Processor, Writer} for a Step that checkpoint their state</p>
-</li>
-<li>
-<p>how to use JobOperator.restart() to resume a failed job</p>
-</li>
-</ul>
+<p>Job restarts (resumption of jobs rather) is possible due to the checkpointing mechanism. Execution of a check style step commences by the batch runtime calling the ItemReader&#8217;s <code>open()</code> method. If the step is not due to a re-start (meaning a the job is being executed using <code>jobOperator.start()</code>) then a <code>null</code> value is passed to the <code>open()</code> method (else the previous checkpointed data is passed).
+Once every "item-count" (chunk size) number of items have been written out by the ItemWriter, the Batch runtime calls the <code>checkpointInfo()</code> method on the ItemReader. The item reader can return any Serializable data that captures its current state (like number of items read etc.). This Serializable data will be saved by the batch runtime in the JobRepository and allows the batch runtime to track the last known checkpointed state.
+If the job were to fail now (or before the next checkpoint), the Job can be resumed by calling the <code>JobOperator.restart()</code> method. Job restart processing begins by the batch runtime calling the ItemReader&#8217;s <code>open()</code> method with the previous run&#8217;s checkpointed data. This allows the ItemReader to resume reading from the previous successful point and thus allows the Job to resume rather than start from the beginning.</p>
 </div>
 </div>
 </div>
@@ -2467,21 +2570,8 @@ Info:   ** PayrollInputRecordReadListener:: onReadError : null; Exception: java.
 <div class="sect2">
 <h3 id="_summary_4">4.5. Summary</h3>
 <div class="paragraph">
-<p>In this Lab, we learnt</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>about listeners</p>
-</li>
-<li>
-<p>how to define listeners at different levels (step, job, etc.)</p>
-</li>
-<li>
-<p>how to ignore Exception(s) on a step
+<p>In this Lab, we learnt how to define and use listener to intervene within the life-cycle of a batch job.
 :imagesdir: ../pic</p>
-</li>
-</ul>
 </div>
 </div>
 </div>
@@ -2490,41 +2580,21 @@ Info:   ** PayrollInputRecordReadListener:: onReadError : null; Exception: java.
 <h2 id="_lab_job_partitioning">5. Lab: Job Partitioning</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>By default, all steps in a job run on the same thread.  Multi-threading can be leveraged to increase throughput and better utilize underlying hardware, that is what <strong>partitioned step</strong> brings. A serially processed step can be break it into <strong>partitions</strong> that will run on different threads. Once we have defined the partition strategy, the batch runtime will manage the threads and will handle all aspects of checkpoints.</p>
+<p>By default, all steps in a job run on the same thread.  Multi-threading can be leveraged to increase throughput and better utilize underlying hardware, that is what <strong>partitioned step</strong> brings. A serially processed step can be broken it into <strong>partitions</strong> that will run on different threads. Once we have defined the partition strategy, the batch runtime will manage the threads and will handle all aspects of checkpoints.</p>
 </div>
 <div class="sect2">
 <h3 id="_set_the_stage_5">5.1. Set the stage</h3>
 <div class="paragraph">
-<p>We will start from an usual payroll batch job and will enhance it to support partition. Open Lab 5 and run the <code>PartitionedJobSubmitterServlet.java</code> servlet. In this application, you can select for which month the payroll should be calculated. Don&#8217;t run a batch job at this stage, as it will fails.</p>
-</div>
-<div class="paragraph">
-<p>If you look at the Chunk&#8217;s reader (<code>SimpleItemReader.java</code>), you will notice that the <code>open()</code> method is slightly different. Based on the execution ID of the current job, it gets, via the Batch Runtime and the job context, some properties such as the selected month, the partition index, the start and the end employee ID. Those information are used to return of subset of the available data.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay"><code class="java language-java">  <span class="directive">public</span> <span class="type">void</span> open(<span class="predefined-type">Serializable</span> e) <span class="directive">throws</span> <span class="exception">Exception</span> {
-
-    <span class="predefined-type">Properties</span> jobParameters = BatchRuntime.getJobOperator().getParameters(jobContext.getExecutionId());
-    <span class="predefined-type">String</span> monthYear = (<span class="predefined-type">String</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">monthYear</span><span class="delimiter">&quot;</span></span>);
-    <span class="predefined-type">Integer</span> partitionNumber = (<span class="predefined-type">Integer</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">partitionNumber</span><span class="delimiter">&quot;</span></span>);
-    <span class="predefined-type">Integer</span> fromKey = (<span class="predefined-type">Integer</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">startEmpID</span><span class="delimiter">&quot;</span></span>);
-    <span class="predefined-type">Integer</span> toKey = (<span class="predefined-type">Integer</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">endEmpID</span><span class="delimiter">&quot;</span></span>);
-
-    <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">SimpleItemReader[partition #</span><span class="delimiter">&quot;</span></span> + partitionNumber + <span class="string"><span class="delimiter">&quot;</span><span class="content"> will process </span><span class="delimiter">&quot;</span></span>
-    + <span class="string"><span class="delimiter">&quot;</span><span class="content"> from employeeId: </span><span class="delimiter">&quot;</span></span> + fromKey + <span class="string"><span class="delimiter">&quot;</span><span class="content"> to </span><span class="delimiter">&quot;</span></span> + toKey
-    + <span class="string"><span class="delimiter">&quot;</span><span class="content"> for the month of </span><span class="delimiter">&quot;</span></span> + monthYear);
-
-    payrollInputRecords = dataBean.getPayrollInputRecords(monthYear, fromKey, toKey);
-
-  }</code></pre>
-</div>
+<p>We will start from an usual payroll batch job and will enhance it to support partition. Open Lab 5 and launch the <code>PartitionedJobSubmitterServlet.java</code> servlet. In this application, you can select for which month the payroll should be calculated. Don&#8217;t run a batch job at this stage, as it will fails.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_define_the_partition_strategy">5.2. Define the partition strategy</h3>
 <div class="paragraph">
-<p>A partition mapper is a java class the implements the <code>javax.batch.api.partition.PartitionMapper</code> interface.
-So create a java classes called "PayrollPartitionMapper", implements the PartitionMapper interface. And as usual, decorate the class with the <code>@Named("PayrollPartitionMapper)</code> annotation, resolve any missing imports and implements the abstract methods imposed by the interface.</p>
+<p>JSR 352 defines an interface called <code>PartitionMapper</code> (<a href="http://docs.oracle.com/javaee/7/api/javax/batch/api/partition/PartitionMapper.html">javadoc</a>) that provides a programmatic means for calculating the number of partitions and threads for a partitioned step.</p>
+</div>
+<div class="paragraph">
+<p>So create a java classes called "PayrollPartitionMapper", implements the PartitionMapper interface. And as usual, decorate the class with the <code>@Named("PayrollPartitionMapper)</code> annotation, resolve any missing imports and implements the abstract methods imposed by the interface.</p>
 </div>
 <div class="paragraph">
 <p>Inject the JobConext and the SampleDataHolderBean as we will need them.</p>
@@ -2580,7 +2650,56 @@ So create a java classes called "PayrollPartitionMapper", implements the Partiti
 </div>
 </div>
 <div class="paragraph">
-<p>We should now update the JSL to link the partition mapper to the chunk step.</p>
+<p>In the partitioned model, a step is configured to run as multiple instances across multiple threads. Each thread runs the same step. This model can be used in situations where each partition processes a different range of the input items.</p>
+</div>
+<div class="paragraph">
+<p>A partition mapper receives control at the start of a partitioned execution. The partition mapper is responsible to provide unique batch properties for each partition.</p>
+</div>
+<div class="paragraph">
+<p>Our PartitionMapper implementation implements the <code>ParitionMapper</code> interface and returns a PartitionPlan. The PartitionPlan specifies the number of partitions and also returns a <code>java.util.Properties</code> object for each Partition. Each of these Properties object must carry appropriate data that specifies the range of the input items.</p>
+</div>
+<div class="paragraph">
+<p>Our PartionMapper indicates that 5 partitions will be used to do the payroll processing. It then creaes a separate Properties object for each partition and then populates each Properties object with keys "startempID" and "endEmpID" keys that indicate the range of employee IDs that each partition will operate on.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_partition_aware_reader">5.3. Partition aware reader</h3>
+<div class="paragraph">
+<p>If you look at the Chunk&#8217;s reader (<code>SimpleItemReader.java</code>), you will notice that the <code>open()</code> method is slightly different.</p>
+</div>
+<div class="paragraph">
+<p>We have see, how the PartitionMapper creates separate Properties object for each Partition. We also saw that each of these Properties object contains data that specifies the range of data each each partitioned step will operate on.</p>
+</div>
+<div class="paragraph">
+<p>The ItemReader can obtain the partition specific data by calling <code>JobOperator.getParameters(executionId)</code>. The current <code>executionId</code> is obtained by calling <code>jobcontext.getExecutionId()</code> on the injected <code>JobContext</code>. JobContext provides information about the <strong>current</strong> job execution.</p>
+</div>
+<div class="paragraph">
+<p>Once the ItemReader obtains the Properties object containing partition specific data, it finds out the starting and ending employee ID that it should read. It then obtains those <code>PayrollInputRecords</code> from the EJB Singleton bean.</p>
+</div>
+<div class="paragraph">
+<p>The ItemProcessor and ItemWriter thus processes and writes only those payroll records pertaining to the current partition.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay"><code class="java language-java">  <span class="directive">public</span> <span class="type">void</span> open(<span class="predefined-type">Serializable</span> e) <span class="directive">throws</span> <span class="exception">Exception</span> {
+
+    <span class="predefined-type">Properties</span> jobParameters = BatchRuntime.getJobOperator().getParameters(jobContext.getExecutionId());
+    <span class="predefined-type">String</span> monthYear = (<span class="predefined-type">String</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">monthYear</span><span class="delimiter">&quot;</span></span>);
+    <span class="predefined-type">Integer</span> partitionNumber = (<span class="predefined-type">Integer</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">partitionNumber</span><span class="delimiter">&quot;</span></span>);
+    <span class="predefined-type">Integer</span> fromKey = (<span class="predefined-type">Integer</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">startEmpID</span><span class="delimiter">&quot;</span></span>);
+    <span class="predefined-type">Integer</span> toKey = (<span class="predefined-type">Integer</span>) jobParameters.get(<span class="string"><span class="delimiter">&quot;</span><span class="content">endEmpID</span><span class="delimiter">&quot;</span></span>);
+
+    <span class="predefined-type">System</span>.out.println(<span class="string"><span class="delimiter">&quot;</span><span class="content">SimpleItemReader[partition #</span><span class="delimiter">&quot;</span></span> + partitionNumber + <span class="string"><span class="delimiter">&quot;</span><span class="content"> will process </span><span class="delimiter">&quot;</span></span>
+    + <span class="string"><span class="delimiter">&quot;</span><span class="content"> from employeeId: </span><span class="delimiter">&quot;</span></span> + fromKey + <span class="string"><span class="delimiter">&quot;</span><span class="content"> to </span><span class="delimiter">&quot;</span></span> + toKey
+    + <span class="string"><span class="delimiter">&quot;</span><span class="content"> for the month of </span><span class="delimiter">&quot;</span></span> + monthYear);
+
+    payrollInputRecords = dataBean.getPayrollInputRecords(monthYear, fromKey, toKey);
+
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We should also update the JSL to link the partition mapper to the chunk step.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2600,9 +2719,9 @@ So create a java classes called "PayrollPartitionMapper", implements the Partiti
 </div>
 </div>
 <div class="sect2">
-<h3 id="_test_the_partitioned_execution">5.3. Test the partitioned execution</h3>
+<h3 id="_test_the_partitioned_execution">5.4. Test the partitioned execution</h3>
 <div class="paragraph">
-<p>If you now run the job for a particular month, you will see in the GlassFish logs that data are spread across 5 threads as defined by the <code>getPartitions()</code> method of the partition mapper.</p>
+<p>If you now run the job for a particular month, you will see in the GlassFish logs that data are spread across 5 threads as defined by the <code>getPartitions()</code> method of the partition mapper. You can also see the data range that each partition is assigned.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2622,12 +2741,9 @@ Info: SimpleItemReader[partition #3 will process from employeeId: 18 to 24 for t
 </div>
 </div>
 <div class="sect2">
-<h3 id="_summary_5">5.4. Summary</h3>
+<h3 id="_summary_5">5.5. Summary</h3>
 <div class="paragraph">
-<p>In this Lab, we learnt</p>
-</div>
-<div class="paragraph">
-<p><strong>TO DO</strong></p>
+<p>In this Lab, we learnt how to use Partition Mapper to distribute batch processing on different threads.</p>
 </div>
 </div>
 </div>
@@ -2635,8 +2751,8 @@ Info: SimpleItemReader[partition #3 will process from employeeId: 18 to 24 for t
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.1<br>
-Last updated 2014-08-12 10:07:00 CEST
+Version 0.9<br>
+Last updated 2014-08-25 09:30:41 CEST
 </div>
 </div>
 </body>

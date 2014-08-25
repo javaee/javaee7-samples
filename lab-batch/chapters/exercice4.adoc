@@ -326,8 +326,4 @@ Info:   ** PayrollInputRecordReadListener:: onReadError : null; Exception: java.
 
 === Summary
 
-In this Lab, we learnt
-
-* about listeners 
-* how to define listeners at different levels (step, job, etc.)
-* how to ignore Exception(s) on a step
+In this Lab, we learnt how to define and use listener to intervene within the life-cycle of a batch job.

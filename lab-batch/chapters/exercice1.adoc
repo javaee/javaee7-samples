@@ -273,7 +273,7 @@ Add the following code to the body of the class :
     }
 ----
 
-In this code, we define a `payrollInputRecords` list of strings. We use the `@PostConstruct` annotation to specify to the Application Server that the `onApplicationStartup()` method should be invoked very early, i.e. before the EJB can handle client requests. This method basically fills the `payrollInputRecords` list with dummy employees data (an employee ID and numeric value, stored in a simple string).
+In this code, we define a `payrollInputRecords` list of strings. We use the `@PostConstruct` annotation to specify to the Application Server that the `onApplicationStartup()` method should be invoked after all injection has occurred and after all initializers have been called, i.e. before the EJB can handle client requests. This method basically fills the `payrollInputRecords` list with dummy employees data (an employee ID and numeric value, stored in a simple string).
 We also define a `PayrollOutputRecord` collection and some related methods (add an element, get the collection).
 
 Make sure to resolve any missing imports. The class `PayrollDataHolderBean.java` should now compile and looks like this. 
@@ -328,7 +328,7 @@ public class PayrollDataHolderBean {
 
 Now that we have everything set in place, we can tackle the main part of the exercise, i.e. create the batch job!
 
-A batch job uses a simple 'Read - Process - Write' pattern. A *Reader* is used to retrieve the input data, a *Processor* will then do some processing on those data and finally, a *Writer* will save the results somewhere. How the data are actually read (e.g. from a filesystem, from a database, from memory, etc.) is not specified so we are free to use, in a Reader, the mechanism we want. In our exercise, we will just read some data stored in an EJB.
+A batch job uses a simple 'Read - Process - Write' pattern. A *Reader* is used to retrieve the input data, a *Processor* will then do some processing on those data and finally, a *Writer* will save the results somewhere. How the data are actually read (e.g. from a filesystem, from a database, from memory, etc.) is not specified so we are free to use, in a Reader, the mechanism we want. In our exercise, we will just read some data stored in an singleton EJB.
 
 
 The same is true for the output, for the Writer. The specification doesn't say how the output should be saved so we can use different approaches (e.g. send a mail, post to a JMS queue, update a Database via JPA or JBDC, etc.)
@@ -337,15 +337,15 @@ The same is true for the output, for the Writer. The specification doesn't say h
 TIP: The fundamental unit of a *Job* is a *Step*. A job is made of one or more steps. JSR 352 defines 2 types of steps: *Chunk* step used to work on data using the Read-Process-Write pattern and *Batchlet* step used to perform task(s) within a job (e.g. send via FTP the final result of a Job).
 --
 
-To implement a batch Job, we will have implement at least one Chunked step. Implementing a Chunked step means developing in Java :
-* a Reader
-* a Processor 
-* a Writer
+A *chunk-style step* contains exactly one *ItemReader*, one *ItemProcessor*, and one *ItemWriter*. In this pattern, items are processed "chunk-size" at a time. The "chunk-size" is specified in the Job xml.
 
 --
 TIP: JSR 352 also defines a XML based language called *JSL* (Job Specification Language). JSL is used to assemble together different steps to form a job, defines the flow between the different steps and also configure the behaviour of the Job itself (e.g. what to do in case of error).
 --
-That exactly what will do in the next few sections, we will develop a Reader, a Writer and a Processor. We will then define the Job itself using JSL. :
+
+A chunk is processed as follows: The batch runtime starts a transaction and calls the ItemReader to read one item at a time. The batch runtime then passes this item to the ItemProcessor that processes the item based upon the business logic (such as "calculate net pay"), and returns the processed item to the batch runtime for aggregation. Once the "chunk-size" number of items are read and processed, they are given to an ItemWriter, which writes the data (for example, to a database table or a flat file). The transaction is then committed. The process repeats till the ItemReader finishes reading all items.
+
+To implement a batch Job, we will have implement at least one Chunked step. Implementing a Chunked step means developing in Java : a Reader, a Processor and a Writer. That is exactly what will do in the next few sections, we will develop a Reader, a Writer and a Processor. We will then define the Job itself using JSL.
 
 
 ==== Reader
@@ -409,9 +409,29 @@ We will now rewrite the `readItem()` method as follow :
 The `readItem()` method is invoked by the Batch runtime, the method will then return the next item. If there is no more item, it will return `null` instead.
 The code is fairly easy to understand, it iterates over all the employees and for each of them, it creates a `PayrollInputRecord` object with his/her details, object which is then returned by the `readItem()` method.
 
-We should also decorate the class with the `@Named` annotation and resolve the missing import.
 
-Your `PayrollInputRecordReader.java` class should look similar to this:
+We can use the `open()` method to initialize any ressources that is required by the Reader. In our case, the initialisation is limited to copy the `payrollDataHolderBean` data to the `payrollInputRecordsIterator`.
+
+[source, java]
+----
+    public void open(Serializable e) throws Exception {
+        payrollInputRecordsIterator = payrollDataHolderBean.getPayrollInputData().iterator();
+    }  
+----
+
+--
+TIP: You should now know how to detect any missing import and how to solve this.
+--
+
+
+We should also decorate the class with the `@Named` annotation.
+
+
+--
+TIP: When running in Java EE environment, the Batch runtime uses CDI (Context and Dependency Injection) to instantiate Job artifacts (like Item{Reader, Writer, Procesor} etc.).  The `@Named` annotation allows us to access a bean by using its bean name (with the first letter in lowercase). So annotating the ItemReader with `@Named` will allow us to reference the Reader in our Job XML just by using its bean name. 
+--
+
+Once you have resolved the missing imports, your `PayrollInputRecordReader.java` class should look similar to this:
 [source, java]
 ----
 package org.glassfish.batch.lab1;
@@ -453,9 +473,12 @@ public class PayrollInputRecordReader extends AbstractItemReader {
     
 }
 ----
+
+
 ==== Processor
 
-As its name implies, a Processor will handle, within a batch step, the actual data processing, data that is provided by the Reader. Technically, a Processor is a class that implements the `javax.batch.api.chunk.ItemProcessor` interface defined in the JSR 352 specification and has a `processItem()` method. This method gets an object as a parameter (an item) and it returns another object.
+As its name implies, a Processor will handle, within a batch step, the actual data processing, data that is provided by the Reader. Technically, a Processor is a class that implements the `javax.batch.api.chunk.ItemProcessor` interface defined in the JSR 352 specification and has a `processItem()` method. The argument to this method is the item that was read by the ItemReader. The method must return a processed item. The processed item need not be the same type as the item read by the ItemReader. 
+
 
 So, create a new class called `NetPayProcessor` and specify that it implements the  `ItemProcessor` interface. Decorate the class with the `@Named` annotation, resolve the missing imports and ask NetBeans to implement the abstract method. 
 
@@ -478,18 +501,6 @@ We should now change the `processItem()` method to perform the actual data proce
 ----
 
 This method casts the received object to a `PayrollInputRecord`. It does some computations and then creates and initializes a `PayrollOutputRecord` object, compute and set a net salary. That `PayrollOutputRecord` object is then returned to the calling method.
-
-We can use the `open()` method to initialize any ressources that is required by the Reader. In our case, the initialisation is limited to copy the `payrollDataHolderBean` data to to the `payrollInputRecordsIterator`.
-[source, java]
-----
-    public void open(Serializable e) throws Exception {        
-        payrollInputRecordsIterator = payrollDataHolderBean.getPayrollInputData().iterator();
-    }
-----
-
---
-TIP: You should now know how to detect any missing import and how to solve this.
---
 
 
 Your `NetPayProcessor.java` class should now look similar to this:
@@ -529,7 +540,7 @@ public class NetPayProcessor
 ==== Writer
 
 
-After the Reader and the Processor, we now need to develop the Writer to save our results. A Writer is a class that extends the `javax.batch.api.chunk.AbstractItemWriter` interface and implements the `writeItems()` method.
+After the Reader and the Processor, we now need to develop the Writer to save our results. A Writer is a class that extends the `javax.batch.api.chunk.AbstractItemWriter` interface and implements the `writeItems()` method. Do note that the ItemWriter is given a list of items processed by the ItemWriter.
 
 As usual, create a class named `PayrollOutputRecordWriter` in the right package. Resolve the import and ask NetBeans to implement the abstract method.
 
@@ -609,15 +620,15 @@ Edit the `PayrollJob.xml` as follow :
 ----
 
 We are defining a Job called "PayrollJob" made of a single chunk step called "process".
-We then define the Reader, the Processor and the Writer of the "process" step.
+We then define the Reader, the Processor and the Writer of the "process" step. Execution of the job commences by executing the first step listed in the Job XML. Our first step is a chunk style step with "chunk size" (item-count) of 3. The step also lists an ItemReader identified by the CDI bean name `payRollInputRecordReader`. Similarly, the step lists an ItemProcessor and a ItemWriter by the beans names `netPayProcessor` and `payRollOutputRecordWriter` respectively. In order to execute the step, the Batch runtime uses CDI to instantiate the specified ItemReader, ItemProcessor and ItemWriter. It then calls the ItemReader's `readItem()` and ItemProcessor's `processItem()` "item-count" times (3 in our sample). These processed items are then collected and passed to the ItemWriter's `writeItems()` method. 
+
 
 === Executing the Job
 
-In the previous section, we have defined the implementations of our Step (Reader, Processor and Writer). Using JSL, we have then referenced those implementations to define the batch job. The last thing we need to do is to interact with the batch job (e.g. submit the job for execution, get the execution results, etc.). 
+In the previous section, we have defined the implementations of our Step (Reader, Processor and Writer). Using JSL, we have then referenced those implementations to define the batch job. The last thing we need to do is to submit the job for execution. 
 
 --
 TIP: JSR 352 defines the `javax.batch.operations.JobOperator` interface to control jobs. Via this interface, it is possible to start, stop, and restart jobs. It is also possible to inspect job history, to discover what jobs are currently running, what jobs have previously run, etc. For more details, check the http://docs.oracle.com/javaee/7/api/javax/batch/operations/JobOperator.html[javadoc].
-
 --
 
 ==== Submitting the job for execution 
@@ -630,7 +641,13 @@ Edit the the `BatchJobSubmitter.java` servlet we have defined earlier, insert th
         return jobOperator.start(jobName, props);
     }
 ----
-This method gets a `jobOperator` instance using the `BatchRuntime.getJobOperator()` method. It then invokes the `jobOperator.start()` method to start the job.
+This method gets a `jobOperator` instance using the `BatchRuntime.getJobOperator()` method. It then invokes the `jobOperator.start()` method to start the job. The first parameter passed to the `jobOperator.start()` method is the job xml name. This xml must reside under the "WEB-INF/classes/META-INF/batch-jobs" directory.
+
+--
+TIP: Putting the JSL in a wrong directory or using a different name are frequent errors when starting with JSR 352.
+--
+
+
 
 ==== Get the job details 
 
@@ -801,15 +818,20 @@ image::E1.17.jpg[]
 
 === Summary
 
-In this Lab, we learnt 
+In this Lab, we have learnt the core components of the batch processing architecture.
 
-* the main concepts of JSR 352 (JSL, steps, etc.)
+* A job encapsulates the entire batch process. A job contains one or more steps. A job is put together using a *Job Specification Language* (JSL) that specifies the sequence in which the steps must be executed. In JSR 352, JSL is specified in an XML file called the job XML file. In short, *a job (with JSR 352) is basically a container for steps*.
 
-* how Chunk step works
+* A *step* is a domain object that encapsulates an *independent, sequential phase of the job*. A step contains all the necessary logic and data to perform the actual processing. The batch specification deliberately leaves the definition of a step vague because the content of a step is purely application-specific and can be as complex or simple as the developer desires. There are *two kinds of steps: chunk and batchlet*.
 
-* how to write a simple batch Job
+* A *chunk-style* step contains exactly one *ItemReader*, *one ItemProcessor*, and *one ItemWriter*. In this pattern, ItemReader reads one item at a time, ItemProcessor processes the item based upon the business logic (such as "calculate account balance"), and hands it to the batch runtime for aggregation. Once the "chunk-size" number of items are read and processed, they are given to an ItemWriter, which writes the data (for example, to a database table or a flat file). The transaction is then committed.
 
-* how to submit it for execution
+* JSR 352 also defines a roll-your-own kind of a step called a *batchlet*. A batchlet is free to use anything to accomplish the step, such as sending an e-mail. Batchlet will be discussed in the next section.
+
+* *JobOperator* provides an interface to manage all aspects of job processing, including operational commands, such as start, restart, and stop, as well as job repository commands, such as retrieval of job and step executions. See section 10.4 of the JSR 352 specification for more details about JobOperator.
+
+* *JobRepository* holds information about jobs currently running and jobs that ran in the past. JobOperator provides APIs to access this repository. A JobRepository could be implemented using, say, a database or a file system.
+
 
 //////////////////////////////////////////
 
