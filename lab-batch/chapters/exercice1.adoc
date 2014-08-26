@@ -410,7 +410,7 @@ The `readItem()` method is invoked by the Batch runtime, the method will then re
 The code is fairly easy to understand, it iterates over all the employees and for each of them, it creates a `PayrollInputRecord` object with his/her details, object which is then returned by the `readItem()` method.
 
 
-We can use the `open()` method to initialize any ressources that is required by the Reader. In our case, the initialisation is limited to copy the `payrollDataHolderBean` data to the `payrollInputRecordsIterator`.
+We can use the `open()` method to initialize any ressources that is required by the Reader. In our case, the initialization is limited to copy the `payrollDataHolderBean` data to the `payrollInputRecordsIterator`.
 
 [source, java]
 ----
@@ -747,7 +747,7 @@ You can now add the `displayProcessedPayrollRecords()` method:
     }
 ----
 
-This method displays, in a HTML form, a table containing the job results using the `payrollDataHolderBean` bean. Towards the end, you can also see that the method print raw HTML with the 2 buttons that the end user will use to control the application (e.g. "Caluclate Payroll" & "Refresh").
+This method displays, in a HTML form, a table containing the job results using the `payrollDataHolderBean` bean. Towards the end, you can also see that the method print raw HTML with the 2 buttons that the end user will use to control the application (e.g. "Calculate Payroll" & "Refresh").
 
 
 Finally, we will rewrite the existing `processRequest()` servlet method to use those utilities methods:

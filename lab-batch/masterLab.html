@@ -1242,7 +1242,7 @@ You can see that NetBeans is still unable to compile the code, this is because t
 The code is fairly easy to understand, it iterates over all the employees and for each of them, it creates a <code>PayrollInputRecord</code> object with his/her details, object which is then returned by the <code>readItem()</code> method.</p>
 </div>
 <div class="paragraph">
-<p>We can use the <code>open()</code> method to initialize any ressources that is required by the Reader. In our case, the initialisation is limited to copy the <code>payrollDataHolderBean</code> data to the <code>payrollInputRecordsIterator</code>.</p>
+<p>We can use the <code>open()</code> method to initialize any ressources that is required by the Reader. In our case, the initialization is limited to copy the <code>payrollDataHolderBean</code> data to the <code>payrollInputRecordsIterator</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1686,7 +1686,7 @@ Hard coding HTML directly in a servlet is not recommended for any serious applic
 </div>
 </div>
 <div class="paragraph">
-<p>This method displays, in a HTML form, a table containing the job results using the <code>payrollDataHolderBean</code> bean. Towards the end, you can also see that the method print raw HTML with the 2 buttons that the end user will use to control the application (e.g. "Caluclate Payroll" &amp; "Refresh").</p>
+<p>This method displays, in a HTML form, a table containing the job results using the <code>payrollDataHolderBean</code> bean. Towards the end, you can also see that the method print raw HTML with the 2 buttons that the end user will use to control the application (e.g. "Calculate Payroll" &amp; "Refresh").</p>
 </div>
 <div class="paragraph">
 <p>Finally, we will rewrite the existing <code>processRequest()</code> servlet method to use those utilities methods:</p>
@@ -2668,7 +2668,7 @@ Info:   ** PayrollInputRecordReadListener:: onReadError : null; Exception: java.
 <p>If you look at the Chunk&#8217;s reader (<code>SimpleItemReader.java</code>), you will notice that the <code>open()</code> method is slightly different.</p>
 </div>
 <div class="paragraph">
-<p>We have see, how the PartitionMapper creates separate Properties object for each Partition. We also saw that each of these Properties object contains data that specifies the range of data each each partitioned step will operate on.</p>
+<p>We have seen how the PartitionMapper creates separate Properties object for each Partition. We also saw that each of these Properties object contains data that specifies the range of data each each partitioned step will operate on.</p>
 </div>
 <div class="paragraph">
 <p>The ItemReader can obtain the partition specific data by calling <code>JobOperator.getParameters(executionId)</code>. The current <code>executionId</code> is obtained by calling <code>jobcontext.getExecutionId()</code> on the injected <code>JobContext</code>. JobContext provides information about the <strong>current</strong> job execution.</p>

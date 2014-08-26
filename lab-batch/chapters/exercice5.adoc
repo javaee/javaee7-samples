@@ -81,7 +81,7 @@ Our PartionMapper indicates that 5 partitions will be used to do the payroll pro
 
 If you look at the Chunk's reader (`SimpleItemReader.java`), you will notice that the `open()` method is slightly different. 
 
-We have see, how the PartitionMapper creates separate Properties object for each Partition. We also saw that each of these Properties object contains data that specifies the range of data each each partitioned step will operate on.
+We have seen how the PartitionMapper creates separate Properties object for each Partition. We also saw that each of these Properties object contains data that specifies the range of data each each partitioned step will operate on.
 
 The ItemReader can obtain the partition specific data by calling `JobOperator.getParameters(executionId)`. The current `executionId` is obtained by calling `jobcontext.getExecutionId()` on the injected `JobContext`. JobContext provides information about the *current* job execution.
 
