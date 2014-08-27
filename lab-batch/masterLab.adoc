@@ -1,6 +1,6 @@
 = Introduction to the Batch API (JSR 352)
 David Delabassee <https://twitter.com/delabassee[@delabassee]>
-v0.9, Aug 25, 2014
+v1.0, Aug 27, 2014
 :doctype: book
 :toc:
 :toc-placement: preamble

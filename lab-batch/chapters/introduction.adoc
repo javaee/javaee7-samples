@@ -57,13 +57,13 @@ At any time, feel free to ask a JavaOne Proctor, they are here to help you!
 
 === Important note
 
-WARNING: The sample applications and the code may not always be following best practices (e.g. data validation, correct error handling, etc.). This is intentional such as to stay focused on explaining JSR 352. It is highly recommended to make sure that the code copied from this lab is updated to meet the requirements of any production application.
+WARNING: The sample applications and the code may not always be following best practices (e.g. data validation, correct error handling, leverage the lastest Java SE features, etc.). This is intentional such as to stay focused on explaining JSR 352. It is highly recommended to make sure that the code copied from this lab is updated to meet the requirements of any production application!
 
-
+////
 === TO DO
 
 * Copyright / License to use?
 * How to start GF
 * Add a key map in the Help (Fix import, Reformat, ...)
 * Add info about expected audience, assumptions and timing
-
+////
