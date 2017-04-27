@@ -1,1 +1,12 @@
 theme: jekyll-theme-architect
+
+title: [Project Name]
+description: [Tag Line]
+
+show_downloads: false
+
+links:
+  download: https://replace_with_download_url/
+  mailinglist: https://replace_with_forums_url
+  source: https://replace_iwth_repo_url
+
