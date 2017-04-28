@@ -51,7 +51,8 @@ a:hover {
 }
 
 #sidebar p {
-  font-size: 1.2em;
+  font-size: 1em;
+  margin-bottom: 1em;
 }
 
 .highlight { 
@@ -60,8 +61,8 @@ a:hover {
 
 .sponsor {
   float: left;
-  padding-top: 40px;
-  padding-left: 10px;
+  padding-top: 20px;
+  padding-left: 18px;
 }
 
 .moveright30{
@@ -79,6 +80,7 @@ a:hover {
 a.oraclelogo {
   position: absolute;
   background: transparent url(../images/Oracle-logo.png) 0 0 no-repeat;
+  background-position: 2px -2px;
   background-size: 100% ;
   width: 96px;
   height: 62px;
@@ -115,7 +117,6 @@ td {
 ul {
   font-size: 1em;
 }
-
 
 #main-content h1 {
   padding-top: .6em;
