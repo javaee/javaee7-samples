@@ -80,8 +80,8 @@ a:hover {
 a.oraclelogo {
   position: absolute;
   background: transparent url(../images/Oracle-logo.png) 0 0 no-repeat;
-  background-position: 2px -2px;
   background-size: 100% ;
+  background-position: center center;
   width: 96px;
   height: 62px;
 }
@@ -193,6 +193,21 @@ ul {
   font-size: 1em;
   margin-bottom: 2px;
 }
+
+.footer {
+  position: fixed; 
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-color: #f0f0f0;
+  //padding: 1rem;
+  padding-top: 6px;
+  padding-bottom: 14px;
+  font-size: 0.8em;
+  text-align: center;
+}
+
 
 .fullpage {
   //float: center;
