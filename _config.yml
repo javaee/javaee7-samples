@@ -3,10 +3,9 @@ theme: jekyll-theme-architect
 title: [Java EE 7 Samples]
 description: [Sample applications and snippets to get you started with Java EE 7]
 
-show_downloads: false
 
 links:
-  download: Soon
+  #download: Soon
   mailinglist: Soon
   source: https://github.com/javaee/javaee7-samples
 
