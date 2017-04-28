@@ -80,8 +80,8 @@ a:hover {
 a.oraclelogo {
   position: absolute;
   background: transparent url(../images/Oracle-logo.png) 0 0 no-repeat;
+  background-position: 2px -2px; 
   background-size: 100% ;
-  background-position: center center;
   width: 96px;
   height: 62px;
 }
